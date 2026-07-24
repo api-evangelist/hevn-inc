@@ -1,0 +1,412 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Webhook API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Webhook
+paths:
+  /api/v1/webhook/kyc:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Kyc
+      description: Receive KYC webhook payload; log body and return 200.
+      operationId: webhook_kyc_api_v1_webhook_kyc_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/swipelux:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Swipelux
+      description: 'Handle Swipelux webhooks: customer.verification_changed, transfer.*.'
+      operationId: webhook_swipelux_api_v1_webhook_swipelux_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/base-spend-permission:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Base Spend Permission
+      description: Handle Hook0 Base SpendPermission events.
+      operationId: webhook_base_spend_permission_api_v1_webhook_base_spend_permission_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/cdp-wallet-activity:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Cdp
+      description: Process Coinbase CDP transfer webhooks.
+      operationId: webhook_cdp_api_v1_webhook_cdp_wallet_activity_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/align:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Align
+      description: Process Align webhook (customer.kycs.updated, virtual_account.* etc.).
+      operationId: webhook_align_api_v1_webhook_align_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlignWebhookEvent'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/resend:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Resend
+      description: Handle Resend email webhooks with Svix signature verification.
+      operationId: webhook_resend_api_v1_webhook_resend_post
+      parameters:
+      - name: svix-id
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Svix-Id
+      - name: svix-timestamp
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Svix-Timestamp
+      - name: svix-signature
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Svix-Signature
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/firma:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Firma
+      description: Handle Firma e-signature webhooks.
+      operationId: webhook_firma_api_v1_webhook_firma_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/wirex/v2/webhooks/cards:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex Cards
+      operationId: webhook_wirex_cards_api_v1_webhook_wirex_v2_webhooks_cards_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/wirex/v2/webhooks/balances:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex Balances
+      operationId: webhook_wirex_balances_api_v1_webhook_wirex_v2_webhooks_balances_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/wirex/v2/webhooks/card-limits:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex Card Limits
+      operationId: webhook_wirex_card_limits_api_v1_webhook_wirex_v2_webhooks_card_limits_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/wirex/v2/webhooks/activities:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex Activities
+      operationId: webhook_wirex_activities_api_v1_webhook_wirex_v2_webhooks_activities_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/wirex/webhook/users:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex Users
+      operationId: webhook_wirex_users_api_v1_webhook_wirex_webhook_users_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+  /api/v1/webhook/wirex/{path}:
+    post:
+      tags:
+      - Webhook
+      summary: Webhook Wirex
+      operationId: webhook_wirex_api_v1_webhook_wirex__path__post
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/webhook/privy:
+    post:
+      tags:
+      - Webhook
+      summary: Privy Webhook
+      description: 'Handle Privy webhook events (Svix-signed).
+
+
+        Security-relevant events trigger email alerts to the affected user.'
+      operationId: privy_webhook_api_v1_webhook_privy_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookAckResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    WebhookAckResponse:
+      properties:
+        ok:
+          type: boolean
+          title: Ok
+          default: true
+      type: object
+      title: WebhookAckResponse
+      description: Generic acknowledgement returned by webhook handlers.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AlignWebhookEvent:
+      properties:
+        eventType:
+          type: string
+          title: Eventtype
+        entityId:
+          type: string
+          title: Entityid
+        entityType:
+          type: string
+          title: Entitytype
+        eventPayload:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Eventpayload
+        createdAt:
+          type: string
+          title: Createdat
+      type: object
+      required:
+      - eventType
+      - entityId
+      - entityType
+      - createdAt
+      title: AlignWebhookEvent
+      description: Align webhook payload.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

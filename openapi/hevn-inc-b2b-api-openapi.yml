@@ -1,0 +1,1734 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA B2B API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: B2B
+paths:
+  /api/v1/b2b/kyb/draft:
+    put:
+      tags:
+      - B2B
+      summary: Save KYB draft
+      description: Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.
+      operationId: save_kyb_draft_api_v1_b2b_kyb_draft_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDraftRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - B2B
+      summary: Get KYB draft
+      description: Get current KYB draft with all data and signed URLs for documents.
+      operationId: get_kyb_draft_api_v1_b2b_kyb_draft_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KybDraftResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/b2b/kyb/draft/documents:
+    post:
+      tags:
+      - B2B
+      summary: Upload draft document (deprecated, use POST /documents/upload)
+      description: Backward-compatible proxy to POST /documents/upload.
+      operationId: upload_draft_document_api_v1_b2b_kyb_draft_documents_post
+      deprecated: true
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDocumentUpload'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDraftInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/b2b/kyb/submit:
+    post:
+      tags:
+      - B2B
+      summary: Submit KYB
+      description: Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.
+      operationId: submit_kyb_api_v1_b2b_kyb_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: provider
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/FiatProvider'
+          default: swipelux
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KybSubmitResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/b2b/kyb/request:
+    post:
+      tags:
+      - B2B
+      summary: Request KYB for a provider
+      description: Request KYB verification for a provider
+      operationId: request_kyb_api_v1_b2b_kyb_request_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Request Kyb Api V1 B2B Kyb Request Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/b2b/documents:
+    get:
+      tags:
+      - B2B
+      summary: List uploaded documents (deprecated, use GET /documents)
+      description: Backward-compatible proxy to GET /documents.
+      operationId: list_uploaded_documents_legacy_api_v1_b2b_documents_get
+      deprecated: true
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: doc_type
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Document filter type, e.g. 'uploaded'
+          default: uploaded
+          title: Doc Type
+        description: Document filter type, e.g. 'uploaded'
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadedDocumentListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/b2b/kyb/draft:
+    put:
+      tags:
+      - B2B
+      summary: Save KYB draft
+      description: Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.
+      operationId: save_kyb_draft_package_alias_api_v1_kyb_b2b_kyb_draft_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDraftRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - B2B
+      summary: Get KYB draft
+      description: Get current KYB draft with all data and signed URLs for documents.
+      operationId: get_kyb_draft_package_alias_api_v1_kyb_b2b_kyb_draft_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KybDraftResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/b2b/kyb/draft/documents:
+    post:
+      tags:
+      - B2B
+      summary: Upload draft document (deprecated, use POST /documents/upload)
+      description: Backward-compatible proxy to POST /documents/upload.
+      operationId: upload_draft_document_package_alias_api_v1_kyb_b2b_kyb_draft_documents_post
+      deprecated: true
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDocumentUpload'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDraftInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/b2b/kyb/submit:
+    post:
+      tags:
+      - B2B
+      summary: Submit KYB
+      description: Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.
+      operationId: submit_kyb_package_alias_api_v1_kyb_b2b_kyb_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: provider
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/FiatProvider'
+          default: swipelux
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KybSubmitResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/b2b/kyb/request:
+    post:
+      tags:
+      - B2B
+      summary: Request KYB for a provider
+      description: Request KYB verification for a provider
+      operationId: request_kyb_package_alias_api_v1_kyb_b2b_kyb_request_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Request Kyb Package Alias Api V1 Kyb B2B Kyb Request Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/b2b/documents:
+    get:
+      tags:
+      - B2B
+      summary: List uploaded documents (deprecated, use GET /documents)
+      description: Backward-compatible proxy to GET /documents.
+      operationId: list_uploaded_documents_legacy_package_alias_api_v1_kyb_b2b_documents_get
+      deprecated: true
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: doc_type
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Document filter type, e.g. 'uploaded'
+          default: uploaded
+          title: Doc Type
+        description: Document filter type, e.g. 'uploaded'
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadedDocumentListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    KybSubmitResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        swipeluxCustomerId:
+          type: string
+          title: Swipeluxcustomerid
+        kybStatus:
+          $ref: '#/components/schemas/KycStatus'
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+      type: object
+      required:
+      - success
+      - swipeluxCustomerId
+      - kybStatus
+      title: KybSubmitResponse
+      description: Submit response.
+    KybDocumentUpload:
+      properties:
+        base64:
+          type: string
+          title: Base64
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - base64
+      - type
+      title: KybDocumentUpload
+      description: Document upload for draft.
+    FiatPurposeOfFunds:
+      type: string
+      enum:
+      - operations
+      - payroll
+      - vendor_payments
+      - investment
+      - treasury_management
+      - international_transfers
+      - other
+      title: FiatPurposeOfFunds
+      description: Purpose of funds.
+    BusinessUserCreateRequest-Input:
+      properties:
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+        contactInfo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contactinfo
+        jurisdiction:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        entityType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatEntityType'
+          - type: 'null'
+        entityTypeDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entitytypedescription
+        entityName:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Entityname
+        tradeName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tradename
+        registrationNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrationnumber
+        incorporationDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Incorporationdate
+        taxNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxnumber
+        businessDescription:
+          anyOf:
+          - type: string
+            minLength: 10
+          - type: 'null'
+          title: Businessdescription
+        businessType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatBusinessType'
+          - type: 'null'
+        verifierRole:
+          anyOf:
+          - $ref: '#/components/schemas/FiatVerifierRole'
+          - type: 'null'
+        businessTypeDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businesstypedescription
+        websites:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Websites
+        phoneNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phonenumber
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/FiatBusinessAddress'
+          - type: 'null'
+        sourceOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatSourceOfFunds'
+          - type: 'null'
+        sourceOfFundDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceoffunddescription
+        expectedMonthlyVolumeUsd:
+          anyOf:
+          - type: number
+            minimum: 0
+          - type: 'null'
+          title: Expectedmonthlyvolumeusd
+        purposeOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPurposeOfFunds'
+          - type: 'null'
+        purposeOfFundsDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Purposeoffundsdescription
+        flowOfFundsDescription:
+          anyOf:
+          - type: string
+            minLength: 10
+          - type: 'null'
+          title: Flowoffundsdescription
+        sanctionedCountryOperations:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sanctionedcountryoperations
+        highRiskActivities:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Highriskactivities
+        operatingCountries:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CountryCode'
+            type: array
+          - type: 'null'
+          title: Operatingcountries
+        handlesCustomerFunds:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handlescustomerfunds
+        complianceScreeningDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliancescreeningdescription
+        estimatedAnnualRevenue:
+          anyOf:
+          - type: number
+            minimum: 0
+          - type: 'null'
+          title: Estimatedannualrevenue
+        depositMethods:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Depositmethods
+      type: object
+      title: BusinessUserCreateRequest
+      description: Request schema for creating/updating a business user (all fields optional for partial updates).
+    KybDraftResponse:
+      properties:
+        kybStatusByRails:
+          additionalProperties:
+            $ref: '#/components/schemas/KycStatus'
+          propertyNames:
+            $ref: '#/components/schemas/BankRail'
+          type: object
+          title: Kybstatusbyrails
+          description: KYB status for each activated bank rail
+        kybStatus:
+          $ref: '#/components/schemas/KycStatus'
+        businessData:
+          anyOf:
+          - $ref: '#/components/schemas/BusinessUserCreateRequest-Output'
+          - type: 'null'
+        companyDocuments:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Companydocuments
+        shareholders:
+          items:
+            $ref: '#/components/schemas/ShareholderDraftResponse'
+          type: array
+          title: Shareholders
+        isReadyForSubmission:
+          type: boolean
+          title: Isreadyforsubmission
+          default: false
+        missingFields:
+          items:
+            type: string
+          type: array
+          title: Missingfields
+        requiredDocuments:
+          items:
+            type: string
+          type: array
+          title: Requireddocuments
+          description: Required document types for this company's jurisdiction
+        requiredShareholderDocuments:
+          items:
+            type: string
+          type: array
+          title: Requiredshareholderdocuments
+          description: Required document types for each shareholder
+        swipeluxCustomerId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Swipeluxcustomerid
+        rails:
+          items:
+            $ref: '#/components/schemas/FiatRailResponse'
+          type: array
+          title: Rails
+          description: All fiat rails for this user
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+      type: object
+      required:
+      - kybStatus
+      - updatedAt
+      title: KybDraftResponse
+      description: Full draft response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FiatShareholder:
+      properties:
+        localId:
+          type: string
+          title: Localid
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        birthDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Birthdate
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+        ownershipPercentage:
+          anyOf:
+          - type: number
+            maximum: 100
+            minimum: 0
+          - type: 'null'
+          title: Ownershippercentage
+        hasControl:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hascontrol
+        isSigner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Issigner
+        isDirector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isdirector
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/FiatShareholderAddress'
+          - type: 'null'
+        identityDocuments:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FiatIdentityDocument'
+            type: array
+          - type: 'null'
+          title: Identitydocuments
+        documentIds:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Documentids
+        swipeluxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Swipeluxid
+      type: object
+      required:
+      - localId
+      title: FiatShareholder
+      description: Shareholder data stored in business_data JSONB.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FiatSourceOfFunds:
+      type: string
+      enum:
+      - business_revenue
+      - investment
+      - loan
+      - personal_savings
+      - third_party_funds
+      - grant
+      - other
+      title: FiatSourceOfFunds
+      description: Source of funds.
+    FiatIdentityDocumentType:
+      type: string
+      enum:
+      - passport
+      - id_card
+      - drivers_license
+      - driver_license
+      - residence_permit
+      - government_id
+      - state_or_provincial_id
+      - visa
+      title: FiatIdentityDocumentType
+      description: Identity document type.
+    FiatBusinessAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: FiatBusinessAddress
+      description: Business address.
+    ShareholderDraftResponse:
+      properties:
+        localId:
+          type: string
+          title: Localid
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        birthDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Birthdate
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+        ownershipPercentage:
+          anyOf:
+          - type: number
+            maximum: 100
+            minimum: 0
+          - type: 'null'
+          title: Ownershippercentage
+        hasControl:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hascontrol
+        isSigner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Issigner
+        isDirector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isdirector
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/FiatShareholderAddress'
+          - type: 'null'
+        identityDocuments:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FiatIdentityDocument'
+            type: array
+          - type: 'null'
+          title: Identitydocuments
+        documentIds:
+          items:
+            type: string
+          type: array
+          title: Documentids
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Documents
+        swipeluxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Swipeluxid
+      type: object
+      required:
+      - localId
+      title: ShareholderDraftResponse
+      description: Shareholder in response with resolved documents. All fields optional for partial filling.
+    FiatBusinessType:
+      type: string
+      enum:
+      - technology
+      - finance
+      - healthcare
+      - retail
+      - e_commerce
+      - manufacturing
+      - real_estate
+      - consulting
+      - hospitality
+      - education
+      - transportation
+      - entertainment
+      - agriculture
+      - construction
+      - professional_services
+      - crypto_web3
+      - other
+      title: FiatBusinessType
+      description: Business industry type.
+    FiatShareholderAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: FiatShareholderAddress
+      description: Shareholder address.
+    DocumentDraftInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Link
+        createdAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Createdat
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+      type: object
+      required:
+      - id
+      - type
+      title: DocumentDraftInfo
+      description: Document info in response.
+    KybDraftRequest:
+      properties:
+        businessData:
+          anyOf:
+          - $ref: '#/components/schemas/BusinessUserCreateRequest-Input'
+          - type: 'null'
+        documentIds:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Documentids
+        shareholders:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FiatShareholder'
+            type: array
+          - type: 'null'
+          title: Shareholders
+      type: object
+      title: KybDraftRequest
+      description: Draft request. Documents are uploaded separately via POST /kyb/draft/documents.
+    FiatEntityType:
+      type: string
+      enum:
+      - llc
+      - corporation
+      - s_corporation
+      - c_corporation
+      - partnership
+      - limited_partnership
+      - sole_proprietorship
+      - nonprofit
+      - trust
+      - cooperative
+      - dao
+      - foundation
+      - other
+      title: FiatEntityType
+      description: Business entity type.
+    FiatIdentityDocument:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FiatIdentityDocumentType'
+          - type: 'null'
+        issuingCountry:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Number
+      type: object
+      title: FiatIdentityDocument
+      description: Identity document for shareholder.
+    BusinessUserCreateRequest-Output:
+      properties:
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+        contactInfo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contactinfo
+        jurisdiction:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        entityType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatEntityType'
+          - type: 'null'
+        entityTypeDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entitytypedescription
+        entityName:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Entityname
+        tradeName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tradename
+        registrationNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrationnumber
+        incorporationDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Incorporationdate
+        taxNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxnumber
+        businessDescription:
+          anyOf:
+          - type: string
+            minLength: 10
+          - type: 'null'
+          title: Businessdescription
+        businessType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatBusinessType'
+          - type: 'null'
+        verifierRole:
+          anyOf:
+          - $ref: '#/components/schemas/FiatVerifierRole'
+          - type: 'null'
+        businessTypeDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businesstypedescription
+        websites:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Websites
+        phoneNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phonenumber
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/FiatBusinessAddress'
+          - type: 'null'
+        sourceOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatSourceOfFunds'
+          - type: 'null'
+        sourceOfFundDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceoffunddescription
+        expectedMonthlyVolumeUsd:
+          anyOf:
+          - type: number
+            minimum: 0
+          - type: 'null'
+          title: Expectedmonthlyvolumeusd
+        purposeOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPurposeOfFunds'
+          - type: 'null'
+        purposeOfFundsDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Purposeoffundsdescription
+        flowOfFundsDescription:
+          anyOf:
+          - type: string
+            minLength: 10
+          - type: 'null'
+          title: Flowoffundsdescription
+        sanctionedCountryOperations:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sanctionedcountryoperations
+        highRiskActivities:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Highriskactivities
+        operatingCountries:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CountryCode'
+            type: array
+          - type: 'null'
+          title: Operatingcountries
+        handlesCustomerFunds:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handlescustomerfunds
+        complianceScreeningDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliancescreeningdescription
+        estimatedAnnualRevenue:
+          anyOf:
+          - type: number
+            minimum: 0
+          - type: 'null'
+          title: Estimatedannualrevenue
+        depositMethods:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Depositmethods
+      type: object
+      title: BusinessUserCreateRequest
+      description: Request schema for creating/updating a business user (all fields optional for partial updates).
+    UploadedDocumentListResponse:
+      properties:
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Documents
+      type: object
+      required:
+      - documents
+      title: UploadedDocumentListResponse
+      description: Response for user-uploaded documents list.
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    SlxDocumentType:
+      type: string
+      enum:
+      - certificate_of_incorporation
+      - formation_document
+      - power_of_attorney
+      - corporate_structure
+      - director_structure
+      - proof_of_address
+      - annual_financial_statements
+      - articles_of_association
+      - audit_report
+      - bank_reference_letter
+      - bank_statement
+      - banking_details
+      - birth_certificate
+      - business_license
+      - business_plan
+      - certificate_of_good_standing
+      - credit_report
+      - criminal_record_check
+      - cv_resume
+      - driving_license
+      - education_certificate
+      - financial_projections
+      - insurance_policy
+      - lease_agreement
+      - list_of_authorized_signatories
+      - marriage_certificate
+      - national_id
+      - operating_agreement
+      - partnership_agreement
+      - professional_license
+      - reference_letter
+      - register_of_members
+      - residence_permit
+      - shareholding_structure
+      - social_security_document
+      - source_of_funds_declaration
+      - tax_identification_document
+      - tax_returns
+      - trade_references
+      - vat_registration
+      - vendor_contracts
+      - visa
+      - wealth_statement
+      - contract
+      - invoice
+      - loan_agreement
+      - passport_front
+      - passport_back
+      - id_card_front
+      - id_card_back
+      - drivers_license_front
+      - drivers_license_back
+      - other
+      title: SlxDocumentType
+      description: Document types for upload.
+    FiatRailResponse:
+      properties:
+        provider:
+          $ref: '#/components/schemas/FiatProvider'
+        externalUserId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Externaluserid
+        kycStatus:
+          type: string
+          title: Kycstatus
+          default: not_started
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+      type: object
+      required:
+      - provider
+      title: FiatRailResponse
+      description: Response schema for a user's fiat rail registration.
+    FiatVerifierRole:
+      type: string
+      enum:
+      - officer
+      - employer
+      - accountant
+      - agent
+      title: FiatVerifierRole
+      description: KYB verifier role.
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    BankRail:
+      type: string
+      enum:
+      - uaefts_named-zand
+      - ach_pooled-hsbc
+      - ach_named-citi
+      - ach_named-jpmorgan_chase
+      - ach_named-cfsb
+      - fedwire_pooled-hsbc
+      - fedwire_pooled-jpmorgan_chase
+      - fedwire_pooled-cfsb
+      - fedwire_named-hsbc
+      - fedwire_named-citi
+      - fedwire_named-jpmorgan_chase
+      - fedwire_named-cfsb
+      - sepa_pooled-zen
+      - sepa_named-zen
+      - swift_pooled-hsbc
+      - swift_named-hsbc
+      title: BankRail
+      description: 'Bank account route: provider rail + bank id (`{rail}-{bank}`).'
+    FiatProvider:
+      type: string
+      enum:
+      - swipelux
+      - align
+      - mcp
+      - wirex
+      title: FiatProvider
+      description: Supported fiat payment providers.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

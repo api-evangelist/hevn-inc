@@ -1,0 +1,212 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Incorporate API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Incorporate
+paths:
+  /api/v1/incorporate/prices:
+    get:
+      tags:
+      - Incorporate
+      summary: Get incorporation service prices
+      description: Return available services and prices by jurisdiction.
+      operationId: get_prices_api_v1_incorporate_prices_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Prices Api V1 Incorporate Prices Get
+  /api/v1/incorporate/apply:
+    post:
+      tags:
+      - Incorporate
+      summary: Apply for incorporation
+      description: 'Apply for company incorporation.
+
+
+        Validates that all shareholders have ownership_percentage filled
+
+        and total equals 100%. Creates an invoice for incorporation services,
+
+        sets KYC status to ''incorporating'' and sends Slack notification.'
+      operationId: apply_incorporate_api_v1_incorporate_apply_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyIncorporateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Apply Incorporate Api V1 Incorporate Apply Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/kyb/incorporate/prices:
+    get:
+      tags:
+      - Incorporate
+      summary: Get incorporation service prices
+      description: Return available services and prices by jurisdiction.
+      operationId: get_prices_package_alias_api_v1_kyb_incorporate_prices_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Prices Package Alias Api V1 Kyb Incorporate Prices Get
+  /api/v1/kyb/incorporate/apply:
+    post:
+      tags:
+      - Incorporate
+      summary: Apply for incorporation
+      description: 'Apply for company incorporation.
+
+
+        Validates that all shareholders have ownership_percentage filled
+
+        and total equals 100%. Creates an invoice for incorporation services,
+
+        sets KYC status to ''incorporating'' and sends Slack notification.'
+      operationId: apply_incorporate_package_alias_api_v1_kyb_incorporate_apply_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyIncorporateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Apply Incorporate Package Alias Api V1 Kyb Incorporate Apply Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    IncorporationService:
+      type: string
+      enum:
+      - incorporation_fees
+      - office
+      - registrator_fees
+      - us_bank
+      - eu_bank
+      - ae_bank
+      - 1year_maintenance
+      title: IncorporationService
+      description: Services available for incorporation package.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ApplyIncorporateRequest:
+      properties:
+        services:
+          items:
+            $ref: '#/components/schemas/IncorporationService'
+          type: array
+          minItems: 1
+          title: Services
+        officeAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Officeaddress
+        registratorContactInfo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registratorcontactinfo
+      type: object
+      required:
+      - services
+      title: ApplyIncorporateRequest
+      description: Request body for incorporation application.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

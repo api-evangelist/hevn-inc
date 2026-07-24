@@ -1,0 +1,2630 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA contracts API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: contracts
+paths:
+  /api/v1/documents/contracts:
+    post:
+      tags:
+      - contracts
+      summary: Create a new contract
+      operationId: create_contract_api_v1_documents_contracts_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContractRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - contracts
+      summary: List contracts for current user
+      operationId: list_contracts_api_v1_documents_contracts_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/attach-document:
+    post:
+      tags:
+      - contracts
+      summary: Attach a document to a contract
+      operationId: attach_document_api_v1_documents_contracts__contract_id__attach_document_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__schemas__routers__invoices__contract__AttachDocumentRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/templates:
+    get:
+      tags:
+      - contracts
+      summary: List fillable document templates and their fields
+      operationId: list_templates_api_v1_documents_contracts_templates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateListResponse'
+  /api/v1/documents/contracts/generate_scope_prefill:
+    post:
+      tags:
+      - contracts
+      summary: Generate plain-text scope description from a role
+      operationId: generate_scope_prefill_api_v1_documents_contracts_generate_scope_prefill_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateScopePrefillRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateScopePrefillResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/prepare_document:
+    post:
+      tags:
+      - contracts
+      summary: Persist prepared contract markdown as a document
+      operationId: prepare_contract_document_api_v1_documents_contracts_prepare_document_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrepareContractDocumentRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrepareContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/preview_document:
+    get:
+      tags:
+      - contracts
+      summary: Preview contract document generated from a saved contract
+      operationId: preview_contract_document_api_v1_documents_contracts__contract_id__preview_document_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/preview:
+    get:
+      tags:
+      - contracts
+      summary: Preview contract document generated from a saved contract
+      operationId: preview_contract_document_api_v1_documents_contracts__contract_id__preview_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}:
+    get:
+      tags:
+      - contracts
+      summary: Get contract by ID
+      operationId: get_contract_api_v1_documents_contracts__contract_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - contracts
+      summary: Update contract terms and schedule
+      operationId: update_contract_api_v1_documents_contracts__contract_id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - contracts
+      summary: Delete contract
+      operationId: delete_contract_api_v1_documents_contracts__contract_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/close:
+    post:
+      tags:
+      - contracts
+      summary: Close contract
+      operationId: close_contract_api_v1_documents_contracts__contract_id__close_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/pause:
+    post:
+      tags:
+      - contracts
+      summary: Pause contract
+      operationId: pause_contract_api_v1_documents_contracts__contract_id__pause_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/approve:
+    post:
+      tags:
+      - contracts
+      summary: Approve contract by client or contractor
+      operationId: approve_contract_api_v1_documents_contracts__contract_id__approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/ApproveContractRequest'
+              - type: 'null'
+              title: Body
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/payment_methods:
+    put:
+      tags:
+      - contracts
+      summary: Set contractor payment methods for contract
+      operationId: update_contract_payment_methods_api_v1_documents_contracts__contract_id__payment_methods_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractPaymentMethodsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/label:
+    patch:
+      tags:
+      - contracts
+      summary: Update contract label
+      operationId: update_contract_label_api_v1_documents_contracts__contract_id__label_patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractLabelRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/documents/contracts/{contract_id}/send-for-signing:
+    post:
+      tags:
+      - contracts
+      summary: Send contract for signing
+      operationId: send_for_signing_api_v1_documents_contracts__contract_id__send_for_signing_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts:
+    post:
+      tags:
+      - contracts
+      summary: Create a new contract
+      operationId: create_contract_package_alias_api_v1_invoices_documents_contracts_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContractRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - contracts
+      summary: List contracts for current user
+      operationId: list_contracts_package_alias_api_v1_invoices_documents_contracts_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/attach-document:
+    post:
+      tags:
+      - contracts
+      summary: Attach a document to a contract
+      operationId: attach_document_package_alias_api_v1_invoices_documents_contracts__contract_id__attach_document_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__schemas__routers__invoices__contract__AttachDocumentRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/templates:
+    get:
+      tags:
+      - contracts
+      summary: List fillable document templates and their fields
+      operationId: list_templates_package_alias_api_v1_invoices_documents_contracts_templates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateListResponse'
+  /api/v1/invoices/documents/contracts/generate_scope_prefill:
+    post:
+      tags:
+      - contracts
+      summary: Generate plain-text scope description from a role
+      operationId: generate_scope_prefill_package_alias_api_v1_invoices_documents_contracts_generate_scope_prefill_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateScopePrefillRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateScopePrefillResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/prepare_document:
+    post:
+      tags:
+      - contracts
+      summary: Persist prepared contract markdown as a document
+      operationId: prepare_contract_document_package_alias_api_v1_invoices_documents_contracts_prepare_document_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrepareContractDocumentRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrepareContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/preview_document:
+    get:
+      tags:
+      - contracts
+      summary: Preview contract document generated from a saved contract
+      operationId: preview_contract_document_package_alias_api_v1_invoices_documents_contracts__contract_id__preview_document_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/preview:
+    get:
+      tags:
+      - contracts
+      summary: Preview contract document generated from a saved contract
+      operationId: preview_contract_document_package_alias_api_v1_invoices_documents_contracts__contract_id__preview_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateContractDocumentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}:
+    get:
+      tags:
+      - contracts
+      summary: Get contract by ID
+      operationId: get_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - contracts
+      summary: Update contract terms and schedule
+      operationId: update_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - contracts
+      summary: Delete contract
+      operationId: delete_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/close:
+    post:
+      tags:
+      - contracts
+      summary: Close contract
+      operationId: close_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__close_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/pause:
+    post:
+      tags:
+      - contracts
+      summary: Pause contract
+      operationId: pause_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__pause_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/approve:
+    post:
+      tags:
+      - contracts
+      summary: Approve contract by client or contractor
+      operationId: approve_contract_package_alias_api_v1_invoices_documents_contracts__contract_id__approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/ApproveContractRequest'
+              - type: 'null'
+              title: Body
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/payment_methods:
+    put:
+      tags:
+      - contracts
+      summary: Set contractor payment methods for contract
+      operationId: update_contract_payment_methods_package_alias_api_v1_invoices_documents_contracts__contract_id__payment_methods_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractPaymentMethodsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/label:
+    patch:
+      tags:
+      - contracts
+      summary: Update contract label
+      operationId: update_contract_label_package_alias_api_v1_invoices_documents_contracts__contract_id__label_patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractLabelRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/invoices/documents/contracts/{contract_id}/send-for-signing:
+    post:
+      tags:
+      - contracts
+      summary: Send contract for signing
+      operationId: send_for_signing_package_alias_api_v1_invoices_documents_contracts__contract_id__send_for_signing_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Contract Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    TemplateDescriptor:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        requiresDocument:
+          type: boolean
+          title: Requiresdocument
+          default: false
+        supportsContractGeneration:
+          type: boolean
+          title: Supportscontractgeneration
+          default: false
+        supportsInvoicing:
+          type: boolean
+          title: Supportsinvoicing
+          default: false
+        fields:
+          items:
+            $ref: '#/components/schemas/TemplateField'
+          type: array
+          title: Fields
+      type: object
+      required:
+      - type
+      - title
+      - description
+      title: TemplateDescriptor
+      description: Describes a document template and the fields a client must fill.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ServiceContractPreviewFields:
+      properties:
+        effectiveDate:
+          type: string
+          title: Effectivedate
+        clientName:
+          type: string
+          title: Clientname
+        serviceProviderName:
+          type: string
+          title: Serviceprovidername
+        services:
+          type: string
+          title: Services
+        paymentTerms:
+          type: string
+          title: Paymentterms
+        invoiceCycle:
+          type: string
+          title: Invoicecycle
+        paymentDue:
+          type: string
+          title: Paymentdue
+        confidentialityTerms:
+          type: string
+          title: Confidentialityterms
+        intellectualPropertyTerms:
+          type: string
+          title: Intellectualpropertyterms
+      type: object
+      required:
+      - effectiveDate
+      - clientName
+      - serviceProviderName
+      - services
+      - paymentTerms
+      - invoiceCycle
+      - paymentDue
+      - confidentialityTerms
+      - intellectualPropertyTerms
+      title: ServiceContractPreviewFields
+    UpdateContractLabelRequest:
+      properties:
+        label:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Label
+      type: object
+      title: UpdateContractLabelRequest
+      description: Request to update a contract label.
+    TemplateFieldSource:
+      type: string
+      enum:
+      - user
+      - profile
+      - computed
+      - default
+      title: TemplateFieldSource
+      description: "Where a template field's value comes from.\n\n* ``USER`` — must be entered by the user.\n* ``PROFILE`` — taken from a party's profile when available; if the profile is\n  incomplete or the party is not registered yet, it must be collected from the user.\n* ``COMPUTED`` — generated server-side (current date, reference, derived legal terms).\n* ``DEFAULT`` — filled with a boilerplate default; no input required."
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ContractStatus:
+      type: string
+      enum:
+      - pending_approval_by_contractor
+      - pending_approval_by_client
+      - active
+      - completed
+      - cancelled
+      - paused
+      title: ContractStatus
+      description: Contract status.
+    Currency:
+      type: string
+      enum:
+      - USD
+      - EUR
+      - GBP
+      - JPY
+      - CHF
+      - CAD
+      - AUD
+      - NZD
+      - SEK
+      - NOK
+      - AED
+      - HKD
+      title: Currency
+      description: Supported invoice/contract currencies. G10 majors + AED/HKD.
+    GenerateScopePrefillRequest:
+      properties:
+        role:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Role
+        context:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - role
+      title: GenerateScopePrefillRequest
+      description: Generate plain-text scope description from a role.
+    UpdateContractPaymentMethodsRequest:
+      properties:
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+      type: object
+      title: UpdateContractPaymentMethodsRequest
+      description: Payment methods selected by the contractor for this contract.
+    ApproveContractRequest:
+      properties:
+        clientAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        contractorAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+      type: object
+      title: ApproveContractRequest
+      description: Optional body for contract approval — each party can provide their own data.
+    GenerateContractDocumentResponse:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        markdown:
+          type: string
+          title: Markdown
+        html:
+          type: string
+          title: Html
+        htmlPreview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Htmlpreview
+        fields:
+          anyOf:
+          - $ref: '#/components/schemas/EmployerContractPreviewFields'
+          - $ref: '#/components/schemas/ServiceContractPreviewFields'
+          - $ref: '#/components/schemas/ContractorContractPreviewFields'
+          - $ref: '#/components/schemas/CustomContractPreviewFields'
+          - type: 'null'
+          title: Fields
+        missingFields:
+          items:
+            type: string
+          type: array
+          title: Missingfields
+      type: object
+      required:
+      - type
+      - markdown
+      - html
+      title: GenerateContractDocumentResponse
+    ContractLastInvoice:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        clientId:
+          type: string
+          format: uuid
+          title: Clientid
+        contractorId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contractorid
+        contractorEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contractoremail
+        clientEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clientemail
+        contractId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contractid
+        onchainTransactionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Onchaintransactionid
+        invoiceDocumentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoicedocumentid
+        amount:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Amount
+        discount:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Discount
+        currency:
+          $ref: '#/components/schemas/Currency'
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+        emailMessage:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Emailmessage
+        invoiceNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invoicenumber
+        issuedDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Issueddate
+        dueDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Duedate
+        status:
+          type: string
+          title: Status
+        paidAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Paidat
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+      type: object
+      required:
+      - id
+      - clientId
+      - amount
+      - currency
+      - status
+      - createdAt
+      - updatedAt
+      title: ContractLastInvoice
+      description: Flat last invoice data embedded in contract responses.
+    ContractListResponse:
+      properties:
+        contracts:
+          items:
+            $ref: '#/components/schemas/ContractResponse'
+          type: array
+          title: Contracts
+      type: object
+      required:
+      - contracts
+      title: ContractListResponse
+      description: List of contracts.
+    TransactionType:
+      type: string
+      enum:
+      - sepa
+      - swift
+      - ach
+      - uaefts
+      - fedwire
+      - swift-usd
+      - swift-eur
+      - wire
+      - pix
+      - crypto
+      - card
+      - internal
+      - refund
+      title: TransactionType
+      description: 'Transaction type - payment rail.
+
+
+        Includes all ``FiatPaymentType`` values (sepa/swift/ach/uaefts) plus
+
+        extended fiat variants (wire/swift-usd/swift-eur/fedwire/pix) and
+
+        non-fiat rails (crypto/card/internal/refund).'
+    GenerateScopePrefillResponse:
+      properties:
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
+      - text
+      title: GenerateScopePrefillResponse
+    ContractDocumentTemplateType:
+      type: string
+      enum:
+      - employer
+      - employment
+      - service
+      - contractor
+      - default_contractor
+      - custom
+      - nda
+      - vendor
+      - milestone
+      - msa
+      title: ContractDocumentTemplateType
+      description: Markdown contract template type.
+    UpdateContractRequest:
+      properties:
+        label:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Label
+        period:
+          anyOf:
+          - $ref: '#/components/schemas/ContractPeriod'
+          - type: 'null'
+        activationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Activationat
+        expirationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expirationat
+        fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Fields
+        priorityMethods:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TransactionType'
+            type: array
+          - type: 'null'
+          title: Prioritymethods
+      type: object
+      title: UpdateContractRequest
+      description: Request to update creator-owned contract terms and schedule.
+    EmployerContractPreviewFields:
+      properties:
+        effectiveDate:
+          type: string
+          title: Effectivedate
+        employerName:
+          type: string
+          title: Employername
+        employeeName:
+          type: string
+          title: Employeename
+        positionTitle:
+          type: string
+          title: Positiontitle
+        startDate:
+          type: string
+          title: Startdate
+        endDate:
+          type: string
+          title: Enddate
+        scope:
+          type: string
+          title: Scope
+        compensation:
+          type: string
+          title: Compensation
+        paymentTerms:
+          type: string
+          title: Paymentterms
+        invoiceCycle:
+          type: string
+          title: Invoicecycle
+        paymentDue:
+          type: string
+          title: Paymentdue
+        confidentialityTerms:
+          type: string
+          title: Confidentialityterms
+        intellectualPropertyTerms:
+          type: string
+          title: Intellectualpropertyterms
+        complianceTerms:
+          type: string
+          title: Complianceterms
+      type: object
+      required:
+      - effectiveDate
+      - employerName
+      - employeeName
+      - positionTitle
+      - startDate
+      - endDate
+      - scope
+      - compensation
+      - paymentTerms
+      - invoiceCycle
+      - paymentDue
+      - confidentialityTerms
+      - intellectualPropertyTerms
+      - complianceTerms
+      title: EmployerContractPreviewFields
+    CustomContractPreviewFields:
+      properties:
+        items:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Items
+      type: object
+      title: CustomContractPreviewFields
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    ContractorContractPreviewFields:
+      properties:
+        effectiveDate:
+          type: string
+          title: Effectivedate
+        clientName:
+          type: string
+          title: Clientname
+        clientEntityType:
+          type: string
+          title: Cliententitytype
+        clientAddress:
+          type: string
+          title: Clientaddress
+        clientEmail:
+          type: string
+          title: Clientemail
+        clientJurisdiction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clientjurisdiction
+        clientRegistrationNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clientregistrationnumber
+        contractorName:
+          type: string
+          title: Contractorname
+        contractorEntityType:
+          type: string
+          title: Contractorentitytype
+        contractorAddress:
+          type: string
+          title: Contractoraddress
+        contractorEmail:
+          type: string
+          title: Contractoremail
+        contractorJurisdiction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contractorjurisdiction
+        contractorRegistrationNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contractorregistrationnumber
+        governingLaw:
+          type: string
+          title: Governinglaw
+        clientSignerName:
+          type: string
+          title: Clientsignername
+        contractorSignerName:
+          type: string
+          title: Contractorsignername
+        clientSignatureDate:
+          type: string
+          title: Clientsignaturedate
+        contractorSignatureDate:
+          type: string
+          title: Contractorsignaturedate
+      type: object
+      required:
+      - effectiveDate
+      - clientName
+      - clientEntityType
+      - clientAddress
+      - clientEmail
+      - contractorName
+      - contractorEntityType
+      - contractorAddress
+      - contractorEmail
+      - governingLaw
+      - clientSignerName
+      - contractorSignerName
+      - clientSignatureDate
+      - contractorSignatureDate
+      title: ContractorContractPreviewFields
+    ContractType:
+      type: string
+      enum:
+      - service
+      - employment
+      - nda
+      - contractor
+      - default_contractor
+      - custom
+      - vendor
+      - milestone
+      - msa
+      - other
+      title: ContractType
+      description: Contract type.
+    PrepareContractDocumentRequest:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        text:
+          type: string
+          minLength: 1
+          title: Text
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        fileName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - type
+      - text
+      title: PrepareContractDocumentRequest
+      description: Persist already prepared markdown as a document file.
+    TemplateFieldType:
+      type: string
+      enum:
+      - string
+      - text
+      - number
+      - decimal
+      - date
+      - datetime
+      - boolean
+      - enum
+      - object
+      - array
+      title: TemplateFieldType
+      description: 'Structural type of a template field, so clients can render the right input.
+
+
+        Composite types carry their shape: ``OBJECT`` populates :attr:`TemplateField.fields`,
+
+        ``ARRAY`` populates :attr:`TemplateField.item`, and ``ENUM`` populates
+
+        :attr:`TemplateField.options`.'
+    ContractResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        clientId:
+          type: string
+          format: uuid
+          title: Clientid
+        contractorId:
+          type: string
+          format: uuid
+          title: Contractorid
+        client:
+          anyOf:
+          - $ref: '#/components/schemas/ContractParty'
+          - type: 'null'
+        contractor:
+          anyOf:
+          - $ref: '#/components/schemas/ContractParty'
+          - type: 'null'
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+        documentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Documentid
+        documentName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentname
+        documentFileName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentfilename
+        documentDownloadLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentdownloadlink
+        type:
+          $ref: '#/components/schemas/ContractType'
+        status:
+          $ref: '#/components/schemas/ContractStatus'
+        amount:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Amount
+        currency:
+          anyOf:
+          - $ref: '#/components/schemas/Currency'
+          - type: 'null'
+        period:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Period
+        activationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Activationat
+        expirationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expirationat
+        signatureRequestId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Signaturerequestid
+        signed:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Signed
+        clientAcceptance:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Clientacceptance
+        contractorAcceptance:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Contractoracceptance
+        creatorId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Creatorid
+        fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Fields
+        priorityMethods:
+          items:
+            $ref: '#/components/schemas/TransactionType'
+          type: array
+          title: Prioritymethods
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+        lastInvoice:
+          anyOf:
+          - $ref: '#/components/schemas/ContractLastInvoice'
+          - type: 'null'
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+      type: object
+      required:
+      - id
+      - clientId
+      - contractorId
+      - type
+      - status
+      - createdAt
+      - updatedAt
+      title: ContractResponse
+      description: Contract response.
+    ContractPeriod:
+      type: string
+      enum:
+      - weekly
+      - biweekly
+      - monthly
+      - quarterly
+      - yearly
+      title: ContractPeriod
+      description: Recurring billing period of a contract.
+    app__schemas__routers__invoices__contract__AttachDocumentRequest:
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          title: Documentid
+      type: object
+      required:
+      - documentId
+      title: AttachDocumentRequest
+      description: Request to attach a document to a contract.
+    PrepareContractDocumentResponse:
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          title: Documentid
+        documentType:
+          type: string
+          title: Documenttype
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        fileName:
+          type: string
+          title: Filename
+        downloadLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Downloadlink
+      type: object
+      required:
+      - documentId
+      - documentType
+      - fileName
+      title: PrepareContractDocumentResponse
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    ContractParty:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        displayName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Displayname
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        entityName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entityname
+        avatarUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatarurl
+        isBusiness:
+          type: boolean
+          title: Isbusiness
+          default: false
+        address:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Address
+      type: object
+      required:
+      - id
+      title: ContractParty
+      description: Minimal user data embedded in contract responses.
+    CreateContractRequest:
+      properties:
+        contractorEmail:
+          anyOf:
+          - type: string
+            maxLength: 320
+            minLength: 3
+          - type: 'null'
+          title: Contractoremail
+        clientEmail:
+          anyOf:
+          - type: string
+            maxLength: 320
+            minLength: 3
+          - type: 'null'
+          title: Clientemail
+        label:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Label
+        type:
+          $ref: '#/components/schemas/ContractType'
+          default: service
+        period:
+          anyOf:
+          - $ref: '#/components/schemas/ContractPeriod'
+          - type: 'null'
+        activationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Activationat
+        expirationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expirationat
+        status:
+          anyOf:
+          - $ref: '#/components/schemas/ContractStatus'
+          - type: 'null'
+        fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Fields
+        documentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Documentid
+        priorityMethods:
+          items:
+            $ref: '#/components/schemas/TransactionType'
+          type: array
+          title: Prioritymethods
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+        requireClientKyc:
+          type: boolean
+          title: Requireclientkyc
+          default: false
+        requireClientW89:
+          type: boolean
+          title: Requireclientw89
+          default: false
+        requireContractorKyc:
+          type: boolean
+          title: Requirecontractorkyc
+          default: false
+        requireContractorW89:
+          type: boolean
+          title: Requirecontractorw89
+          default: false
+      type: object
+      title: CreateContractRequest
+      description: 'Request to create a new contract.
+
+
+        Exactly one of ``contractor_email`` or ``client_email`` must be set.
+
+        * ``contractor_email`` — the creator is the **client**.
+
+        * ``client_email`` — the creator is the **contractor**.'
+    TemplateListResponse:
+      properties:
+        templates:
+          items:
+            $ref: '#/components/schemas/TemplateDescriptor'
+          type: array
+          title: Templates
+      type: object
+      required:
+      - templates
+      title: TemplateListResponse
+      description: List of fillable document templates.
+    TemplateField:
+      properties:
+        key:
+          type: string
+          title: Key
+        label:
+          type: string
+          title: Label
+        type:
+          $ref: '#/components/schemas/TemplateFieldType'
+          default: string
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        required:
+          type: boolean
+          title: Required
+          default: false
+        multiline:
+          type: boolean
+          title: Multiline
+          default: false
+        source:
+          $ref: '#/components/schemas/TemplateFieldSource'
+          default: user
+        party:
+          anyOf:
+          - type: string
+            enum:
+            - client
+            - contractor
+          - type: 'null'
+          title: Party
+        options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Options
+        fields:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TemplateField'
+            type: array
+          - type: 'null'
+          title: Fields
+        item:
+          anyOf:
+          - $ref: '#/components/schemas/TemplateField'
+          - type: 'null'
+      type: object
+      required:
+      - key
+      - label
+      title: TemplateField
+      description: 'Single field of a document template, for dynamic discovery.
+
+
+        Clients should prompt the user for ``USER`` fields, and for ``PROFILE`` fields only
+
+        when the referenced party''s value is not already available. ``required`` means the
+
+        final document needs a non-empty value, regardless of who provides it.
+
+
+        Descriptors are built from a template''s annotated input model by
+
+        ``TemplateFieldBuilder``; composite fields nest their shape in :attr:`fields`
+
+        (objects), :attr:`item` (arrays) or :attr:`options` (enums).'
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

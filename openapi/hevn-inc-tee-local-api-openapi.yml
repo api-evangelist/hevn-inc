@@ -1,0 +1,255 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA tee-local API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: tee-local
+paths:
+  /api/v1/tee/public_key:
+    get:
+      tags:
+      - tee-local
+      summary: Get Public Key
+      description: Get the signing public key (ed25519:base58).
+      operationId: get_public_key_api_v1_tee_public_key_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyResponse'
+  /api/v1/tee/attestate_jwt:
+    post:
+      tags:
+      - tee-local
+      summary: Attestate Jwt
+      description: 'Verify Google JWT and return signed attestation.
+
+
+        Same logic as enclave GOOGLE_ATTESTATION handler, but accepts plaintext
+
+        (no NaCl Box encryption) and signs with near_wallet key.'
+      operationId: attestate_jwt_api_v1_tee_attestate_jwt_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__routers__security__tee_local__AttestateJwtRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__routers__security__tee_local__AttestateJwtResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tee/near_call:
+    post:
+      tags:
+      - tee-local
+      summary: Near Call
+      description: 'Execute w_execute_signed transaction using near_wallet key.
+
+
+        Accepts {msg, publicKey, proof} from the frontend, extracts receiver_id
+
+        (wallet address) from msg.signer_id.'
+      operationId: near_call_api_v1_tee_near_call_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NearCallRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearCallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/tee/public_key:
+    get:
+      tags:
+      - tee-local
+      summary: Get Public Key Package Alias
+      description: Get the signing public key (ed25519:base58).
+      operationId: get_public_key_package_alias_api_v1_auth_tee_public_key_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyResponse'
+  /api/v1/auth/tee/near_call:
+    post:
+      tags:
+      - tee-local
+      summary: Near Call Package Alias
+      description: 'Execute w_execute_signed transaction using near_wallet key.
+
+
+        Accepts {msg, publicKey, proof} from the frontend, extracts receiver_id
+
+        (wallet address) from msg.signer_id.'
+      operationId: near_call_package_alias_api_v1_auth_tee_near_call_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NearCallRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearCallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    app__routers__security__tee_local__AttestateJwtResponse:
+      properties:
+        hashEmail:
+          type: string
+          title: Hashemail
+        authPayload:
+          type: string
+          title: Authpayload
+        signature:
+          type: string
+          title: Signature
+        publicKey:
+          type: string
+          title: Publickey
+        timestamp:
+          type: integer
+          title: Timestamp
+      type: object
+      required:
+      - hashEmail
+      - authPayload
+      - signature
+      - publicKey
+      - timestamp
+      title: AttestateJwtResponse
+    NearCallRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: NearCallRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PublicKeyResponse:
+      properties:
+        publicKey:
+          type: string
+          title: Publickey
+      type: object
+      required:
+      - publicKey
+      title: PublicKeyResponse
+    app__routers__security__tee_local__AttestateJwtRequest:
+      properties:
+        googleJwt:
+          type: string
+          title: Googlejwt
+        msg:
+          type: string
+          title: Msg
+        receiverId:
+          type: string
+          title: Receiverid
+      type: object
+      required:
+      - googleJwt
+      - msg
+      - receiverId
+      title: AttestateJwtRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NearCallResponse:
+      properties:
+        transactionHash:
+          type: string
+          title: Transactionhash
+        success:
+          type: boolean
+          title: Success
+      type: object
+      required:
+      - transactionHash
+      - success
+      title: NearCallResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

@@ -1,0 +1,976 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA mcp API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: mcp
+paths:
+  /api/v1/mcp/api_key:
+    post:
+      tags:
+      - mcp
+      summary: Create a new MCP API key
+      operationId: create_api_key_api_v1_mcp_api_key_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Name
+      - name: cf-ipcountry
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cf-Ipcountry
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__schemas__routers__security__mcp__ApiKeyCreateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__schemas__routers__security__mcp__ApiKeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - mcp
+      summary: List all MCP API keys
+      operationId: list_api_keys_api_v1_mcp_api_key_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKeyListResponse'
+                title: Response List Api Keys Api V1 Mcp Api Key Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/api_key/{key_id}:
+    delete:
+      tags:
+      - mcp
+      summary: Delete an MCP API key
+      operationId: delete_api_key_api_v1_mcp_api_key__key_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Key Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete Api Key Api V1 Mcp Api Key  Key Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/get_balance:
+    get:
+      tags:
+      - mcp
+      summary: Get USDC balance on Base
+      operationId: get_mcp_balance_api_v1_mcp_get_balance_get
+      parameters:
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/resolve_address:
+    get:
+      tags:
+      - mcp
+      summary: Resolve smart wallet address by email
+      description: 'Resolve or create a smart wallet address for the given email.
+
+
+        If the user has no wallet, pregenerates a Privy embedded wallet
+
+        and deploys a smart wallet with it as owner.'
+      operationId: resolve_address_api_v1_mcp_resolve_address_get
+      parameters:
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Recipient email
+          title: Email
+        description: Recipient email
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Resolve Address Api V1 Mcp Resolve Address Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/transfer:
+    post:
+      tags:
+      - mcp
+      summary: Transfer USDC through MCP using invoice/contact/quote context
+      description: 'Create and submit the UserOperation inside the backend.
+
+
+        The request body is flat typed data, e.g. {"invoiceId": "...", "memo": "..."}.'
+      operationId: transfer_api_v1_mcp_transfer_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/McpTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/transfer_to_user:
+    post:
+      tags:
+      - mcp
+      summary: Transfer USDC to user via spend permission
+      operationId: transfer_to_user_api_v1_mcp_transfer_to_user_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/transfers:
+    get:
+      tags:
+      - mcp
+      summary: List MCP transfers for authenticated user
+      operationId: list_transfers_api_v1_mcp_transfers_get
+      parameters:
+      - name: idempotency_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency Key
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/McpTransactionResponse'
+                title: Response List Transfers Api V1 Mcp Transfers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/api_key:
+    post:
+      tags:
+      - mcp
+      summary: Create a new MCP API key
+      operationId: create_api_key_package_alias_api_v1_auth_mcp_api_key_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Name
+      - name: cf-ipcountry
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cf-Ipcountry
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__schemas__routers__security__mcp__ApiKeyCreateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__schemas__routers__security__mcp__ApiKeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - mcp
+      summary: List all MCP API keys
+      operationId: list_api_keys_package_alias_api_v1_auth_mcp_api_key_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKeyListResponse'
+                title: Response List Api Keys Package Alias Api V1 Auth Mcp Api Key Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/api_key/{key_id}:
+    delete:
+      tags:
+      - mcp
+      summary: Delete an MCP API key
+      operationId: delete_api_key_package_alias_api_v1_auth_mcp_api_key__key_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Key Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete Api Key Package Alias Api V1 Auth Mcp Api Key  Key Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/get_balance:
+    get:
+      tags:
+      - mcp
+      summary: Get USDC balance on Base
+      operationId: get_mcp_balance_package_alias_api_v1_auth_mcp_get_balance_get
+      parameters:
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/resolve_address:
+    get:
+      tags:
+      - mcp
+      summary: Resolve smart wallet address by email
+      description: 'Resolve or create a smart wallet address for the given email.
+
+
+        If the user has no wallet, pregenerates a Privy embedded wallet
+
+        and deploys a smart wallet with it as owner.'
+      operationId: resolve_address_package_alias_api_v1_auth_mcp_resolve_address_get
+      parameters:
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Recipient email
+          title: Email
+        description: Recipient email
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Resolve Address Package Alias Api V1 Auth Mcp Resolve Address Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/transfer:
+    post:
+      tags:
+      - mcp
+      summary: Transfer USDC through MCP using invoice/contact/quote context
+      description: 'Create and submit the UserOperation inside the backend.
+
+
+        The request body is flat typed data, e.g. {"invoiceId": "...", "memo": "..."}.'
+      operationId: transfer_package_alias_api_v1_auth_mcp_transfer_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/McpTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/transfer_to_user:
+    post:
+      tags:
+      - mcp
+      summary: Transfer USDC to user via spend permission
+      operationId: transfer_to_user_package_alias_api_v1_auth_mcp_transfer_to_user_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/mcp/transfers:
+    get:
+      tags:
+      - mcp
+      summary: List MCP transfers for authenticated user
+      operationId: list_transfers_package_alias_api_v1_auth_mcp_transfers_get
+      parameters:
+      - name: idempotency_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency Key
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/McpTransactionResponse'
+                title: Response List Transfers Package Alias Api V1 Auth Mcp Transfers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    app__schemas__routers__security__mcp__ApiKeyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        key:
+          type: string
+          title: Key
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+        totalSpend:
+          type: number
+          title: Totalspend
+        remaining:
+          type: integer
+          title: Remaining
+          default: 0
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - key
+      - totalSpend
+      - createdAt
+      title: ApiKeyResponse
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    ApiKeyListResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        keyPreview:
+          type: string
+          title: Keypreview
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+        totalSpend:
+          type: number
+          title: Totalspend
+        remaining:
+          type: integer
+          title: Remaining
+          default: 0
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - keyPreview
+      - totalSpend
+      - createdAt
+      title: ApiKeyListResponse
+    BalanceResponse:
+      properties:
+        email:
+          type: string
+          title: Email
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        remaining:
+          type: number
+          title: Remaining
+          default: 0
+      type: object
+      required:
+      - email
+      title: BalanceResponse
+    TransferRequest:
+      properties:
+        amount:
+          type: number
+          title: Amount
+        email:
+          type: string
+          title: Email
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      required:
+      - amount
+      - email
+      title: TransferRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TransferResponse:
+      properties:
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+        userCreated:
+          type: boolean
+          title: Usercreated
+          default: false
+        emailSent:
+          type: boolean
+          title: Emailsent
+          default: false
+      type: object
+      title: TransferResponse
+    app__schemas__routers__security__mcp__ApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+      type: object
+      required:
+      - name
+      title: ApiKeyCreateRequest
+    McpTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: McpTransferContext
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

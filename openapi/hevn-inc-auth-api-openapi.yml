@@ -1,0 +1,579 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA auth API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: auth
+paths:
+  /api/v1/auth/start:
+    post:
+      tags:
+      - auth
+      summary: Auth Start
+      description: 'Start authentication: verify TEE signature, then send OTP to email.'
+      operationId: auth_start_api_v1_auth_start_post
+      parameters:
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthStartRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthStartResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/email_otp:
+    post:
+      tags:
+      - auth
+      summary: Auth Email Otp
+      description: Verify email OTP code. Sets email_otp_validated flag on session.
+      operationId: auth_email_otp_api_v1_auth_email_otp_post
+      parameters:
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthEmailOtpRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/totp:
+    post:
+      tags:
+      - auth
+      summary: Auth Totp
+      description: Verify TOTP code. Sets totp_validated flag on session.
+      operationId: auth_totp_api_v1_auth_totp_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TotpLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/submit_signed_jwt:
+    post:
+      tags:
+      - auth
+      summary: Submit Signed Jwt
+      description: 'Verify TEE-signed Google JWT attestation. Sets tee_validated flag on session.
+
+
+        Checks:
+
+        - msg in auth_payload == session_key (binds attestation to this session)
+
+        - hash_email matches session email
+
+        - Ed25519 signature is valid using TEE_PUBLIC_KEY'
+      operationId: submit_signed_jwt_api_v1_auth_submit_signed_jwt_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitSignedJwtRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth:
+    post:
+      tags:
+      - auth
+      summary: Auth Complete
+      description: 'Complete auth: issue refresh token if all required steps are validated.'
+      operationId: auth_complete_api_v1_auth_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      - name: cf-ipcountry
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cf-Ipcountry
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCompleteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSessionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/privy:
+    post:
+      tags:
+      - auth
+      summary: Auth Privy
+      description: 'Authenticate via Privy embedded wallet signature.
+
+
+        1. Recover signer from signature of "I am the owner of {email}"
+
+        2. Verify via Privy API that this address is the embedded wallet for the email
+
+        3. Get or create user, save privy_address, deploy smart wallet if needed
+
+        4. Return HEVN refresh token'
+      operationId: auth_privy_api_v1_auth_privy_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Name
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivyLoginRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivyLoginResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/refresh:
+    post:
+      tags:
+      - auth
+      summary: Refresh Session
+      description: 'Exchange a refresh token for a short-lived session token (10 min).
+
+
+        If user_id differs from the token owner, checks team membership
+
+        and issues a delegated session token (sub=owner, uid=target).'
+      operationId: refresh_session_api_v1_auth_refresh_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionTokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    AuthMethod:
+      type: string
+      enum:
+      - email_otp
+      - totp
+      - signed_jwt
+      title: AuthMethod
+    PrivyLoginRequest:
+      properties:
+        signature:
+          type: string
+          title: Signature
+        email:
+          type: string
+          title: Email
+        address:
+          type: string
+          title: Address
+        nonce:
+          type: integer
+          title: Nonce
+      type: object
+      required:
+      - signature
+      - email
+      - address
+      - nonce
+      title: PrivyLoginRequest
+      description: Request to link a Privy wallet.
+    RefreshRequest:
+      properties:
+        userId:
+          type: string
+          title: Userid
+          description: Target user UUID
+      type: object
+      required:
+      - userId
+      title: RefreshRequest
+      description: Request for refreshing a session token.
+    SubmitSignedJwtRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        authPayload:
+          type: string
+          title: Authpayload
+          description: JSON auth_payload from TEE attestation
+        signature:
+          type: string
+          title: Signature
+          description: Base58 Ed25519 signature from TEE
+      type: object
+      required:
+      - sessionKey
+      - authPayload
+      - signature
+      title: SubmitSignedJwtRequest
+      description: Request for submitting TEE-signed Google JWT attestation.
+    AuthStartRequest:
+      properties:
+        email:
+          type: string
+          title: Email
+          description: User email address
+      type: object
+      required:
+      - email
+      title: AuthStartRequest
+      description: Request schema for starting authentication.
+    AuthStartResponse:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key for OTP verification
+        status:
+          type: string
+          title: Status
+          description: Auth session status
+          default: pending
+        authMethods:
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+          type: array
+          title: Authmethods
+          description: Required auth methods
+      type: object
+      required:
+      - sessionKey
+      title: AuthStartResponse
+      description: Response schema for auth start.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AuthCompleteRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+      type: object
+      required:
+      - sessionKey
+      title: AuthCompleteRequest
+      description: Request for completing authentication.
+    TotpLoginRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from email OTP step
+        code:
+          type: string
+          maxLength: 8
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code or 8-char recovery code
+      type: object
+      required:
+      - sessionKey
+      - code
+      title: TotpLoginRequest
+      description: Request to complete login with TOTP code.
+    SessionTokenResponse:
+      properties:
+        accessToken:
+          type: string
+          title: Accesstoken
+          description: JWT access token (10 min)
+        tokenType:
+          type: string
+          title: Tokentype
+          default: bearer
+        expiresIn:
+          type: integer
+          title: Expiresin
+          description: Token TTL in seconds
+          default: 600
+      type: object
+      required:
+      - accessToken
+      title: SessionTokenResponse
+      description: Response with short-lived JWT session token.
+    PrivyLoginResponse:
+      properties:
+        refreshToken:
+          type: string
+          title: Refreshtoken
+        userId:
+          type: string
+          title: Userid
+        email:
+          type: string
+          title: Email
+        isNewUser:
+          type: boolean
+          title: Isnewuser
+          default: false
+        privyAddress:
+          type: string
+          title: Privyaddress
+        baseSmartWallet:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Basesmartwallet
+      type: object
+      required:
+      - refreshToken
+      - userId
+      - email
+      - privyAddress
+      title: PrivyLoginResponse
+      description: Response after Privy wallet auth.
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: StatusResponse
+      description: Simple status response.
+    AuthSessionResponse:
+      properties:
+        refreshToken:
+          type: string
+          title: Refreshtoken
+          description: JWT refresh token (7 days)
+        tokenType:
+          type: string
+          title: Tokentype
+          default: bearer
+        userId:
+          type: string
+          title: Userid
+          description: User UUID
+        email:
+          type: string
+          title: Email
+          description: User email
+        isNewUser:
+          type: boolean
+          title: Isnewuser
+          default: false
+      type: object
+      required:
+      - refreshToken
+      - userId
+      - email
+      title: AuthSessionResponse
+      description: Response for POST /auth/complete — refresh token.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AuthEmailOtpRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        otpCode:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Otpcode
+          description: 6-digit OTP code
+      type: object
+      required:
+      - sessionKey
+      - otpCode
+      title: AuthEmailOtpRequest
+      description: Request schema for email OTP verification.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

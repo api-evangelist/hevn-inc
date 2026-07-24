@@ -1,0 +1,301 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Devices API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Devices
+paths:
+  /api/v1/devices:
+    get:
+      tags:
+      - Devices
+      summary: List user's devices
+      description: Get all devices associated with the authenticated user's account.
+      operationId: list_devices_api_v1_devices_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponse'
+                title: Response List Devices Api V1 Devices Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/device:
+    put:
+      tags:
+      - Devices
+      summary: Set push notification token
+      description: Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings.
+      operationId: update_push_token_api_v1_device_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: device-type
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Type
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Name
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushTokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/user/devices:
+    get:
+      tags:
+      - Devices
+      summary: List user's devices
+      description: Get all devices associated with the authenticated user's account.
+      operationId: list_devices_package_alias_api_v1_user_devices_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponse'
+                title: Response List Devices Package Alias Api V1 User Devices Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/user/device:
+    put:
+      tags:
+      - Devices
+      summary: Set push notification token
+      description: Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings.
+      operationId: update_push_token_package_alias_api_v1_user_device_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: device-type
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Type
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Name
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushTokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    PushTokenRequest:
+      properties:
+        pushToken:
+          type: string
+          title: Pushtoken
+          description: Push notification token (FCM/APNs)
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+          description: Human-readable device name
+      type: object
+      required:
+      - pushToken
+      title: PushTokenRequest
+      description: Schema for setting push notification token. Device is identified by header.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DeviceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        userId:
+          type: string
+          format: uuid
+          title: Userid
+        deviceId:
+          type: string
+          title: Deviceid
+        deviceType:
+          type: string
+          title: Devicetype
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        notificationToken:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Notificationtoken
+        isActive:
+          type: boolean
+          title: Isactive
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - userId
+      - deviceId
+      - deviceType
+      - deviceName
+      - notificationToken
+      - isActive
+      - createdAt
+      title: DeviceResponse
+      description: Schema for device response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

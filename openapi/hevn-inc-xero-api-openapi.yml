@@ -1,0 +1,452 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Xero API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Xero
+paths:
+  /api/v1/xero/connect:
+    get:
+      tags:
+      - Xero
+      summary: Xero Connect
+      description: Start Xero OAuth flow. Returns redirect to Xero login.
+      operationId: xero_connect_api_v1_xero_connect_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/xero/callback:
+    get:
+      tags:
+      - Xero
+      summary: Xero Callback
+      description: 'OAuth callback from Xero. Exchanges code for tokens.
+
+
+        Note: This endpoint is called by Xero redirect, so we look up the user
+
+        from the stored OAuth state rather than requiring a JWT header.'
+      operationId: xero_callback_api_v1_xero_callback_get
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+          title: State
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/xero/disconnect:
+    delete:
+      tags:
+      - Xero
+      summary: Xero Disconnect
+      description: Disconnect Xero integration.
+      operationId: xero_disconnect_api_v1_xero_disconnect_delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Xero Disconnect Api V1 Xero Disconnect Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/xero/status:
+    get:
+      tags:
+      - Xero
+      summary: Xero Status
+      description: Check Xero connection status.
+      operationId: xero_status_api_v1_xero_status_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XeroStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/xero/export:
+    post:
+      tags:
+      - Xero
+      summary: Xero Export
+      description: Export transactions to Xero as Bank Transactions.
+      operationId: xero_export_api_v1_xero_export_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XeroExportRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XeroExportResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/xero/connect:
+    get:
+      tags:
+      - Xero
+      summary: Xero Connect Package Alias
+      description: Start Xero OAuth flow. Returns redirect to Xero login.
+      operationId: xero_connect_package_alias_api_v1_transactions_xero_connect_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/xero/callback:
+    get:
+      tags:
+      - Xero
+      summary: Xero Callback Package Alias
+      description: 'OAuth callback from Xero. Exchanges code for tokens.
+
+
+        Note: This endpoint is called by Xero redirect, so we look up the user
+
+        from the stored OAuth state rather than requiring a JWT header.'
+      operationId: xero_callback_package_alias_api_v1_transactions_xero_callback_get
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+          title: State
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/xero/disconnect:
+    delete:
+      tags:
+      - Xero
+      summary: Xero Disconnect Package Alias
+      description: Disconnect Xero integration.
+      operationId: xero_disconnect_package_alias_api_v1_transactions_xero_disconnect_delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Xero Disconnect Package Alias Api V1 Transactions Xero Disconnect Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/xero/status:
+    get:
+      tags:
+      - Xero
+      summary: Xero Status Package Alias
+      description: Check Xero connection status.
+      operationId: xero_status_package_alias_api_v1_transactions_xero_status_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XeroStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/xero/export:
+    post:
+      tags:
+      - Xero
+      summary: Xero Export Package Alias
+      description: Export transactions to Xero as Bank Transactions.
+      operationId: xero_export_package_alias_api_v1_transactions_xero_export_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XeroExportRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XeroExportResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    XeroExportRequest:
+      properties:
+        fromDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Fromdate
+        toDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Todate
+        type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Type
+        isIncome:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isincome
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      type: object
+      title: XeroExportRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    XeroExportResult:
+      properties:
+        exported:
+          type: integer
+          title: Exported
+        skipped:
+          type: integer
+          title: Skipped
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+      type: object
+      required:
+      - exported
+      - skipped
+      title: XeroExportResult
+    XeroStatusResponse:
+      properties:
+        connected:
+          type: boolean
+          title: Connected
+        accountName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountname
+      type: object
+      required:
+      - connected
+      title: XeroStatusResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

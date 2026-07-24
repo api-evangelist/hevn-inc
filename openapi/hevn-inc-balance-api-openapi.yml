@@ -1,0 +1,1222 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Balance API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Balance
+paths:
+  /api/v1/balance:
+    get:
+      tags:
+      - Balance
+      summary: Get wallet balances
+      description: Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user.
+      operationId: get_balances_api_v1_balance_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: wallet_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WalletType'
+          - type: 'null'
+          title: Wallet Type
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalancesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/withdraw_onchain:
+    post:
+      tags:
+      - Balance
+      summary: Withdraw to onchain address
+      description: Send funds from Swipelux custodial wallet to external onchain address.
+      operationId: withdraw_onchain_api_v1_balance_withdraw_onchain_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawOnchainRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/sweep:
+    post:
+      tags:
+      - Balance
+      summary: Sweep custodial balance
+      description: Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet.
+      operationId: sweep_custodial_api_v1_balance_sweep_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/transaction/status/{quote_id}:
+    get:
+      tags:
+      - Balance
+      summary: Get transaction status
+      description: Check status of any transaction by quote_id.
+      operationId: get_transaction_status_api_v1_balance_transaction_status__quote_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: quote_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Quote Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalTransactionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/oneclick/tokens:
+    get:
+      tags:
+      - Balance
+      summary: Get supported tokens for cross-chain swaps
+      description: Get list of tokens supported by 1click for cross-chain swaps.
+      operationId: get_oneclick_tokens_api_v1_balance_oneclick_tokens_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/balance/payin/quote:
+    post:
+      tags:
+      - Balance
+      summary: Get cross-chain payin quote
+      description: Create a quote to deposit from any chain to Base USDC.
+      operationId: create_payin_quote_api_v1_balance_payin_quote_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/payin/submit:
+    post:
+      tags:
+      - Balance
+      summary: Submit cross-chain payin
+      description: Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands.
+      operationId: submit_payin_api_v1_balance_payin_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinSubmitRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/payout/quote:
+    post:
+      tags:
+      - Balance
+      summary: Get payout quote
+      description: Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal).
+      operationId: get_payout_quote_api_v1_balance_payout_quote_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/payout/quote/dry_run:
+    post:
+      tags:
+      - Balance
+      summary: Estimate payout quote
+      description: Estimate payout amount and fees without a contact or provider-side activation.
+      operationId: dry_run_payout_quote_api_v1_balance_payout_quote_dry_run_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutQuoteDryRunRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutQuoteDryRunResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/balance/payout/quote/submit:
+    post:
+      tags:
+      - Balance
+      summary: Activate payout quote
+      description: Activate a payout quote and create pending records. Returns deposit address.
+      operationId: submit_payout_quote_api_v1_balance_payout_quote_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitPayoutQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitPayoutQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance:
+    get:
+      tags:
+      - Balance
+      summary: Get wallet balances
+      description: Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user.
+      operationId: get_balances_package_alias_api_v1_wallet_balance_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: wallet_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WalletType'
+          - type: 'null'
+          title: Wallet Type
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalancesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/withdraw_onchain:
+    post:
+      tags:
+      - Balance
+      summary: Withdraw to onchain address
+      description: Send funds from Swipelux custodial wallet to external onchain address.
+      operationId: withdraw_onchain_package_alias_api_v1_wallet_balance_withdraw_onchain_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawOnchainRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/sweep:
+    post:
+      tags:
+      - Balance
+      summary: Sweep custodial balance
+      description: Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet.
+      operationId: sweep_custodial_package_alias_api_v1_wallet_balance_sweep_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/transaction/status/{quote_id}:
+    get:
+      tags:
+      - Balance
+      summary: Get transaction status
+      description: Check status of any transaction by quote_id.
+      operationId: get_transaction_status_package_alias_api_v1_wallet_balance_transaction_status__quote_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: quote_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Quote Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalTransactionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/oneclick/tokens:
+    get:
+      tags:
+      - Balance
+      summary: Get supported tokens for cross-chain swaps
+      description: Get list of tokens supported by 1click for cross-chain swaps.
+      operationId: get_oneclick_tokens_package_alias_api_v1_wallet_balance_oneclick_tokens_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/wallet/balance/payin/quote:
+    post:
+      tags:
+      - Balance
+      summary: Get cross-chain payin quote
+      description: Create a quote to deposit from any chain to Base USDC.
+      operationId: create_payin_quote_package_alias_api_v1_wallet_balance_payin_quote_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/payin/submit:
+    post:
+      tags:
+      - Balance
+      summary: Submit cross-chain payin
+      description: Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands.
+      operationId: submit_payin_package_alias_api_v1_wallet_balance_payin_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinSubmitRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/payout/quote:
+    post:
+      tags:
+      - Balance
+      summary: Get payout quote
+      description: Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal).
+      operationId: get_payout_quote_package_alias_api_v1_wallet_balance_payout_quote_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/payout/quote/dry_run:
+    post:
+      tags:
+      - Balance
+      summary: Estimate payout quote
+      description: Estimate payout amount and fees without a contact or provider-side activation.
+      operationId: dry_run_payout_quote_package_alias_api_v1_wallet_balance_payout_quote_dry_run_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutQuoteDryRunRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutQuoteDryRunResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/balance/payout/quote/submit:
+    post:
+      tags:
+      - Balance
+      summary: Activate payout quote
+      description: Activate a payout quote and create pending records. Returns deposit address.
+      operationId: submit_payout_quote_package_alias_api_v1_wallet_balance_payout_quote_submit_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitPayoutQuoteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitPayoutQuoteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    PayoutQuoteRequest:
+      properties:
+        contactId:
+          type: string
+          format: uuid
+          title: Contactid
+        amount:
+          type: number
+          title: Amount
+        swapType:
+          $ref: '#/components/schemas/SwapType'
+          default: FLEX_INPUT
+      type: object
+      required:
+      - contactId
+      - amount
+      title: PayoutQuoteRequest
+      description: Request for payout quote to contact.
+    PayoutQuoteDryRunResponse:
+      properties:
+        currencyTo:
+          type: string
+          title: Currencyto
+        amountTo:
+          type: number
+          title: Amountto
+        fee:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Fee
+        fixedFee:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Fixedfee
+      type: object
+      required:
+      - currencyTo
+      - amountTo
+      title: PayoutQuoteDryRunResponse
+      description: Approximate payout quote response without provider-side activation.
+    AccountBalancesResponse:
+      properties:
+        accountId:
+          type: string
+          title: Accountid
+        chainId:
+          type: string
+          title: Chainid
+        walletType:
+          $ref: '#/components/schemas/WalletType'
+        balanceUsd:
+          type: number
+          title: Balanceusd
+        rawBalance:
+          type: string
+          title: Rawbalance
+        balanceByToken:
+          additionalProperties:
+            type: string
+          type: object
+          title: Balancebytoken
+        custodial:
+          type: boolean
+          title: Custodial
+          default: false
+      type: object
+      required:
+      - accountId
+      - chainId
+      - walletType
+      - balanceUsd
+      - rawBalance
+      - balanceByToken
+      title: AccountBalancesResponse
+    PayoutStatusResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        state:
+          type: string
+          title: State
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          type: number
+          title: Toamount
+        toCurrency:
+          type: string
+          title: Tocurrency
+        maskedIban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Maskediban
+      type: object
+      required:
+      - id
+      - state
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      title: PayoutStatusResponse
+      description: Response with payout status.
+    UniversalQuoteResponse:
+      properties:
+        quoteId:
+          type: string
+          title: Quoteid
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        paymentChannel:
+          type: string
+          title: Paymentchannel
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          type: number
+          title: Toamount
+        depositMemo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositmemo
+        toCurrency:
+          type: string
+          title: Tocurrency
+        feeAmount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Feeamount
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+        rate:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rate
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+        maskedIban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Maskediban
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        recipientAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Recipientaddress
+        originChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originchainid
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        transactionRequest:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Transactionrequest
+      type: object
+      required:
+      - quoteId
+      - paymentChannel
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      title: UniversalQuoteResponse
+      description: Universal quote response.
+    WithdrawOnchainRequest:
+      properties:
+        amount:
+          type: number
+          title: Amount
+        currency:
+          type: string
+          title: Currency
+          default: USDC
+      type: object
+      required:
+      - amount
+      title: WithdrawOnchainRequest
+      description: Request to withdraw from Swipelux wallet to onchain address.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    WalletType:
+      type: string
+      enum:
+      - omni
+      - base-main
+      - swipelux
+      - mcp
+      - base-aa-wallet
+      - wirex
+      title: WalletType
+    SubmitPayoutQuoteRequest:
+      properties:
+        quoteId:
+          type: string
+          title: Quoteid
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        bankAccountId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Bankaccountid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        toCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tocurrency
+      type: object
+      required:
+      - quoteId
+      title: SubmitPayoutQuoteRequest
+      description: Request to activate a payout quote.
+    SubmitPayoutQuoteResponse:
+      properties:
+        transferId:
+          type: string
+          title: Transferid
+        status:
+          type: string
+          title: Status
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        depositAmount:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositamount
+        quoteId:
+          type: string
+          title: Quoteid
+      type: object
+      required:
+      - transferId
+      - status
+      - quoteId
+      title: SubmitPayoutQuoteResponse
+      description: Response after activating a payout quote.
+    SwapType:
+      type: string
+      enum:
+      - EXACT_INPUT
+      - EXACT_OUTPUT
+      - FLEX_INPUT
+      - ANY_INPUT
+      title: SwapType
+      description: Type of swap quote.
+    PayinSubmitRequest:
+      properties:
+        depositAddress:
+          type: string
+          title: Depositaddress
+      type: object
+      required:
+      - depositAddress
+      title: PayinSubmitRequest
+      description: Request to materialize a 1click PAYIN by deposit address.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PayoutQuoteDryRunRequest:
+      properties:
+        rail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rail
+        amount:
+          type: number
+          title: Amount
+        type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Type
+        tokenTo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tokento
+        chainTo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainto
+      type: object
+      required:
+      - amount
+      title: PayoutQuoteDryRunRequest
+      description: Request for approximate payout quote without contact.
+    OneClickChain:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: OneClickChain
+      description: 1click chain codes.
+    BalancesResponse:
+      properties:
+        accounts:
+          items:
+            $ref: '#/components/schemas/AccountBalancesResponse'
+          type: array
+          title: Accounts
+        evmAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evmaddress
+        privyAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Privyaddress
+      type: object
+      required:
+      - accounts
+      title: BalancesResponse
+      description: Response with wallet balances.
+    UniversalTransactionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        quoteId:
+          type: string
+          title: Quoteid
+        type:
+          type: string
+          title: Type
+        paymentChannel:
+          type: string
+          title: Paymentchannel
+        status:
+          type: string
+          title: Status
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Toamount
+        toCurrency:
+          type: string
+          title: Tocurrency
+        originTxHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Origintxhash
+        destinationTxHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationtxhash
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        errorMessage:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Errormessage
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - quoteId
+      - type
+      - paymentChannel
+      - status
+      - fromAmount
+      - fromCurrency
+      - toCurrency
+      - createdAt
+      title: UniversalTransactionResponse
+      description: Universal transaction response.
+    PayinQuoteRequest:
+      properties:
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        currency:
+          type: string
+          title: Currency
+        originChainId:
+          $ref: '#/components/schemas/OneClickChain'
+        swapType:
+          $ref: '#/components/schemas/SwapType'
+          default: FLEX_INPUT
+      type: object
+      required:
+      - currency
+      - originChainId
+      title: PayinQuoteRequest
+      description: Request for cross-chain payin quote.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

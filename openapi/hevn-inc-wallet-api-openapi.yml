@@ -1,0 +1,1201 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Wallet API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Wallet
+paths:
+  /api/v1/wallet/address_by_email:
+    get:
+      tags:
+      - Wallet
+      summary: Resolve smart wallet address by email
+      description: Return or create a smart wallet address for the given email.
+      operationId: address_by_email_api_v1_wallet_address_by_email_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Email
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Address By Email Api V1 Wallet Address By Email Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet:
+    post:
+      tags:
+      - Wallet
+      summary: Create wallet
+      description: Create a new NEAR wallet for authenticated user.
+      operationId: create_wallet_api_v1_wallet_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: device-type
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Type
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletCreateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/import:
+    post:
+      tags:
+      - Wallet
+      summary: Import external wallet
+      description: Import an external EVM wallet to track its balance.
+      operationId: import_wallet_api_v1_wallet_import_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportWalletRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnchainWalletResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/imported:
+    get:
+      tags:
+      - Wallet
+      summary: List imported wallets
+      description: List all imported external wallets for the current user.
+      operationId: list_imported_wallets_api_v1_wallet_imported_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnchainWalletResponse'
+                title: Response List Imported Wallets Api V1 Wallet Imported Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/imported/{wallet_id}:
+    delete:
+      tags:
+      - Wallet
+      summary: Remove imported wallet
+      description: Remove an imported external wallet.
+      operationId: delete_imported_wallet_api_v1_wallet_imported__wallet_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: wallet_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Wallet Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/deploy_safe_msig:
+    post:
+      tags:
+      - Wallet
+      summary: Deploy Safe 2/2 multisig with passkey + backend EOA
+      description: Deploys a Safe v1.4.1 wallet with threshold 2/2. Owners are the backend EOA (from config) and a SafeWebAuthnSigner contract derived from the provided passkey (x, y) P-256 coordinates.
+      operationId: deploy_safe_msig_api_v1_wallet_deploy_safe_msig_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeploySafeMsigRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploySafeMsigResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/paymaster_raw:
+    post:
+      tags:
+      - Wallet
+      summary: Push a fully-built UserOperation through EntryPoint.handleOps from the backend EOA
+      description: Submit a pre-built UserOperation through EntryPoint.handleOps from backend EOA.
+      operationId: paymaster_raw_api_v1_wallet_paymaster_raw_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payment-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment-Id
+      - name: payment-memo
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment-Memo
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymasterRawRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymasterRawResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/execute_transaction:
+    post:
+      tags:
+      - Wallet
+      summary: Execute transaction
+      description: Execute a NEAR transaction.
+      operationId: execute_transaction_api_v1_wallet_execute_transaction_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/wallet/login:
+    post:
+      tags:
+      - Wallet
+      summary: Sign login message
+      description: Sign a login message for authentication.
+      operationId: login_api_v1_wallet_login_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: device-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Id
+      - name: device-type
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Type
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          type: string
+          default: ios
+          title: Device-Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignLoginRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/paymaster:
+    post:
+      tags:
+      - Wallet
+      summary: Paymaster
+      description: 'JSON-RPC endpoint.
+
+
+        `eth_sendUserOperation` is handled by `paymaster_raw`.
+
+        All other methods are proxied to the Coinbase paymaster URL.'
+      operationId: paymaster_api_v1_wallet_paymaster_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payment-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment-Id
+      - name: payment-memo
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Payment-Memo
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/permissions:
+    get:
+      tags:
+      - Wallet
+      summary: Get Permissions
+      description: Sync spend permissions from chain and return active ones.
+      operationId: get_permissions_api_v1_wallet_permissions_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/passkeys:
+    get:
+      tags:
+      - Wallet
+      summary: List user passkeys
+      description: Return all active passkeys for the current user, synced with on-chain state.
+      operationId: list_passkeys_api_v1_wallet_passkeys_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PasskeyResponse'
+                title: Response List Passkeys Api V1 Wallet Passkeys Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/account_owner:
+    post:
+      tags:
+      - Wallet
+      summary: Add account owner extension
+      description: 'Without session: validates op, simulates, sends OTP, returns 403 with session_key. With session: verifies OTP session, executes on-chain, returns 200.'
+      operationId: account_owner_api_v1_wallet_account_owner_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: auth-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth-Session-Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountOwnerRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountOwnerResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/wallet/rpc/{chain_id}:
+    post:
+      tags:
+      - Wallet
+      summary: Proxy
+      operationId: proxy_api_v1_wallet_rpc__chain_id__post
+      parameters:
+      - name: chain_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/OneClickChain'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    AccountOwnerResponse:
+      properties:
+        sessionKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sessionkey
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+      type: object
+      title: AccountOwnerResponse
+      description: 'Response for /account_owner.
+
+
+        If session_key is set → OTP required (first step).
+
+        If transaction_hash is set → execution done (second step).'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DeploySafeMsigRequest:
+      properties:
+        x:
+          type: string
+          title: X
+        y:
+          type: string
+          title: Y
+      type: object
+      required:
+      - x
+      - y
+      title: DeploySafeMsigRequest
+      description: 'Request to deploy a 2/2 Safe multisig with passkey + backend EOA owners.
+
+
+        x/y are the P-256 public key coordinates of the passkey. Each may be
+
+        provided as a 0x-prefixed hex string or as a decimal string.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OneClickChain:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: OneClickChain
+      description: 1click chain codes.
+    WalletCreateResponse:
+      properties:
+        accountId:
+          type: string
+          title: Accountid
+        nearTrxs:
+          items:
+            type: string
+          type: array
+          title: Neartrxs
+        evmAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evmaddress
+        privyAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Privyaddress
+      type: object
+      required:
+      - accountId
+      - nearTrxs
+      title: WalletCreateResponse
+      description: Response after creating a wallet.
+    WalletCreateRequest:
+      properties:
+        teeSignature:
+          type: string
+          title: Teesignature
+        passkeyId:
+          type: string
+          title: Passkeyid
+        teePublicKey:
+          type: string
+          title: Teepublickey
+          default: ed25519:G1c6MTsy2Gh7h77jKRsku9jwfiotTaSHCCz4CAHkZ64t
+        authPayload:
+          type: string
+          title: Authpayload
+      type: object
+      required:
+      - teeSignature
+      - passkeyId
+      - authPayload
+      title: WalletCreateRequest
+      description: Response after creating a wallet.
+    DeploySafeMsigResponse:
+      properties:
+        safeAddress:
+          type: string
+          title: Safeaddress
+        passkeySignerAddress:
+          type: string
+          title: Passkeysigneraddress
+        backendOwner:
+          type: string
+          title: Backendowner
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+      type: object
+      required:
+      - safeAddress
+      - passkeySignerAddress
+      - backendOwner
+      title: DeploySafeMsigResponse
+      description: Response for /wallet/deploy_safe_msig.
+    AccountOwnerRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: AccountOwnerRequest
+      description: Request for /account_owner — add_extension with OTP confirmation.
+    PasskeyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        deviceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Deviceid
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        deviceType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicetype
+        passkeyId:
+          type: string
+          title: Passkeyid
+        passkeyPk:
+          type: string
+          title: Passkeypk
+        pkType:
+          anyOf:
+          - $ref: '#/components/schemas/PasskeyType'
+          - type: 'null'
+        lastLoginIp:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastloginip
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        lastUsedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastusedat
+      type: object
+      required:
+      - id
+      - passkeyId
+      - passkeyPk
+      - createdAt
+      title: PasskeyResponse
+      description: Response for a single passkey.
+    PaymasterRawRequest:
+      properties:
+        userOp:
+          $ref: '#/components/schemas/UserOperationV06'
+      type: object
+      required:
+      - userOp
+      title: PaymasterRawRequest
+      description: 'A fully-built ERC-4337 v0.6 `UserOperation` to push through
+
+        `EntryPoint.handleOps` directly from the backend EOA.
+
+
+        The backend acts as the bundler itself: it ABI-encodes
+
+        `handleOps([userOp], beneficiary)` against the canonical v0.6
+
+        EntryPoint and broadcasts an EIP-1559 tx from the CDP "owner"
+
+        server account, paying gas in ETH. There is no third-party
+
+        paymaster / bundler service involvement.
+
+
+        `userOp` follows the JSON-RPC `eth_sendUserOperation` shape exactly
+
+        — camelCase keys, all numeric fields as `0x`-hex strings, all byte
+
+        fields as `0x`-hex strings, signature already applied. See
+
+        `UserOperationV06` for the full field list.'
+    TransactionResponse:
+      properties:
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+        userOpHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Userophash
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: TransactionResponse
+      description: Response after executing a transaction.
+    ImportWalletRequest:
+      properties:
+        address:
+          type: string
+          title: Address
+        chains:
+          items:
+            type: integer
+          type: array
+          title: Chains
+        daoMembers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Daomembers
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+        trackTransactions:
+          type: boolean
+          title: Tracktransactions
+          default: false
+        viewOnly:
+          type: boolean
+          title: Viewonly
+          default: true
+      type: object
+      required:
+      - address
+      title: ImportWalletRequest
+      description: Request to import an external EVM wallet.
+    UserOperationV06:
+      properties:
+        sender:
+          type: string
+          title: Sender
+        nonce:
+          type: string
+          title: Nonce
+        initCode:
+          type: string
+          title: Initcode
+          default: 0x
+        callData:
+          type: string
+          title: Calldata
+        callGasLimit:
+          type: string
+          title: Callgaslimit
+        verificationGasLimit:
+          type: string
+          title: Verificationgaslimit
+        preVerificationGas:
+          type: string
+          title: Preverificationgas
+        maxFeePerGas:
+          type: string
+          title: Maxfeepergas
+        maxPriorityFeePerGas:
+          type: string
+          title: Maxpriorityfeepergas
+        paymasterAndData:
+          type: string
+          title: Paymasteranddata
+          default: 0x
+        signature:
+          type: string
+          title: Signature
+          default: 0x
+      type: object
+      required:
+      - sender
+      - nonce
+      - callData
+      - callGasLimit
+      - verificationGasLimit
+      - preVerificationGas
+      - maxFeePerGas
+      - maxPriorityFeePerGas
+      title: UserOperationV06
+      description: "ERC-4337 v0.6 UserOperation in the JSON-RPC\n`eth_sendUserOperation` shape — camelCase keys (via the `CamelModel`\nalias generator), `0x`-hex string values for every numeric and byte\nfield.\n\nAll 11 v0.6 fields are present:\n\n    sender, nonce, initCode, callData, callGasLimit,\n    verificationGasLimit, preVerificationGas, maxFeePerGas,\n    maxPriorityFeePerGas, paymasterAndData, signature\n\n`signature` defaults to `\"0x\"` because some endpoints\n(e.g. `/wallet/op_cosign`) consume an *unsigned* userOp and\nproduce the signature themselves, while others\n(e.g. `/wallet/paymaster_raw`) consume a fully-signed userOp and\nsubmit it on-chain as-is."
+    SignLoginRequest:
+      properties:
+        signatures:
+          items:
+            type: string
+          type: array
+          title: Signatures
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - signatures
+      - message
+      title: SignLoginRequest
+      description: Request to sign a login message.
+    OnchainWalletResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        address:
+          type: string
+          title: Address
+        chains:
+          items:
+            type: integer
+          type: array
+          title: Chains
+        daoMembers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Daomembers
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+        trackTransactions:
+          type: boolean
+          title: Tracktransactions
+        viewOnly:
+          type: boolean
+          title: Viewonly
+        usdBalance:
+          type: number
+          title: Usdbalance
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - address
+      - chains
+      - trackTransactions
+      - viewOnly
+      - usdBalance
+      - createdAt
+      title: OnchainWalletResponse
+      description: Imported onchain wallet.
+    PasskeyType:
+      type: string
+      enum:
+      - ble
+      - hybrid
+      - internal
+      - nfc
+      - usb
+      title: PasskeyType
+      description: Passkey authenticator transport type.
+    PaymasterRawResponse:
+      properties:
+        userOpHash:
+          type: string
+          title: Userophash
+        txHash:
+          type: string
+          title: Txhash
+        signer:
+          type: string
+          title: Signer
+        entryPoint:
+          type: string
+          title: Entrypoint
+        sender:
+          type: string
+          title: Sender
+        beneficiary:
+          type: string
+          title: Beneficiary
+        blockNumber:
+          type: integer
+          title: Blocknumber
+        status:
+          type: integer
+          title: Status
+        gasUsed:
+          type: integer
+          title: Gasused
+        logsCount:
+          type: integer
+          title: Logscount
+      type: object
+      required:
+      - userOpHash
+      - txHash
+      - signer
+      - entryPoint
+      - sender
+      - beneficiary
+      - blockNumber
+      - status
+      - gasUsed
+      - logsCount
+      title: PaymasterRawResponse
+      description: 'Response for /wallet/paymaster_raw.
+
+
+        The backend EOA submitted `EntryPoint.handleOps([userOp], beneficiary)`
+
+        on Base mainnet and waited for the receipt. All fields reflect the
+
+        on-chain outcome — including reverts. A `status == 0` means the tx
+
+        was mined but the EntryPoint reverted (e.g. `AA24 signature error`,
+
+        `AA33 reverted (or OOG)`); the tx hash is still real and can be
+
+        inspected on basescan.'
+    PermissionsResponse:
+      properties:
+        permissions:
+          items:
+            $ref: '#/components/schemas/SpendPermissionResponse'
+          type: array
+          title: Permissions
+      type: object
+      required:
+      - permissions
+      title: PermissionsResponse
+      description: List of active spend permissions.
+    SpendPermissionResponse:
+      properties:
+        permissionHash:
+          type: string
+          title: Permissionhash
+        account:
+          type: string
+          title: Account
+        spender:
+          type: string
+          title: Spender
+        token:
+          type: string
+          title: Token
+        allowance:
+          type: string
+          title: Allowance
+        remaining:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Remaining
+        period:
+          type: integer
+          title: Period
+        start:
+          type: integer
+          title: Start
+        end:
+          type: integer
+          title: End
+        salt:
+          type: string
+          title: Salt
+        extraData:
+          type: string
+          title: Extradata
+          default: 0x
+        status:
+          type: string
+          title: Status
+        txHash:
+          type: string
+          title: Txhash
+        createdAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Createdat
+      type: object
+      required:
+      - permissionHash
+      - account
+      - spender
+      - token
+      - allowance
+      - period
+      - start
+      - end
+      - salt
+      - status
+      - txHash
+      title: SpendPermissionResponse
+      description: Spend permission for a smart wallet.
+    TransactionRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: TransactionRequest
+      description: Request to execute a signed transaction on wallet contract.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

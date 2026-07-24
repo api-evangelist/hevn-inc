@@ -1,0 +1,372 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Exports API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Exports
+paths:
+  /api/v1/export/account_confirmation/{bank_id}:
+    get:
+      tags:
+      - Exports
+      summary: Download account confirmation PDF
+      description: Generate and return account confirmation PDF for a Bank row.
+      operationId: get_account_confirmation_pdf_api_v1_export_account_confirmation__bank_id__get
+      parameters:
+      - name: bank_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Bank Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Bank not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/export/account_statement/{bank_id}:
+    get:
+      tags:
+      - Exports
+      summary: Download account statement PDF
+      description: Generate and return account statement PDF with transactions for the period.
+      operationId: get_account_statement_pdf_api_v1_export_account_statement__bank_id__get
+      parameters:
+      - name: bank_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Bank Id
+      - name: period_start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Period Start
+      - name: period_end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Period End
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Bank not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/export/transaction_receipt/{transaction_id}:
+    get:
+      tags:
+      - Exports
+      summary: Get transaction receipt PDF download link
+      description: Generate receipt PDF for a transaction, upload to Supabase, return download link.
+      operationId: get_transaction_receipt_pdf_api_v1_export_transaction_receipt__transaction_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Transaction Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Transaction Receipt Pdf Api V1 Export Transaction Receipt  Transaction Id  Get
+        '404':
+          description: Transaction not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/export/verify/{doc_id}:
+    get:
+      tags:
+      - Exports
+      summary: Verify generated document
+      description: Verify a generated PDF document by its internal ID and return metadata.
+      operationId: verify_document_api_v1_export_verify__doc_id__get
+      parameters:
+      - name: doc_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Doc Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentVerifyResponse'
+        '404':
+          description: Document not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/export/account_confirmation/{bank_id}:
+    get:
+      tags:
+      - Exports
+      summary: Download account confirmation PDF
+      description: Generate and return account confirmation PDF for a Bank row.
+      operationId: get_account_confirmation_pdf_package_alias_api_v1_transactions_export_account_confirmation__bank_id__get
+      parameters:
+      - name: bank_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Bank Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Bank not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/export/account_statement/{bank_id}:
+    get:
+      tags:
+      - Exports
+      summary: Download account statement PDF
+      description: Generate and return account statement PDF with transactions for the period.
+      operationId: get_account_statement_pdf_package_alias_api_v1_transactions_export_account_statement__bank_id__get
+      parameters:
+      - name: bank_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Bank Id
+      - name: period_start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Period Start
+      - name: period_end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Period End
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Bank not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/export/transaction_receipt/{transaction_id}:
+    get:
+      tags:
+      - Exports
+      summary: Get transaction receipt PDF download link
+      description: Generate receipt PDF for a transaction, upload to Supabase, return download link.
+      operationId: get_transaction_receipt_pdf_package_alias_api_v1_transactions_export_transaction_receipt__transaction_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Transaction Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Transaction Receipt Pdf Package Alias Api V1 Transactions Export Transaction Receipt  Transaction Id  Get
+        '404':
+          description: Transaction not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/transactions/export/verify/{doc_id}:
+    get:
+      tags:
+      - Exports
+      summary: Verify generated document
+      description: Verify a generated PDF document by its internal ID and return metadata.
+      operationId: verify_document_package_alias_api_v1_transactions_export_verify__doc_id__get
+      parameters:
+      - name: doc_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Doc Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentVerifyResponse'
+        '404':
+          description: Document not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DocumentVerifyResponse:
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        hash:
+          type: string
+          title: Hash
+        link:
+          type: string
+          title: Link
+        creatorName:
+          type: string
+          title: Creatorname
+        creatorEmail:
+          type: string
+          title: Creatoremail
+      type: object
+      required:
+      - createdAt
+      - hash
+      - link
+      - creatorName
+      - creatorEmail
+      title: DocumentVerifyResponse
+      description: Response for document verification by internal_id.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

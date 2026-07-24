@@ -1,0 +1,256 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Activity API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Activity
+paths:
+  /api/v1/activity:
+    get:
+      tags:
+      - Activity
+      summary: Recent account activity
+      description: Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available).
+      operationId: get_activity_api_v1_activity_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/activity:
+    get:
+      tags:
+      - Activity
+      summary: Recent account activity
+      description: Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available).
+      operationId: get_activity_package_alias_api_v1_auth_activity_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NotificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        isOpened:
+          type: boolean
+          title: Isopened
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        ipAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ipaddress
+      type: object
+      required:
+      - id
+      - type
+      - channel
+      - isOpened
+      - createdAt
+      title: NotificationResponse
+      description: Single notification response.
+    NotificationChannel:
+      type: string
+      enum:
+      - email
+      - push
+      - internal
+      title: NotificationChannel
+      description: Notification delivery channel.
+    NotificationType:
+      type: string
+      enum:
+      - login
+      - user_created
+      - welcome
+      - payment_received
+      - payment_sent
+      - withdrawal
+      - invoice
+      - invite
+      - account_approved
+      - sign_request
+      - sign_completed
+      - team_access
+      - bank_account_ready
+      - share_kyb
+      - payment_claim
+      - contact_invite
+      - new_device_login
+      - new_passkey
+      - new_api_key
+      - new_team_member
+      - privy_key_exported
+      - privy_wallet_recovered
+      - privy_mfa_disabled
+      - contract_payment_methods_updated
+      - contract_created
+      - contact_added
+      - bank_requested
+      - card_created
+      - card_details_viewed
+      - spending_alert
+      - low_balance
+      - accounting_sync_failed
+      - bill_status
+      - tx_comment
+      - support_reply
+      - compliance_reply
+      title: NotificationType
+      description: Notification type — matches the kind of event being notified.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NotificationListResponse:
+      properties:
+        notifications:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Notifications
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - notifications
+      - total
+      title: NotificationListResponse
+      description: List of notifications response.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

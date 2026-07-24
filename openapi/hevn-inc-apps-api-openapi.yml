@@ -1,0 +1,1091 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA apps API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: apps
+paths:
+  /api/v1/apps:
+    post:
+      tags:
+      - apps
+      summary: Create a new API app
+      operationId: create_app_api_v1_apps_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiAppCreateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAppResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - apps
+      summary: List user's API apps
+      operationId: list_apps_api_v1_apps_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiAppResponse'
+                title: Response List Apps Api V1 Apps Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}:
+    get:
+      tags:
+      - apps
+      summary: 'App details: keys + matching spend permissions'
+      operationId: get_app_api_v1_apps__app_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAppDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - apps
+      summary: Delete an API app (soft-delete; cascades to all keys)
+      operationId: delete_app_api_v1_apps__app_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete App Api V1 Apps  App Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}/access:
+    put:
+      tags:
+      - apps
+      summary: Replace an app's access (cards/banks/scope) — owner only
+      operationId: update_app_access_api_v1_apps__app_id__access_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiAppAccess'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAppResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}/keys:
+    post:
+      tags:
+      - apps
+      summary: Issue a new API key under the app (raw key returned ONCE)
+      operationId: create_app_key_api_v1_apps__app_id__keys_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__schemas__routers__apps__ApiKeyCreateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__schemas__routers__apps__ApiKeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}/keys/{key_id}:
+    delete:
+      tags:
+      - apps
+      summary: Revoke an API key from the app (soft-delete)
+      operationId: delete_app_key_api_v1_apps__app_id__keys__key_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Key Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete App Key Api V1 Apps  App Id  Keys  Key Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}/activity:
+    get:
+      tags:
+      - apps
+      summary: Recent notifications produced by this app's API keys
+      operationId: get_app_activity_api_v1_apps__app_id__activity_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/{app_id}/transfer:
+    post:
+      tags:
+      - apps
+      summary: Legacy app-id transfer route
+      description: 'Resolve recipient + amount from context, then spend USDC from the
+
+        app''s smart wallet via the user''s SpendPermission.
+
+
+        Mirrors the body of ``POST /mcp/transfer``; the only differences are
+
+        the auth model (new ``api_keys`` instead of ``mcp_api_keys``) and the
+
+        spender wallet (shared ``app.smart_wallet_address`` instead of per-key).
+
+
+        Deprecated for HEVN CLI usage: current CLI calls POST /apps/transfer and the backend resolves the app from the API key.'
+      operationId: transfer_api_v1_apps__app_id__transfer_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppTransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      deprecated: true
+  /api/v1/apps/me:
+    get:
+      tags:
+      - apps
+      summary: Introspect the current API key
+      description: Return the user identity, owning app, granted scopes, balance, and remaining spend limit for the configured API key. Used by `hevn whoami`.
+      operationId: me_api_v1_apps_me_get
+      security:
+      - HTTPBearer: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          type: string
+          title: X-Api-Key
+        description: Alternative API key header. Use Authorization Bearer by default, or X-Api-Key when that header mode is configured.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppsMeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/transfer:
+    post:
+      tags:
+      - apps
+      summary: Send USDC from the app resolved by the API key
+      description: Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI.
+      operationId: transfer_api_v1_apps_transfer_post
+      security:
+      - HTTPBearer: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          type: string
+          title: X-Api-Key
+        description: Alternative API key header. Use Authorization Bearer by default, or X-Api-Key when that header mode is configured.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppTransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/transfers:
+    get:
+      tags:
+      - apps
+      summary: List transfers for the app resolved by the API key
+      description: List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper.
+      operationId: list_transfers_api_v1_apps_transfers_get
+      parameters:
+      - name: idempotency_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency Key
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          type: string
+          title: X-Api-Key
+        description: Alternative API key header. Use Authorization Bearer by default, or X-Api-Key when that header mode is configured.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/McpTransactionResponse'
+                title: Response List Transfers Api V1 Apps Transfers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      - ApiKeyAuth: []
+components:
+  schemas:
+    ApiAppDetailResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        access:
+          $ref: '#/components/schemas/ApiAppAccess'
+        smartWalletAddress:
+          type: string
+          title: Smartwalletaddress
+        lastUsed:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastused
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+        keys:
+          items:
+            $ref: '#/components/schemas/ApiKeyListItem'
+          type: array
+          title: Keys
+          default: []
+        permissions:
+          items:
+            $ref: '#/components/schemas/SmartWalletPermissionResponse'
+          type: array
+          title: Permissions
+          default: []
+      type: object
+      required:
+      - id
+      - name
+      - access
+      - smartWalletAddress
+      - lastUsed
+      - createdAt
+      - updatedAt
+      title: ApiAppDetailResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ApiAppResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        access:
+          $ref: '#/components/schemas/ApiAppAccess'
+        smartWalletAddress:
+          type: string
+          title: Smartwalletaddress
+        lastUsed:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastused
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+      type: object
+      required:
+      - id
+      - name
+      - access
+      - smartWalletAddress
+      - lastUsed
+      - createdAt
+      - updatedAt
+      title: ApiAppResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AppTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: AppTransferContext
+      description: 'Body of POST /apps/transfer.
+
+
+        Exactly one of ``contactId`` / ``quoteId`` / ``invoiceId`` MUST be set
+
+        (mirrors the /mcp/transfer body). ``amount`` is required when
+
+        ``contactId`` is the dispatch path; otherwise it''s derived from the
+
+        referenced invoice / quote.'
+    NotificationListResponse:
+      properties:
+        notifications:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Notifications
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - notifications
+      - total
+      title: NotificationListResponse
+      description: List of notifications response.
+    ApiAppAccess:
+      properties:
+        cards:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Cards
+          default: []
+        banks:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Banks
+          default: []
+        scope:
+          items:
+            type: string
+          type: array
+          title: Scope
+          default: []
+      type: object
+      title: ApiAppAccess
+    ApiKeyListItem:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        walletAddress:
+          type: string
+          title: Walletaddress
+        keyPreview:
+          type: string
+          title: Keypreview
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - walletAddress
+      - keyPreview
+      - lastUse
+      - createdAt
+      title: ApiKeyListItem
+      description: Used in GET contexts — does NOT include raw key.
+    app__schemas__routers__apps__ApiKeyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        key:
+          type: string
+          title: Key
+        walletAddress:
+          type: string
+          title: Walletaddress
+        keyPreview:
+          type: string
+          title: Keypreview
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - key
+      - walletAddress
+      - keyPreview
+      - lastUse
+      - createdAt
+      title: ApiKeyResponse
+      description: Returned ONCE on key creation — includes raw key.
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    SmartWalletPermissionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        permissionHash:
+          type: string
+          title: Permissionhash
+        status:
+          $ref: '#/components/schemas/PermissionStatus'
+        account:
+          type: string
+          title: Account
+        spender:
+          type: string
+          title: Spender
+        token:
+          type: string
+          title: Token
+        allowance:
+          type: string
+          title: Allowance
+        period:
+          type: integer
+          title: Period
+        start:
+          type: integer
+          title: Start
+        end:
+          type: integer
+          title: End
+        salt:
+          type: string
+          title: Salt
+        remaining:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Remaining
+        txHash:
+          type: string
+          title: Txhash
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - permissionHash
+      - status
+      - account
+      - spender
+      - token
+      - allowance
+      - period
+      - start
+      - end
+      - salt
+      - remaining
+      - txHash
+      - createdAt
+      title: SmartWalletPermissionResponse
+    app__schemas__routers__apps__ApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Name
+      type: object
+      required:
+      - name
+      title: ApiKeyCreateRequest
+    NotificationChannel:
+      type: string
+      enum:
+      - email
+      - push
+      - internal
+      title: NotificationChannel
+      description: Notification delivery channel.
+    AppsMeResponse:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        email:
+          type: string
+          title: Email
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        spendLimit:
+          type: number
+          title: Spendlimit
+          default: 0
+        appId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Appid
+        appName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Appname
+        scope:
+          type: array
+          items:
+            type: string
+          title: Scope
+          default: []
+      type: object
+      required:
+      - email
+      title: AppsMeResponse
+      description: Introspection response for the API key used by HEVN CLI whoami. Includes user identity, owning app, scopes, balance, and remaining spend limit.
+    PermissionStatus:
+      type: string
+      enum:
+      - active
+      - revoked
+      title: PermissionStatus
+      description: Spend permission status.
+    ApiAppCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Name
+        access:
+          $ref: '#/components/schemas/ApiAppAccess'
+      type: object
+      required:
+      - name
+      title: ApiAppCreateRequest
+    AppTransferResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+      type: object
+      required:
+      - txHash
+      title: AppTransferResponse
+    NotificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        isOpened:
+          type: boolean
+          title: Isopened
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        ipAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ipaddress
+      type: object
+      required:
+      - id
+      - type
+      - channel
+      - isOpened
+      - createdAt
+      title: NotificationResponse
+      description: Single notification response.
+    NotificationType:
+      type: string
+      enum:
+      - login
+      - user_created
+      - welcome
+      - payment_received
+      - payment_sent
+      - withdrawal
+      - invoice
+      - invite
+      - account_approved
+      - sign_request
+      - sign_completed
+      - team_access
+      - bank_account_ready
+      - share_kyb
+      - payment_claim
+      - contact_invite
+      - new_device_login
+      - new_passkey
+      - new_api_key
+      - new_team_member
+      - privy_key_exported
+      - privy_wallet_recovered
+      - privy_mfa_disabled
+      - contract_payment_methods_updated
+      - contract_created
+      - contact_added
+      - bank_requested
+      - card_created
+      - card_details_viewed
+      - spending_alert
+      - low_balance
+      - accounting_sync_failed
+      - bill_status
+      - tx_comment
+      - support_reply
+      - compliance_reply
+      title: NotificationType
+      description: Notification type — matches the kind of event being notified.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

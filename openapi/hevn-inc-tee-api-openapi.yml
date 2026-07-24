@@ -1,0 +1,176 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA tee API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: tee
+paths:
+  /api/v1/auth/tee/attestate_jwt:
+    post:
+      tags:
+      - tee
+      summary: Attestate Jwt
+      description: 'Google JWT attestation via Nitro Enclave.
+
+
+        Client encrypts {google_jwt, msg, receiver_id} with enclave''s Curve25519 key,
+
+        sends the ciphertext here. Enclave decrypts, verifies JWT, and returns a signed attestation.'
+      operationId: attestate_jwt_api_v1_auth_tee_attestate_jwt_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__routers__security__tee__AttestateJwtRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/app__routers__security__tee__AttestateJwtResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/tee/encryption_key:
+    get:
+      tags:
+      - tee
+      summary: Get Encryption Key
+      description: Get the enclave's Curve25519 encryption public key for E2E encrypted requests.
+      operationId: get_encryption_key_api_v1_auth_tee_encryption_key_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EncryptionKeyResponse'
+  /api/v1/auth/tee/google_certs:
+    get:
+      tags:
+      - tee
+      summary: Get Google Certs
+      description: Get Google JWKS certs signed by enclave — allows clients to verify enclave integrity.
+      operationId: get_google_certs_api_v1_auth_tee_google_certs_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleCertsResponse'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    app__routers__security__tee__AttestateJwtResponse:
+      properties:
+        hash_email:
+          type: string
+          title: Hash Email
+        auth_payload:
+          type: string
+          title: Auth Payload
+        signature:
+          type: string
+          title: Signature
+        public_key:
+          type: string
+          title: Public Key
+        timestamp:
+          type: integer
+          title: Timestamp
+      type: object
+      required:
+      - hash_email
+      - auth_payload
+      - signature
+      - public_key
+      - timestamp
+      title: AttestateJwtResponse
+    EncryptionKeyResponse:
+      properties:
+        encryption_key:
+          type: string
+          title: Encryption Key
+      type: object
+      required:
+      - encryption_key
+      title: EncryptionKeyResponse
+    GoogleCertsResponse:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        signature:
+          type: string
+          title: Signature
+        public_key:
+          type: string
+          title: Public Key
+      type: object
+      required:
+      - msg
+      - signature
+      - public_key
+      title: GoogleCertsResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    app__routers__security__tee__AttestateJwtRequest:
+      properties:
+        encrypted_data:
+          type: string
+          title: Encrypted Data
+        client_pubkey:
+          type: string
+          title: Client Pubkey
+      type: object
+      required:
+      - encrypted_data
+      - client_pubkey
+      title: AttestateJwtRequest
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

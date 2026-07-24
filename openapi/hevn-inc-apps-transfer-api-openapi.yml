@@ -1,0 +1,304 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA apps-transfer API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: apps-transfer
+paths:
+  /api/v1/apps/{app_id}/transfer:
+    post:
+      tags:
+      - apps-transfer
+      summary: Legacy app-id transfer route
+      description: 'Resolve recipient + amount from context, then spend USDC from the
+
+        app''s smart wallet via the user''s SpendPermission.
+
+
+        Mirrors the body of ``POST /mcp/transfer``; the only differences are
+
+        the auth model (new ``api_keys`` instead of ``mcp_api_keys``) and the
+
+        spender wallet (shared ``app.smart_wallet_address`` instead of per-key).
+
+
+        Deprecated for HEVN CLI usage: current CLI calls POST /apps/transfer and the backend resolves the app from the API key.'
+      operationId: transfer_api_v1_apps__app_id__transfer_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: App Id
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppTransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      deprecated: true
+  /api/v1/apps/transfer:
+    post:
+      tags:
+      - apps-transfer
+      summary: Send USDC from the app resolved by the API key
+      description: Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI.
+      operationId: transfer_api_v1_apps_transfer_post
+      security:
+      - HTTPBearer: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          type: string
+          title: X-Api-Key
+        description: Alternative API key header. Use Authorization Bearer by default, or X-Api-Key when that header mode is configured.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppTransferContext'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppTransferResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/apps/transfers:
+    get:
+      tags:
+      - apps-transfer
+      summary: List transfers for the app resolved by the API key
+      description: List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper.
+      operationId: list_transfers_api_v1_apps_transfers_get
+      parameters:
+      - name: idempotency_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency Key
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          type: string
+          title: X-Api-Key
+        description: Alternative API key header. Use Authorization Bearer by default, or X-Api-Key when that header mode is configured.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/McpTransactionResponse'
+                title: Response List Transfers Api V1 Apps Transfers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      - ApiKeyAuth: []
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    AppTransferResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+      type: object
+      required:
+      - txHash
+      title: AppTransferResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AppTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: AppTransferContext
+      description: 'Body of POST /apps/transfer.
+
+
+        Exactly one of ``contactId`` / ``quoteId`` / ``invoiceId`` MUST be set
+
+        (mirrors the /mcp/transfer body). ``amount`` is required when
+
+        ``contactId`` is the dispatch path; otherwise it''s derived from the
+
+        referenced invoice / quote.'
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

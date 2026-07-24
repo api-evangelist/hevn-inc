@@ -1,0 +1,1876 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA Cards API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: Cards
+paths:
+  /api/v1/cards/pre-approve:
+    post:
+      tags:
+      - Cards
+      summary: Pre-approve card issuance
+      description: Check Wirex KYC prerequisites and return a verification URL if all required user fields are present.
+      operationId: pre_approve_cards_api_v1_cards_pre_approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsPreApproveResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/register:
+    post:
+      tags:
+      - Cards
+      summary: Register user for card services
+      description: Register user with card provider. Required before issuing cards.
+      operationId: register_for_cards_api_v1_cards_register_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardUserRegisterRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Register For Cards Api V1 Cards Register Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/phone:
+    put:
+      tags:
+      - Cards
+      summary: Set phone number
+      description: Set user's phone number for verification.
+      operationId: set_phone_number_api_v1_cards_phone_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPhoneRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/phone/otp:
+    post:
+      tags:
+      - Cards
+      summary: Send phone OTP
+      description: Send SMS OTP to verify phone number.
+      operationId: send_phone_otp_api_v1_cards_phone_otp_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendOtpResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/phone/otp/verify:
+    post:
+      tags:
+      - Cards
+      summary: Verify phone OTP
+      description: Verify SMS OTP code and finalize phone number on the provider side.
+      operationId: verify_phone_otp_api_v1_cards_phone_otp_verify_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/kyc/link:
+    post:
+      tags:
+      - Cards
+      summary: Get KYC verification link
+      description: Get link for user to complete KYC verification in browser.
+      operationId: get_kyc_link_api_v1_cards_kyc_link_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KycLinkResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards:
+    post:
+      tags:
+      - Cards
+      summary: Issue new card
+      description: Issue a new virtual or physical card. User must complete KYC first.
+      operationId: issue_card_api_v1_cards_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/IssueCardRequest'
+              - type: 'null'
+              title: Data
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Cards
+      summary: Get user's cards
+      description: Sync cards from Wirex and return the list.
+      operationId: get_cards_api_v1_cards_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}:
+    get:
+      tags:
+      - Cards
+      summary: Get card by ID
+      description: Get single card details.
+      operationId: get_card_api_v1_cards__card_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Cards
+      summary: Delete card
+      description: Permanently delete (close) a card. This cannot be undone.
+      operationId: delete_card_api_v1_cards__card_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}/details:
+    post:
+      tags:
+      - Cards
+      summary: Reveal full card details
+      description: Get full card number (PAN), CVV and expiry. Requires wallet signature for confirmation.
+      operationId: reveal_card_api_v1_cards__card_id__details_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRevealRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDetailsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}/freeze:
+    post:
+      tags:
+      - Cards
+      summary: Freeze card
+      description: Temporarily freeze a card. Can be unfrozen later.
+      operationId: freeze_card_api_v1_cards__card_id__freeze_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}/unfreeze:
+    post:
+      tags:
+      - Cards
+      summary: Unfreeze card
+      description: Unfreeze a previously frozen card.
+      operationId: unfreeze_card_api_v1_cards__card_id__unfreeze_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}/limit:
+    put:
+      tags:
+      - Cards
+      summary: Set card limit
+      description: Set daily spending limit for a card.
+      operationId: set_card_limit_api_v1_cards__card_id__limit_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCardLimitRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/{card_id}/label:
+    put:
+      tags:
+      - Cards
+      summary: Set card label
+      description: Set or clear a user-defined label (nickname) for a card. Local-only, not sent to provider.
+      operationId: set_card_label_api_v1_cards__card_id__label_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCardLabelRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/cards/withdrawals/pending:
+    get:
+      tags:
+      - Cards
+      summary: List pending card withdrawals
+      description: Proxy to Wirex `GET /api/v1/withdrawal/requests` — returns pending withdrawal requests for the authenticated user's card wallet. See https://docs.wirexapp.com/docs/withdrawals#querying-pending-withdrawals
+      operationId: get_pending_withdrawals_api_v1_cards_withdrawals_pending_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingWithdrawalsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/pre-approve:
+    post:
+      tags:
+      - Cards
+      summary: Pre-approve card issuance
+      description: Check Wirex KYC prerequisites and return a verification URL if all required user fields are present.
+      operationId: pre_approve_cards_package_alias_api_v1_accounts_cards_pre_approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsPreApproveResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/register:
+    post:
+      tags:
+      - Cards
+      summary: Register user for card services
+      description: Register user with card provider. Required before issuing cards.
+      operationId: register_for_cards_package_alias_api_v1_accounts_cards_register_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardUserRegisterRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Register For Cards Package Alias Api V1 Accounts Cards Register Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/phone:
+    put:
+      tags:
+      - Cards
+      summary: Set phone number
+      description: Set user's phone number for verification.
+      operationId: set_phone_number_package_alias_api_v1_accounts_cards_phone_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPhoneRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/phone/otp:
+    post:
+      tags:
+      - Cards
+      summary: Send phone OTP
+      description: Send SMS OTP to verify phone number.
+      operationId: send_phone_otp_package_alias_api_v1_accounts_cards_phone_otp_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendOtpResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/phone/otp/verify:
+    post:
+      tags:
+      - Cards
+      summary: Verify phone OTP
+      description: Verify SMS OTP code and finalize phone number on the provider side.
+      operationId: verify_phone_otp_package_alias_api_v1_accounts_cards_phone_otp_verify_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/kyc/link:
+    post:
+      tags:
+      - Cards
+      summary: Get KYC verification link
+      description: Get link for user to complete KYC verification in browser.
+      operationId: get_kyc_link_package_alias_api_v1_accounts_cards_kyc_link_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KycLinkResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards:
+    post:
+      tags:
+      - Cards
+      summary: Issue new card
+      description: Issue a new virtual or physical card. User must complete KYC first.
+      operationId: issue_card_package_alias_api_v1_accounts_cards_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/IssueCardRequest'
+              - type: 'null'
+              title: Data
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Cards
+      summary: Get user's cards
+      description: Sync cards from Wirex and return the list.
+      operationId: get_cards_package_alias_api_v1_accounts_cards_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}:
+    get:
+      tags:
+      - Cards
+      summary: Get card by ID
+      description: Get single card details.
+      operationId: get_card_package_alias_api_v1_accounts_cards__card_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Cards
+      summary: Delete card
+      description: Permanently delete (close) a card. This cannot be undone.
+      operationId: delete_card_package_alias_api_v1_accounts_cards__card_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}/details:
+    post:
+      tags:
+      - Cards
+      summary: Reveal full card details
+      description: Get full card number (PAN), CVV and expiry. Requires wallet signature for confirmation.
+      operationId: reveal_card_package_alias_api_v1_accounts_cards__card_id__details_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRevealRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDetailsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}/freeze:
+    post:
+      tags:
+      - Cards
+      summary: Freeze card
+      description: Temporarily freeze a card. Can be unfrozen later.
+      operationId: freeze_card_package_alias_api_v1_accounts_cards__card_id__freeze_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}/unfreeze:
+    post:
+      tags:
+      - Cards
+      summary: Unfreeze card
+      description: Unfreeze a previously frozen card.
+      operationId: unfreeze_card_package_alias_api_v1_accounts_cards__card_id__unfreeze_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}/limit:
+    put:
+      tags:
+      - Cards
+      summary: Set card limit
+      description: Set daily spending limit for a card.
+      operationId: set_card_limit_package_alias_api_v1_accounts_cards__card_id__limit_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCardLimitRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/{card_id}/label:
+    put:
+      tags:
+      - Cards
+      summary: Set card label
+      description: Set or clear a user-defined label (nickname) for a card. Local-only, not sent to provider.
+      operationId: set_card_label_package_alias_api_v1_accounts_cards__card_id__label_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: card_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Card Id
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCardLabelRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/accounts/cards/withdrawals/pending:
+    get:
+      tags:
+      - Cards
+      summary: List pending card withdrawals
+      description: Proxy to Wirex `GET /api/v1/withdrawal/requests` — returns pending withdrawal requests for the authenticated user's card wallet. See https://docs.wirexapp.com/docs/withdrawals#querying-pending-withdrawals
+      operationId: get_pending_withdrawals_package_alias_api_v1_accounts_cards_withdrawals_pending_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingWithdrawalsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    SetCardLabelRequest:
+      properties:
+        label:
+          anyOf:
+          - type: string
+            maxLength: 64
+          - type: 'null'
+          title: Label
+          description: Label/nickname (null to clear)
+      type: object
+      title: SetCardLabelRequest
+      description: Request to set a user-defined card label.
+    PendingWithdrawal:
+      properties:
+        accountAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountaddress
+        tokenAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tokenaddress
+        toAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Toaddress
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        validAfter:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Validafter
+          description: Earliest timestamp at which the withdrawal may be executed
+        hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hash
+        callData:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Calldata
+      type: object
+      title: PendingWithdrawal
+      description: Single pending withdrawal request as returned by Wirex.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CardDetailsResponse:
+      properties:
+        cardNumber:
+          type: string
+          title: Cardnumber
+          description: Full card number (PAN)
+        cvv:
+          type: string
+          title: Cvv
+        expiryDate:
+          type: string
+          title: Expirydate
+      type: object
+      required:
+      - cardNumber
+      - cvv
+      - expiryDate
+      title: CardDetailsResponse
+      description: Sensitive card details.
+    CardResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+          description: Linked wallet address
+        status:
+          $ref: '#/components/schemas/CardStatus'
+          default: pending
+        limit:
+          anyOf:
+          - $ref: '#/components/schemas/CardLimit'
+          - type: 'null'
+        cardData:
+          anyOf:
+          - $ref: '#/components/schemas/CardData'
+          - type: 'null'
+        createdAt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Createdat
+        activated:
+          type: boolean
+          title: Activated
+          description: True if card details have been revealed and cached
+          default: false
+        billingAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        dailySpend:
+          type: number
+          title: Dailyspend
+          description: Total spent today on this card (from fiat_transfers)
+          default: 0
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+          description: User-defined card label/nickname
+      type: object
+      required:
+      - id
+      title: CardResponse
+      description: Card response - universal format for any provider.
+    SetCardLimitRequest:
+      properties:
+        dailyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Dailylimit
+          description: Daily limit. Set to -1 to disable.
+        monthlyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Monthlylimit
+          description: Monthly limit. Set to -1 to disable.
+        lifetimeLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lifetimelimit
+          description: Lifetime limit. Set to -1 to disable.
+        currency:
+          type: string
+          title: Currency
+          description: Limit currency.
+          default: EUR
+      type: object
+      title: SetCardLimitRequest
+      description: Request to set card spending limits.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SetPhoneRequest:
+      properties:
+        phoneNumber:
+          type: string
+          title: Phonenumber
+          description: Phone with country code, e.g. +33755881784
+      type: object
+      required:
+      - phoneNumber
+      title: SetPhoneRequest
+      description: Request to set phone number.
+    SendOtpResponse:
+      properties:
+        sessionId:
+          type: string
+          title: Sessionid
+      type: object
+      required:
+      - sessionId
+      title: SendOtpResponse
+      description: Response after sending OTP.
+    VerifyOtpRequest:
+      properties:
+        sessionId:
+          type: string
+          title: Sessionid
+        code:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Code
+      type: object
+      required:
+      - sessionId
+      - code
+      title: VerifyOtpRequest
+      description: Request to verify OTP code.
+    CardData:
+      properties:
+        nameOnCard:
+          type: string
+          title: Nameoncard
+        paymentSystem:
+          type: string
+          title: Paymentsystem
+          description: Visa, Mastercard, etc.
+        lastFour:
+          type: string
+          title: Lastfour
+          description: Last 4 digits of card number
+        expiryDate:
+          type: string
+          title: Expirydate
+          description: MM/YY format
+        format:
+          $ref: '#/components/schemas/CardFormat'
+        cardName:
+          type: string
+          title: Cardname
+          description: Display name like 'Visa **** 1234'
+      type: object
+      required:
+      - nameOnCard
+      - paymentSystem
+      - lastFour
+      - expiryDate
+      - format
+      - cardName
+      title: CardData
+      description: Card display data (non-sensitive).
+    CardUserRegisterRequest:
+      properties:
+        country:
+          $ref: '#/components/schemas/CountryCode'
+        walletAddress:
+          type: string
+          title: Walletaddress
+          description: EOA wallet address
+      type: object
+      required:
+      - country
+      - walletAddress
+      title: CardUserRegisterRequest
+      description: Request to register user for card services.
+    CardsListResponse:
+      properties:
+        cards:
+          items:
+            $ref: '#/components/schemas/CardResponse'
+          type: array
+          title: Cards
+        total:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total
+        created:
+          type: boolean
+          title: Created
+          default: false
+        kycStatus:
+          $ref: '#/components/schemas/KycStatus'
+          default: not_started
+        phoneVerified:
+          type: boolean
+          title: Phoneverified
+          default: false
+      type: object
+      required:
+      - cards
+      title: CardsListResponse
+      description: Paginated list of cards.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    CardStatus:
+      type: string
+      enum:
+      - pending
+      - active
+      - blocked
+      - closed
+      title: CardStatus
+      description: Card status.
+    IssueCardRequest:
+      properties:
+        format:
+          $ref: '#/components/schemas/CardFormat'
+          default: virtual
+      type: object
+      title: IssueCardRequest
+      description: Request to issue a new card.
+    PendingWithdrawalsResponse:
+      properties:
+        withdrawals:
+          items:
+            $ref: '#/components/schemas/PendingWithdrawal'
+          type: array
+          title: Withdrawals
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - withdrawals
+      - total
+      title: PendingWithdrawalsResponse
+      description: List of pending withdrawals for a user.
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    CardsPreApproveResponse:
+      properties:
+        kycUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kycurl
+        kycStatus:
+          $ref: '#/components/schemas/KycStatus'
+          default: not_started
+        requirePhoneNumber:
+          type: boolean
+          title: Requirephonenumber
+          default: false
+        requireAddress:
+          type: boolean
+          title: Requireaddress
+          default: false
+      type: object
+      title: CardsPreApproveResponse
+      description: Pre-flight info for issuing Wirex cards.
+    CardRevealRequest:
+      properties:
+        messageSignature:
+          type: string
+          title: Messagesignature
+          description: Wallet signature of confirmation message
+        nonce:
+          type: integer
+          title: Nonce
+          description: Unix timestamp used in the signed message (valid 5 min)
+      type: object
+      required:
+      - messageSignature
+      - nonce
+      title: CardRevealRequest
+      description: Request to reveal card details. Requires wallet signature.
+    CardLimit:
+      properties:
+        dailyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Dailylimit
+          description: Daily spending limit (-1 for unlimited)
+        dailyUsage:
+          type: number
+          title: Dailyusage
+          description: Amount spent today
+          default: 0
+        monthlyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Monthlylimit
+          description: Monthly spending limit (-1 for unlimited)
+        monthlyUsage:
+          type: number
+          title: Monthlyusage
+          description: Amount spent this month
+          default: 0
+        lifetimeLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lifetimelimit
+          description: Lifetime spending limit (-1 for unlimited)
+        lifetimeUsage:
+          type: number
+          title: Lifetimeusage
+          description: Total amount spent
+          default: 0
+        currency:
+          type: string
+          title: Currency
+          default: EUR
+      type: object
+      title: CardLimit
+      description: Card spending limit.
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    CardFormat:
+      type: string
+      enum:
+      - virtual
+      - physical
+      title: CardFormat
+      description: Card format.
+    KycLinkResponse:
+      properties:
+        link:
+          type: string
+          title: Link
+      type: object
+      required:
+      - link
+      title: KycLinkResponse
+      description: KYC verification link.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.

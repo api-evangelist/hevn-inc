@@ -1,0 +1,509 @@
+openapi: 3.1.0
+info:
+  title: HEVN 2FA team API
+  description: Backend API for HEVN mobile neobank
+  version: 0.1.2
+servers:
+- url: https://api.hevn.finance
+  description: Production
+tags:
+- name: team
+paths:
+  /api/v1/team/invite:
+    post:
+      tags:
+      - team
+      summary: Send invite
+      description: Send an invite to the specified email and track the corresponding analytics event.
+      operationId: send_team_invite_api_v1_team_invite_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Send Team Invite Api V1 Team Invite Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/team/spaces:
+    get:
+      tags:
+      - team
+      summary: List Available Spaces
+      description: List team spaces where the current user is a member.
+      operationId: list_available_spaces_api_v1_team_spaces_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableSpacesResponse'
+      security:
+      - HTTPBearer: []
+  /api/v1/team:
+    get:
+      tags:
+      - team
+      summary: List Team
+      description: List team members for the current user's account.
+      operationId: list_team_api_v1_team_get
+      security:
+      - HTTPBearer: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamListResponse'
+    post:
+      tags:
+      - team
+      summary: Add Team Member
+      description: Add a user to your team by email.
+      operationId: add_team_member_api_v1_team_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Name
+      - name: cf-ipcountry
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cf-Ipcountry
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamAddRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMemberResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/team/{user_id}:
+    delete:
+      tags:
+      - team
+      summary: Remove Team Member
+      description: Remove a user from your team.
+      operationId: remove_team_member_api_v1_team__user_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/user/team/invite:
+    post:
+      tags:
+      - team
+      summary: Send invite
+      description: Send an invite to the specified email and track the corresponding analytics event.
+      operationId: send_team_invite_package_alias_api_v1_user_team_invite_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Send Team Invite Package Alias Api V1 User Team Invite Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/user/team/spaces:
+    get:
+      tags:
+      - team
+      summary: List Available Spaces Package Alias
+      description: List team spaces where the current user is a member.
+      operationId: list_available_spaces_package_alias_api_v1_user_team_spaces_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableSpacesResponse'
+      security:
+      - HTTPBearer: []
+  /api/v1/user/team:
+    get:
+      tags:
+      - team
+      summary: List Team Package Alias
+      description: List team members for the current user's account.
+      operationId: list_team_package_alias_api_v1_user_team_get
+      security:
+      - HTTPBearer: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamListResponse'
+    post:
+      tags:
+      - team
+      summary: Add Team Member Package Alias
+      description: Add a user to your team by email.
+      operationId: add_team_member_package_alias_api_v1_user_team_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user-agent
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User-Agent
+      - name: device-name
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device-Name
+      - name: cf-ipcountry
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cf-Ipcountry
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamAddRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMemberResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/user/team/{user_id}:
+    delete:
+      tags:
+      - team
+      summary: Remove Team Member Package Alias
+      description: Remove a user from your team.
+      operationId: remove_team_member_package_alias_api_v1_user_team__user_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    InviteFlow:
+      type: string
+      enum:
+      - kyb_manager
+      - employer
+      - team_member
+      title: InviteFlow
+      description: Invite flow types.
+    InviteRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        flow:
+          $ref: '#/components/schemas/InviteFlow'
+      type: object
+      required:
+      - email
+      - flow
+      title: InviteRequest
+      description: Request schema for sending an invite.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AvailableSpacesResponse:
+      properties:
+        spaces:
+          items:
+            $ref: '#/components/schemas/AvailableSpaceResponse'
+          type: array
+          title: Spaces
+      type: object
+      required:
+      - spaces
+      title: AvailableSpacesResponse
+      description: List of team spaces available to the current user.
+    TeamMemberResponse:
+      properties:
+        userId:
+          type: string
+          title: Userid
+        email:
+          type: string
+          title: Email
+        baseSmartWallet:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Basesmartwallet
+        privyAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Privyaddress
+        role:
+          type: string
+          title: Role
+        lastLogin:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastlogin
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - userId
+      - email
+      - role
+      - createdAt
+      title: TeamMemberResponse
+      description: Single team member.
+    TeamAddRequest:
+      properties:
+        email:
+          type: string
+          title: Email
+          description: Email of the user to add
+      type: object
+      required:
+      - email
+      title: TeamAddRequest
+      description: Request to add a team member by email.
+    TeamListResponse:
+      properties:
+        members:
+          items:
+            $ref: '#/components/schemas/TeamMemberResponse'
+          type: array
+          title: Members
+      type: object
+      required:
+      - members
+      title: TeamListResponse
+      description: List of team members.
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: StatusResponse
+      description: Simple status response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AvailableSpaceResponse:
+      properties:
+        spaceId:
+          type: string
+          title: Spaceid
+        email:
+          type: string
+          title: Email
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        role:
+          type: string
+          title: Role
+        lastLogin:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastlogin
+      type: object
+      required:
+      - spaceId
+      - email
+      - role
+      title: AvailableSpaceResponse
+      description: A team space the current user has access to.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+      x-default: Bearer <token>
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.
