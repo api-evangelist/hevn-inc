@@ -1,0 +1,23 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/hevn-inc-openapi-original.json
+format: json
+envelope: '{ "detail": ... }'
+note: >-
+  Derived from the HEVN OpenAPI 3.1 responses. HEVN uses a FastAPI-style JSON
+  error envelope keyed on "detail" rather than RFC 9457 problem+json. Request
+  validation errors return HTTP 422 with a structured detail array
+  (HTTPValidationError); business/not-found errors return HTTP 404 with a
+  detail string. 422 is declared on 300 operations and 404 on 8.
+problems:
+  - status: 422
+    title: Validation Error
+    schema: HTTPValidationError
+    description: >-
+      Request failed schema/parameter validation. Response body is
+      { "detail": [ { "loc": [...], "msg": "...", "type": "..." } ] }.
+    occurrences: 300
+  - status: 404
+    title: Not Found
+    description: 'The requested resource does not exist. Response body is { "detail": "Not Found" }.'
+    occurrences: 8

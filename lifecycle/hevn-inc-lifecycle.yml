@@ -1,0 +1,29 @@
+generated: '2026-07-19'
+method: searched
+source: https://hevninc.mintlify.app/
+versioning:
+  scheme: uri-path
+  current: v1
+  base_path: /api/v1
+  api_version: 0.1.2
+  cli_version: 0.1.4
+  note: >-
+    API is versioned in the URI path (/api/v1). The published OpenAPI reports
+    info.version 0.1.2; the hevn-cli client tracks its own release train
+    (0.1.4 at capture). Users are directed to "upgrade to the latest published
+    release" rather than a pinned deprecation calendar.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: >-
+    No formal deprecation/sunset policy published. The OpenAPI marks 5
+    operations deprecated in place (legacy KYB document routes and app-id
+    transfer route), each with a documented replacement route.
+deprecated_operations:
+  - openapi/hevn-inc-openapi-original.json#legacy app-id transfer route
+  - openapi/hevn-inc-openapi-original.json#list-uploaded-documents (deprecated, use GET /documents)
+  - openapi/hevn-inc-openapi-original.json#upload-draft-document (deprecated, use POST /documents/upload)
+sla:
+  url: null
+status_page: null
+note: No public status page or SLA document found at capture time.

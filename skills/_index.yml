@@ -1,0 +1,22 @@
+generated: '2026-07-19'
+method: generated
+source: openapi/hevn-inc-openapi-original.json
+skills:
+  - file: hevn-inc-agent-transfer-usdc.md
+    name: Transfer USDC with an MCP agent
+    api: openapi/hevn-inc-openapi-original.json
+    operations:
+      - get_mcp_balance_api_v1_mcp_get_balance_get
+      - resolve_address_api_v1_mcp_resolve_address_get
+      - transfer_api_v1_mcp_transfer_post
+      - transfer_to_user_api_v1_mcp_transfer_to_user_post
+      - list_transfers_api_v1_mcp_transfers_get
+  - file: hevn-inc-invoice-and-pay.md
+    name: Create an invoice and pay it
+    api: openapi/hevn-inc-openapi-original.json
+    operations:
+      - get_contacts_api_v1_user_contacts_get
+      - create_invoice_api_v1_documents_contracts_invoices_post
+      - list_invoices_api_v1_documents_contracts_invoices_get
+      - get_invoice_api_v1_documents_contracts_invoices__invoice_id__get
+      - transfer_api_v1_mcp_transfer_post

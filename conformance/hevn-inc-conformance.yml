@@ -1,0 +1,44 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/hevn-inc-openapi-original.json
+standards:
+  - id: oauth2
+    conforms: false
+    evidence: 'No oauth2 securityScheme; auth is API key (bearer) + apiKey header.'
+  - id: oidc
+    conforms: false
+  - id: bearer-token-auth
+    conforms: true
+    evidence: 'securityScheme HTTPBearer (http/bearer) with hvn_ API keys.'
+  - id: api-key-auth
+    conforms: true
+    evidence: 'securityScheme ApiKeyAuth (apiKey in header x-api-key).'
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'Errors use FastAPI { "detail": ... } envelope, not application/problem+json.'
+  - id: idempotency-keys
+    conforms: true
+    evidence: 'Idempotency-Key header + idempotency_key query param on transfer/payout operations.'
+  - id: pagination-offset
+    conforms: true
+    evidence: 'List endpoints accept limit + offset query parameters.'
+  - id: openapi-3.1
+    conforms: true
+    evidence: 'Published OpenAPI 3.1.0, 328 operations, 379 component schemas.'
+  - id: totp-2fa
+    conforms: true
+    evidence: 'RFC 6238 TOTP endpoints for 2FA (setup/activate/disable/status).'
+  - id: fhir-r4
+    conforms: false
+  - id: scim2
+    conforms: false
+  - id: fapi
+    conforms: false
+compliance_program:
+  published: false
+  note: >-
+    No public trust center or named certifications (SOC 2 / ISO 27001 / PCI /
+    HIPAA / FedRAMP) found at capture time. HEVN partners with licensed banks
+    and money-services providers (Wirex, Align, Swipelux) which carry their own
+    compliance; HEVN publishes no standalone compliance attestation, so no
+    Compliance pointer is emitted.

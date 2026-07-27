@@ -1,0 +1,53 @@
+generated: '2026-07-19'
+method: searched
+source: https://hevninc.mintlify.app/api-reference/authentication
+authentication:
+  style: api-key
+  header_default: 'Authorization: Bearer hvn_...'
+  header_alternate: 'X-Api-Key: hvn_...'
+  note: >-
+    HEVN API keys (prefix hvn_) sent as a bearer token by default, or via the
+    X-Api-Key header when HEVN_API_KEY_HEADER=X-Api-Key. Interactive/session
+    auth additionally uses TEE-signed attestation, TOTP, and email OTP (see
+    authentication/hevn-inc-authentication.yml).
+  ref: authentication/hevn-inc-authentication.yml
+idempotency:
+  supported: true
+  header: Idempotency-Key
+  query_param: idempotency_key
+  cli_flag: --idempotency-key
+  scope: money-movement / transfer operations
+  note: >-
+    Pass your own stable idempotency key on transfer/payout operations to make
+    retries safe. Documented for payment automation and enforced on the
+    /apps/transfers and mcp/transfer surfaces.
+pagination:
+  style: offset
+  params:
+    - limit
+    - offset
+  note: 'List endpoints accept limit and offset, e.g. GET /user/contacts?limit=100&offset=0.'
+error_envelope:
+  format: json
+  shape: '{ "detail": ... }'
+  validation_status: 422
+  note: >-
+    FastAPI-style JSON error envelope. Request validation failures return HTTP
+    422 with a detail array; not-found returns 404. See
+    errors/hevn-inc-problem-types.yml.
+  ref: errors/hevn-inc-problem-types.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  base_path: /api/v1
+  api_version: 0.1.2
+  ref: lifecycle/hevn-inc-lifecycle.yml
+output:
+  human: tables (default)
+  machine:
+    - --json
+    - --yaml
+  agent_schema: hevn --schema
+rate_limiting:
+  documented: false
+  note: No rate-limit signaling documented in the public API reference at capture time.

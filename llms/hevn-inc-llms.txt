@@ -1,0 +1,355 @@
+# HEVN
+
+> Documentation for HEVN products, including the CLI and REST API surfaces used by integrations.
+
+## Docs
+
+- [Agent workflows](https://hevninc.mintlify.app/agent-workflows.md): Primary operating guide for AI agents and scripts that use HEVN CLI safely.
+- [Activate Totp](https://hevninc.mintlify.app/api-reference/2fa/activate-totp.md): Verify first TOTP code and activate 2FA. Returns recovery codes.
+- [Activate Totp Package Alias](https://hevninc.mintlify.app/api-reference/2fa/activate-totp-package-alias.md): Verify first TOTP code and activate 2FA. Returns recovery codes.
+- [Disable Totp](https://hevninc.mintlify.app/api-reference/2fa/disable-totp.md): Disable 2FA. Requires current TOTP code.
+- [Disable Totp Package Alias](https://hevninc.mintlify.app/api-reference/2fa/disable-totp-package-alias.md): Disable 2FA. Requires current TOTP code.
+- [Get Totp Status](https://hevninc.mintlify.app/api-reference/2fa/get-totp-status.md): Check if 2FA is enabled for the current user.
+- [Get Totp Status Package Alias](https://hevninc.mintlify.app/api-reference/2fa/get-totp-status-package-alias.md): Check if 2FA is enabled for the current user.
+- [Regenerate Recovery Codes](https://hevninc.mintlify.app/api-reference/2fa/regenerate-recovery-codes.md): Regenerate recovery codes. Requires current TOTP code.
+- [Regenerate Recovery Codes Package Alias](https://hevninc.mintlify.app/api-reference/2fa/regenerate-recovery-codes-package-alias.md): Regenerate recovery codes. Requires current TOTP code.
+- [Setup Totp](https://hevninc.mintlify.app/api-reference/2fa/setup-totp.md): Generate TOTP secret and provisioning URI for QR code.
+- [Setup Totp Package Alias](https://hevninc.mintlify.app/api-reference/2fa/setup-totp-package-alias.md): Generate TOTP secret and provisioning URI for QR code.
+- [Recent account activity](https://hevninc.mintlify.app/api-reference/activity/recent-account-activity.md): Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available).
+- [Recent account activity](https://hevninc.mintlify.app/api-reference/activity/recent-account-activity-1.md): Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available).
+- [App API](https://hevninc.mintlify.app/api-reference/app-api.md): Authenticated REST endpoints used by HEVN CLI AppApi.
+- [App details: keys + matching spend permissions](https://hevninc.mintlify.app/api-reference/apps/app-details:-keys-+-matching-spend-permissions.md)
+- [Create a new API app](https://hevninc.mintlify.app/api-reference/apps/create-a-new-api-app.md)
+- [Delete an API app (soft-delete; cascades to all keys)](https://hevninc.mintlify.app/api-reference/apps/delete-an-api-app-soft-delete;-cascades-to-all-keys.md)
+- [Introspect the current API key](https://hevninc.mintlify.app/api-reference/apps/introspect-the-current-api-key.md): Return the user identity, owning app, granted scopes, balance, and remaining spend limit for the configured API key. Used by `hevn whoami`.
+- [Issue a new API key under the app (raw key returned ONCE)](https://hevninc.mintlify.app/api-reference/apps/issue-a-new-api-key-under-the-app-raw-key-returned-once.md)
+- [Legacy app-id transfer route](https://hevninc.mintlify.app/api-reference/apps/legacy-app-id-transfer-route.md): Resolve recipient + amount from context, then spend USDC from the app's smart wallet via the user's SpendPermission.
+- [List transfers for the app resolved by the API key](https://hevninc.mintlify.app/api-reference/apps/list-transfers-for-the-app-resolved-by-the-api-key.md): List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper.
+- [List user's API apps](https://hevninc.mintlify.app/api-reference/apps/list-users-api-apps.md)
+- [Recent notifications produced by this app's API keys](https://hevninc.mintlify.app/api-reference/apps/recent-notifications-produced-by-this-apps-api-keys.md)
+- [Replace an app's access (cards/banks/scope) — owner only](https://hevninc.mintlify.app/api-reference/apps/replace-an-apps-access-cardsbanksscope-—-owner-only.md)
+- [Revoke an API key from the app (soft-delete)](https://hevninc.mintlify.app/api-reference/apps/revoke-an-api-key-from-the-app-soft-delete.md)
+- [Send USDC from the app resolved by the API key](https://hevninc.mintlify.app/api-reference/apps/send-usdc-from-the-app-resolved-by-the-api-key.md): Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI.
+- [Auth Complete](https://hevninc.mintlify.app/api-reference/auth/auth-complete.md): Complete auth: issue refresh token if all required steps are validated.
+- [Auth Email Otp](https://hevninc.mintlify.app/api-reference/auth/auth-email-otp.md): Verify email OTP code. Sets email_otp_validated flag on session.
+- [Auth Privy](https://hevninc.mintlify.app/api-reference/auth/auth-privy.md): Authenticate via Privy embedded wallet signature.
+- [Auth Start](https://hevninc.mintlify.app/api-reference/auth/auth-start.md): Start authentication: verify TEE signature, then send OTP to email.
+- [Auth Totp](https://hevninc.mintlify.app/api-reference/auth/auth-totp.md): Verify TOTP code. Sets totp_validated flag on session.
+- [Refresh Session](https://hevninc.mintlify.app/api-reference/auth/refresh-session.md): Exchange a refresh token for a short-lived session token (10 min).
+- [Submit Signed Jwt](https://hevninc.mintlify.app/api-reference/auth/submit-signed-jwt.md): Verify TEE-signed Google JWT attestation. Sets tee_validated flag on session.
+- [Authentication](https://hevninc.mintlify.app/api-reference/authentication.md): Authentication modes and headers used by HEVN CLI REST calls.
+- [Get KYB draft](https://hevninc.mintlify.app/api-reference/b2b/get-kyb-draft.md): Get current KYB draft with all data and signed URLs for documents.
+- [Get KYB draft](https://hevninc.mintlify.app/api-reference/b2b/get-kyb-draft-1.md): Get current KYB draft with all data and signed URLs for documents.
+- [List uploaded documents (deprecated, use GET /documents)](https://hevninc.mintlify.app/api-reference/b2b/list-uploaded-documents-deprecated-use-get-documents.md): Backward-compatible proxy to GET /documents.
+- [List uploaded documents (deprecated, use GET /documents)](https://hevninc.mintlify.app/api-reference/b2b/list-uploaded-documents-deprecated-use-get-documents-1.md): Backward-compatible proxy to GET /documents.
+- [Request KYB for a provider](https://hevninc.mintlify.app/api-reference/b2b/request-kyb-for-a-provider.md): Request KYB verification for a provider
+- [Request KYB for a provider](https://hevninc.mintlify.app/api-reference/b2b/request-kyb-for-a-provider-1.md): Request KYB verification for a provider
+- [Save KYB draft](https://hevninc.mintlify.app/api-reference/b2b/save-kyb-draft.md): Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.
+- [Save KYB draft](https://hevninc.mintlify.app/api-reference/b2b/save-kyb-draft-1.md): Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.
+- [Submit KYB](https://hevninc.mintlify.app/api-reference/b2b/submit-kyb.md): Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.
+- [Submit KYB](https://hevninc.mintlify.app/api-reference/b2b/submit-kyb-1.md): Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.
+- [Upload draft document (deprecated, use POST /documents/upload)](https://hevninc.mintlify.app/api-reference/b2b/upload-draft-document-deprecated-use-post-documentsupload.md): Backward-compatible proxy to POST /documents/upload.
+- [Upload draft document (deprecated, use POST /documents/upload)](https://hevninc.mintlify.app/api-reference/b2b/upload-draft-document-deprecated-use-post-documentsupload-1.md): Backward-compatible proxy to POST /documents/upload.
+- [Activate payout quote](https://hevninc.mintlify.app/api-reference/balance/activate-payout-quote.md): Activate a payout quote and create pending records. Returns deposit address.
+- [Activate payout quote](https://hevninc.mintlify.app/api-reference/balance/activate-payout-quote-1.md): Activate a payout quote and create pending records. Returns deposit address.
+- [Estimate payout quote](https://hevninc.mintlify.app/api-reference/balance/estimate-payout-quote.md): Estimate payout amount and fees without a contact or provider-side activation.
+- [Estimate payout quote](https://hevninc.mintlify.app/api-reference/balance/estimate-payout-quote-1.md): Estimate payout amount and fees without a contact or provider-side activation.
+- [Get cross-chain payin quote](https://hevninc.mintlify.app/api-reference/balance/get-cross-chain-payin-quote.md): Create a quote to deposit from any chain to Base USDC.
+- [Get cross-chain payin quote](https://hevninc.mintlify.app/api-reference/balance/get-cross-chain-payin-quote-1.md): Create a quote to deposit from any chain to Base USDC.
+- [Get payout quote](https://hevninc.mintlify.app/api-reference/balance/get-payout-quote.md): Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal).
+- [Get payout quote](https://hevninc.mintlify.app/api-reference/balance/get-payout-quote-1.md): Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal).
+- [Get supported tokens for cross-chain swaps](https://hevninc.mintlify.app/api-reference/balance/get-supported-tokens-for-cross-chain-swaps.md): Get list of tokens supported by 1click for cross-chain swaps.
+- [Get supported tokens for cross-chain swaps](https://hevninc.mintlify.app/api-reference/balance/get-supported-tokens-for-cross-chain-swaps-1.md): Get list of tokens supported by 1click for cross-chain swaps.
+- [Get transaction status](https://hevninc.mintlify.app/api-reference/balance/get-transaction-status.md): Check status of any transaction by quote_id.
+- [Get transaction status](https://hevninc.mintlify.app/api-reference/balance/get-transaction-status-1.md): Check status of any transaction by quote_id.
+- [Get wallet balances](https://hevninc.mintlify.app/api-reference/balance/get-wallet-balances.md): Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user.
+- [Get wallet balances](https://hevninc.mintlify.app/api-reference/balance/get-wallet-balances-1.md): Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user.
+- [Submit cross-chain payin](https://hevninc.mintlify.app/api-reference/balance/submit-cross-chain-payin.md): Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands.
+- [Submit cross-chain payin](https://hevninc.mintlify.app/api-reference/balance/submit-cross-chain-payin-1.md): Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands.
+- [Sweep custodial balance](https://hevninc.mintlify.app/api-reference/balance/sweep-custodial-balance.md): Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet.
+- [Sweep custodial balance](https://hevninc.mintlify.app/api-reference/balance/sweep-custodial-balance-1.md): Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet.
+- [Withdraw to onchain address](https://hevninc.mintlify.app/api-reference/balance/withdraw-to-onchain-address.md): Send funds from Swipelux custodial wallet to external onchain address.
+- [Withdraw to onchain address](https://hevninc.mintlify.app/api-reference/balance/withdraw-to-onchain-address-1.md): Send funds from Swipelux custodial wallet to external onchain address.
+- [Activate a bank rail](https://hevninc.mintlify.app/api-reference/banks/activate-a-bank-rail.md): Create or upsert a Bank row for the given rail. Idempotent.
+- [Activate a bank rail](https://hevninc.mintlify.app/api-reference/banks/activate-a-bank-rail-1.md): Create or upsert a Bank row for the given rail. Idempotent.
+- [Activate multiple bank rails](https://hevninc.mintlify.app/api-reference/banks/activate-multiple-bank-rails.md): Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch.
+- [Activate multiple bank rails](https://hevninc.mintlify.app/api-reference/banks/activate-multiple-bank-rails-1.md): Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch.
+- [Cancel a locally tracked bank payin quote](https://hevninc.mintlify.app/api-reference/banks/cancel-a-locally-tracked-bank-payin-quote.md): Mark the local FiatTransfer created from a Swipelux payin quote as canceled.
+- [Cancel a locally tracked bank payin quote](https://hevninc.mintlify.app/api-reference/banks/cancel-a-locally-tracked-bank-payin-quote-1.md): Mark the local FiatTransfer created from a Swipelux payin quote as canceled.
+- [Get a pooled bank payin quote](https://hevninc.mintlify.app/api-reference/banks/get-a-pooled-bank-payin-quote.md): Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail.
+- [Get a pooled bank payin quote](https://hevninc.mintlify.app/api-reference/banks/get-a-pooled-bank-payin-quote-1.md): Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail.
+- [List all bank rails](https://hevninc.mintlify.app/api-reference/banks/list-all-bank-rails.md): Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row…
+- [List all bank rails](https://hevninc.mintlify.app/api-reference/banks/list-all-bank-rails-1.md): Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row…
+- [Pre-approve a bank rail](https://hevninc.mintlify.app/api-reference/banks/pre-approve-a-bank-rail.md): Read-only KYC info for the rail. Does not mutate Bank rows.
+- [Pre-approve a bank rail](https://hevninc.mintlify.app/api-reference/banks/pre-approve-a-bank-rail-1.md): Read-only KYC info for the rail. Does not mutate Bank rows.
+- [Submit a pooled bank payin quote](https://hevninc.mintlify.app/api-reference/banks/submit-a-pooled-bank-payin-quote.md): Execute a Swipelux payin quote and return payment instructions.
+- [Submit a pooled bank payin quote](https://hevninc.mintlify.app/api-reference/banks/submit-a-pooled-bank-payin-quote-1.md): Execute a Swipelux payin quote and return payment instructions.
+- [Delete card](https://hevninc.mintlify.app/api-reference/cards/delete-card.md): Permanently delete (close) a card. This cannot be undone.
+- [Delete card](https://hevninc.mintlify.app/api-reference/cards/delete-card-1.md): Permanently delete (close) a card. This cannot be undone.
+- [Freeze card](https://hevninc.mintlify.app/api-reference/cards/freeze-card.md): Temporarily freeze a card. Can be unfrozen later.
+- [Freeze card](https://hevninc.mintlify.app/api-reference/cards/freeze-card-1.md): Temporarily freeze a card. Can be unfrozen later.
+- [Get card by ID](https://hevninc.mintlify.app/api-reference/cards/get-card-by-id.md): Get single card details.
+- [Get card by ID](https://hevninc.mintlify.app/api-reference/cards/get-card-by-id-1.md): Get single card details.
+- [Get KYC verification link](https://hevninc.mintlify.app/api-reference/cards/get-kyc-verification-link.md): Get link for user to complete KYC verification in browser.
+- [Get KYC verification link](https://hevninc.mintlify.app/api-reference/cards/get-kyc-verification-link-1.md): Get link for user to complete KYC verification in browser.
+- [Get user's cards](https://hevninc.mintlify.app/api-reference/cards/get-users-cards.md): Sync cards from Wirex and return the list.
+- [Get user's cards](https://hevninc.mintlify.app/api-reference/cards/get-users-cards-1.md): Sync cards from Wirex and return the list.
+- [Issue new card](https://hevninc.mintlify.app/api-reference/cards/issue-new-card.md): Issue a new virtual or physical card. User must complete KYC first.
+- [Issue new card](https://hevninc.mintlify.app/api-reference/cards/issue-new-card-1.md): Issue a new virtual or physical card. User must complete KYC first.
+- [List pending card withdrawals](https://hevninc.mintlify.app/api-reference/cards/list-pending-card-withdrawals.md): Proxy to Wirex `GET /api/v1/withdrawal/requests` — returns pending withdrawal requests for the authenticated user's card wallet. See https://docs.wirexapp.com/docs/withdrawals#querying-pending-withdrawals
+- [List pending card withdrawals](https://hevninc.mintlify.app/api-reference/cards/list-pending-card-withdrawals-1.md): Proxy to Wirex `GET /api/v1/withdrawal/requests` — returns pending withdrawal requests for the authenticated user's card wallet. See https://docs.wirexapp.com/docs/withdrawals#querying-pending-withdrawals
+- [Pre-approve card issuance](https://hevninc.mintlify.app/api-reference/cards/pre-approve-card-issuance.md): Check Wirex KYC prerequisites and return a verification URL if all required user fields are present.
+- [Pre-approve card issuance](https://hevninc.mintlify.app/api-reference/cards/pre-approve-card-issuance-1.md): Check Wirex KYC prerequisites and return a verification URL if all required user fields are present.
+- [Register user for card services](https://hevninc.mintlify.app/api-reference/cards/register-user-for-card-services.md): Register user with card provider. Required before issuing cards.
+- [Register user for card services](https://hevninc.mintlify.app/api-reference/cards/register-user-for-card-services-1.md): Register user with card provider. Required before issuing cards.
+- [Reveal full card details](https://hevninc.mintlify.app/api-reference/cards/reveal-full-card-details.md): Get full card number (PAN), CVV and expiry. Requires wallet signature for confirmation.
+- [Reveal full card details](https://hevninc.mintlify.app/api-reference/cards/reveal-full-card-details-1.md): Get full card number (PAN), CVV and expiry. Requires wallet signature for confirmation.
+- [Send phone OTP](https://hevninc.mintlify.app/api-reference/cards/send-phone-otp.md): Send SMS OTP to verify phone number.
+- [Send phone OTP](https://hevninc.mintlify.app/api-reference/cards/send-phone-otp-1.md): Send SMS OTP to verify phone number.
+- [Set card label](https://hevninc.mintlify.app/api-reference/cards/set-card-label.md): Set or clear a user-defined label (nickname) for a card. Local-only, not sent to provider.
+- [Set card label](https://hevninc.mintlify.app/api-reference/cards/set-card-label-1.md): Set or clear a user-defined label (nickname) for a card. Local-only, not sent to provider.
+- [Set card limit](https://hevninc.mintlify.app/api-reference/cards/set-card-limit.md): Set daily spending limit for a card.
+- [Set card limit](https://hevninc.mintlify.app/api-reference/cards/set-card-limit-1.md): Set daily spending limit for a card.
+- [Set phone number](https://hevninc.mintlify.app/api-reference/cards/set-phone-number.md): Set user's phone number for verification.
+- [Set phone number](https://hevninc.mintlify.app/api-reference/cards/set-phone-number-1.md): Set user's phone number for verification.
+- [Unfreeze card](https://hevninc.mintlify.app/api-reference/cards/unfreeze-card.md): Unfreeze a previously frozen card.
+- [Unfreeze card](https://hevninc.mintlify.app/api-reference/cards/unfreeze-card-1.md): Unfreeze a previously frozen card.
+- [Verify phone OTP](https://hevninc.mintlify.app/api-reference/cards/verify-phone-otp.md): Verify SMS OTP code and finalize phone number on the provider side.
+- [Verify phone OTP](https://hevninc.mintlify.app/api-reference/cards/verify-phone-otp-1.md): Verify SMS OTP code and finalize phone number on the provider side.
+- [Create or get a chat](https://hevninc.mintlify.app/api-reference/chat/create-or-get-a-chat.md): Get or create the internal chat of the given type for the current user.
+- [Create or get a chat](https://hevninc.mintlify.app/api-reference/chat/create-or-get-a-chat-1.md): Get or create the internal chat of the given type for the current user.
+- [Get chat messages](https://hevninc.mintlify.app/api-reference/chat/get-chat-messages.md): Return all messages in the chat.
+- [Get chat messages](https://hevninc.mintlify.app/api-reference/chat/get-chat-messages-1.md): Return all messages in the chat.
+- [Mark chat as read by the user](https://hevninc.mintlify.app/api-reference/chat/mark-chat-as-read-by-the-user.md)
+- [Mark chat as read by the user](https://hevninc.mintlify.app/api-reference/chat/mark-chat-as-read-by-the-user-1.md)
+- [Send a chat message](https://hevninc.mintlify.app/api-reference/chat/send-a-chat-message.md): Send a message in the chat.
+- [Send a chat message](https://hevninc.mintlify.app/api-reference/chat/send-a-chat-message-1.md): Send a message in the chat.
+- [SSE stream for chat messages](https://hevninc.mintlify.app/api-reference/chat/sse-stream-for-chat-messages.md): Server-Sent Events stream for real-time chat messages.
+- [SSE stream for chat messages](https://hevninc.mintlify.app/api-reference/chat/sse-stream-for-chat-messages-1.md): Server-Sent Events stream for real-time chat messages.
+- [Approve contract by client or contractor](https://hevninc.mintlify.app/api-reference/contracts/approve-contract-by-client-or-contractor.md)
+- [Approve contract by client or contractor](https://hevninc.mintlify.app/api-reference/contracts/approve-contract-by-client-or-contractor-1.md)
+- [Attach a document to a contract](https://hevninc.mintlify.app/api-reference/contracts/attach-a-document-to-a-contract.md)
+- [Attach a document to a contract](https://hevninc.mintlify.app/api-reference/contracts/attach-a-document-to-a-contract-1.md)
+- [Close contract](https://hevninc.mintlify.app/api-reference/contracts/close-contract.md)
+- [Close contract](https://hevninc.mintlify.app/api-reference/contracts/close-contract-1.md)
+- [Create a new contract](https://hevninc.mintlify.app/api-reference/contracts/create-a-new-contract.md)
+- [Create a new contract](https://hevninc.mintlify.app/api-reference/contracts/create-a-new-contract-1.md)
+- [Delete contract](https://hevninc.mintlify.app/api-reference/contracts/delete-contract.md)
+- [Delete contract](https://hevninc.mintlify.app/api-reference/contracts/delete-contract-1.md)
+- [Generate plain-text scope description from a role](https://hevninc.mintlify.app/api-reference/contracts/generate-plain-text-scope-description-from-a-role.md)
+- [Generate plain-text scope description from a role](https://hevninc.mintlify.app/api-reference/contracts/generate-plain-text-scope-description-from-a-role-1.md)
+- [Get contract by ID](https://hevninc.mintlify.app/api-reference/contracts/get-contract-by-id.md)
+- [Get contract by ID](https://hevninc.mintlify.app/api-reference/contracts/get-contract-by-id-1.md)
+- [List contracts for current user](https://hevninc.mintlify.app/api-reference/contracts/list-contracts-for-current-user.md)
+- [List contracts for current user](https://hevninc.mintlify.app/api-reference/contracts/list-contracts-for-current-user-1.md)
+- [List fillable document templates and their fields](https://hevninc.mintlify.app/api-reference/contracts/list-fillable-document-templates-and-their-fields.md)
+- [List fillable document templates and their fields](https://hevninc.mintlify.app/api-reference/contracts/list-fillable-document-templates-and-their-fields-1.md)
+- [Pause contract](https://hevninc.mintlify.app/api-reference/contracts/pause-contract.md)
+- [Pause contract](https://hevninc.mintlify.app/api-reference/contracts/pause-contract-1.md)
+- [Persist prepared contract markdown as a document](https://hevninc.mintlify.app/api-reference/contracts/persist-prepared-contract-markdown-as-a-document.md)
+- [Persist prepared contract markdown as a document](https://hevninc.mintlify.app/api-reference/contracts/persist-prepared-contract-markdown-as-a-document-1.md)
+- [Preview contract document generated from a saved contract](https://hevninc.mintlify.app/api-reference/contracts/preview-contract-document-generated-from-a-saved-contract.md)
+- [Preview contract document generated from a saved contract](https://hevninc.mintlify.app/api-reference/contracts/preview-contract-document-generated-from-a-saved-contract-1.md)
+- [Preview contract document generated from a saved contract](https://hevninc.mintlify.app/api-reference/contracts/preview-contract-document-generated-from-a-saved-contract-2.md)
+- [Preview contract document generated from a saved contract](https://hevninc.mintlify.app/api-reference/contracts/preview-contract-document-generated-from-a-saved-contract-3.md)
+- [Send contract for signing](https://hevninc.mintlify.app/api-reference/contracts/send-contract-for-signing.md)
+- [Send contract for signing](https://hevninc.mintlify.app/api-reference/contracts/send-contract-for-signing-1.md)
+- [Set contractor payment methods for contract](https://hevninc.mintlify.app/api-reference/contracts/set-contractor-payment-methods-for-contract.md)
+- [Set contractor payment methods for contract](https://hevninc.mintlify.app/api-reference/contracts/set-contractor-payment-methods-for-contract-1.md)
+- [Update contract label](https://hevninc.mintlify.app/api-reference/contracts/update-contract-label.md)
+- [Update contract label](https://hevninc.mintlify.app/api-reference/contracts/update-contract-label-1.md)
+- [Update contract terms and schedule](https://hevninc.mintlify.app/api-reference/contracts/update-contract-terms-and-schedule.md)
+- [Update contract terms and schedule](https://hevninc.mintlify.app/api-reference/contracts/update-contract-terms-and-schedule-1.md)
+- [List user's devices](https://hevninc.mintlify.app/api-reference/devices/list-users-devices.md): Get all devices associated with the authenticated user's account.
+- [List user's devices](https://hevninc.mintlify.app/api-reference/devices/list-users-devices-1.md): Get all devices associated with the authenticated user's account.
+- [Set push notification token](https://hevninc.mintlify.app/api-reference/devices/set-push-notification-token.md): Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings.
+- [Set push notification token](https://hevninc.mintlify.app/api-reference/devices/set-push-notification-token-1.md): Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings.
+- [Create a document for e-signing via Firma](https://hevninc.mintlify.app/api-reference/documents/create-a-document-for-e-signing-via-firma.md)
+- [Download a document via signed token](https://hevninc.mintlify.app/api-reference/documents/download-a-document-via-signed-token.md): Verify download token, log the event, and redirect to a Supabase signed URL.
+- [List uploaded documents](https://hevninc.mintlify.app/api-reference/documents/list-uploaded-documents.md): List user-uploaded documents by filter type.
+- [Update document extracted content](https://hevninc.mintlify.app/api-reference/documents/update-document-extracted-content.md): Validate and save extracted content for a document.
+- [Upload a document](https://hevninc.mintlify.app/api-reference/documents/upload-a-document.md): Upload a document to storage. Returns document_id for referencing.
+- [Download account confirmation PDF](https://hevninc.mintlify.app/api-reference/exports/download-account-confirmation-pdf.md): Generate and return account confirmation PDF for a Bank row.
+- [Download account confirmation PDF](https://hevninc.mintlify.app/api-reference/exports/download-account-confirmation-pdf-1.md): Generate and return account confirmation PDF for a Bank row.
+- [Download account statement PDF](https://hevninc.mintlify.app/api-reference/exports/download-account-statement-pdf.md): Generate and return account statement PDF with transactions for the period.
+- [Download account statement PDF](https://hevninc.mintlify.app/api-reference/exports/download-account-statement-pdf-1.md): Generate and return account statement PDF with transactions for the period.
+- [Get transaction receipt PDF download link](https://hevninc.mintlify.app/api-reference/exports/get-transaction-receipt-pdf-download-link.md): Generate receipt PDF for a transaction, upload to Supabase, return download link.
+- [Get transaction receipt PDF download link](https://hevninc.mintlify.app/api-reference/exports/get-transaction-receipt-pdf-download-link-1.md): Generate receipt PDF for a transaction, upload to Supabase, return download link.
+- [Verify generated document](https://hevninc.mintlify.app/api-reference/exports/verify-generated-document.md): Verify a generated PDF document by its internal ID and return metadata.
+- [Verify generated document](https://hevninc.mintlify.app/api-reference/exports/verify-generated-document-1.md): Verify a generated PDF document by its internal ID and return metadata.
+- [Health Check](https://hevninc.mintlify.app/api-reference/health/health-check.md): Health check endpoint.
+- [Apply for incorporation](https://hevninc.mintlify.app/api-reference/incorporate/apply-for-incorporation.md): Apply for company incorporation.
+- [Apply for incorporation](https://hevninc.mintlify.app/api-reference/incorporate/apply-for-incorporation-1.md): Apply for company incorporation.
+- [Get incorporation service prices](https://hevninc.mintlify.app/api-reference/incorporate/get-incorporation-service-prices.md): Return available services and prices by jurisdiction.
+- [Get incorporation service prices](https://hevninc.mintlify.app/api-reference/incorporate/get-incorporation-service-prices-1.md): Return available services and prices by jurisdiction.
+- [AI parse invoice PDF and return invoice preview](https://hevninc.mintlify.app/api-reference/invoices/ai-parse-invoice-pdf-and-return-invoice-preview.md)
+- [AI parse invoice PDF and return invoice preview](https://hevninc.mintlify.app/api-reference/invoices/ai-parse-invoice-pdf-and-return-invoice-preview-1.md)
+- [Create incoming invoice from uploaded document](https://hevninc.mintlify.app/api-reference/invoices/create-incoming-invoice-from-uploaded-document.md)
+- [Create incoming invoice from uploaded document](https://hevninc.mintlify.app/api-reference/invoices/create-incoming-invoice-from-uploaded-document-1.md)
+- [Create invoice](https://hevninc.mintlify.app/api-reference/invoices/create-invoice.md)
+- [Create invoice](https://hevninc.mintlify.app/api-reference/invoices/create-invoice-1.md)
+- [Create invoice from contract](https://hevninc.mintlify.app/api-reference/invoices/create-invoice-from-contract.md)
+- [Create invoice from contract](https://hevninc.mintlify.app/api-reference/invoices/create-invoice-from-contract-1.md)
+- [Generate a share link for invoice creation](https://hevninc.mintlify.app/api-reference/invoices/generate-a-share-link-for-invoice-creation.md)
+- [Generate a share link for invoice creation](https://hevninc.mintlify.app/api-reference/invoices/generate-a-share-link-for-invoice-creation-1.md)
+- [Generate invoices for multiple contracts](https://hevninc.mintlify.app/api-reference/invoices/generate-invoices-for-multiple-contracts.md)
+- [Generate invoices for multiple contracts](https://hevninc.mintlify.app/api-reference/invoices/generate-invoices-for-multiple-contracts-1.md)
+- [Get invoice by ID](https://hevninc.mintlify.app/api-reference/invoices/get-invoice-by-id.md)
+- [Get invoice by ID](https://hevninc.mintlify.app/api-reference/invoices/get-invoice-by-id-1.md)
+- [List invoices for current user](https://hevninc.mintlify.app/api-reference/invoices/list-invoices-for-current-user.md)
+- [List invoices for current user](https://hevninc.mintlify.app/api-reference/invoices/list-invoices-for-current-user-1.md)
+- [Update invoice (set transaction_hash)](https://hevninc.mintlify.app/api-reference/invoices/update-invoice-set-transaction_hash.md)
+- [Update invoice (set transaction_hash)](https://hevninc.mintlify.app/api-reference/invoices/update-invoice-set-transaction_hash-1.md)
+- [MCP API](https://hevninc.mintlify.app/api-reference/mcp-api.md): App-scoped transfer endpoints used by HEVN CLI balance and transfer commands.
+- [Create a new MCP API key](https://hevninc.mintlify.app/api-reference/mcp/create-a-new-mcp-api-key.md)
+- [Create a new MCP API key](https://hevninc.mintlify.app/api-reference/mcp/create-a-new-mcp-api-key-1.md)
+- [Delete an MCP API key](https://hevninc.mintlify.app/api-reference/mcp/delete-an-mcp-api-key.md)
+- [Delete an MCP API key](https://hevninc.mintlify.app/api-reference/mcp/delete-an-mcp-api-key-1.md)
+- [Get USDC balance on Base](https://hevninc.mintlify.app/api-reference/mcp/get-usdc-balance-on-base.md)
+- [Get USDC balance on Base](https://hevninc.mintlify.app/api-reference/mcp/get-usdc-balance-on-base-1.md)
+- [List all MCP API keys](https://hevninc.mintlify.app/api-reference/mcp/list-all-mcp-api-keys.md)
+- [List all MCP API keys](https://hevninc.mintlify.app/api-reference/mcp/list-all-mcp-api-keys-1.md)
+- [List MCP transfers for authenticated user](https://hevninc.mintlify.app/api-reference/mcp/list-mcp-transfers-for-authenticated-user.md)
+- [List MCP transfers for authenticated user](https://hevninc.mintlify.app/api-reference/mcp/list-mcp-transfers-for-authenticated-user-1.md)
+- [Resolve smart wallet address by email](https://hevninc.mintlify.app/api-reference/mcp/resolve-smart-wallet-address-by-email.md): Resolve or create a smart wallet address for the given email.
+- [Resolve smart wallet address by email](https://hevninc.mintlify.app/api-reference/mcp/resolve-smart-wallet-address-by-email-1.md): Resolve or create a smart wallet address for the given email.
+- [Transfer USDC through MCP using invoice/contact/quote context](https://hevninc.mintlify.app/api-reference/mcp/transfer-usdc-through-mcp-using-invoicecontactquote-context.md): Create and submit the UserOperation inside the backend.
+- [Transfer USDC through MCP using invoice/contact/quote context](https://hevninc.mintlify.app/api-reference/mcp/transfer-usdc-through-mcp-using-invoicecontactquote-context-1.md): Create and submit the UserOperation inside the backend.
+- [Transfer USDC to user via spend permission](https://hevninc.mintlify.app/api-reference/mcp/transfer-usdc-to-user-via-spend-permission.md)
+- [Transfer USDC to user via spend permission](https://hevninc.mintlify.app/api-reference/mcp/transfer-usdc-to-user-via-spend-permission-1.md)
+- [Create Product](https://hevninc.mintlify.app/api-reference/merchant/create-product.md)
+- [Create Product Package Alias](https://hevninc.mintlify.app/api-reference/merchant/create-product-package-alias.md)
+- [Deactivate Product](https://hevninc.mintlify.app/api-reference/merchant/deactivate-product.md)
+- [Deactivate Product Package Alias](https://hevninc.mintlify.app/api-reference/merchant/deactivate-product-package-alias.md)
+- [Get Product](https://hevninc.mintlify.app/api-reference/merchant/get-product.md)
+- [Get Product Package Alias](https://hevninc.mintlify.app/api-reference/merchant/get-product-package-alias.md)
+- [List Product Payments](https://hevninc.mintlify.app/api-reference/merchant/list-product-payments.md)
+- [List Product Payments Package Alias](https://hevninc.mintlify.app/api-reference/merchant/list-product-payments-package-alias.md)
+- [List Products](https://hevninc.mintlify.app/api-reference/merchant/list-products.md)
+- [List Products Package Alias](https://hevninc.mintlify.app/api-reference/merchant/list-products-package-alias.md)
+- [Update Product](https://hevninc.mintlify.app/api-reference/merchant/update-product.md)
+- [Update Product Package Alias](https://hevninc.mintlify.app/api-reference/merchant/update-product-package-alias.md)
+- [REST API overview](https://hevninc.mintlify.app/api-reference/overview.md): REST endpoints used internally by HEVN CLI.
+- [Public API](https://hevninc.mintlify.app/api-reference/public-api.md): Unauthenticated REST endpoints used by HEVN CLI PublicApi.
+- [Get contractor details by invoice share key](https://hevninc.mintlify.app/api-reference/public/get-contractor-details-by-invoice-share-key.md): Return the user details of the share-link owner so a third party can invoice them.
+- [Get public FX rates](https://hevninc.mintlify.app/api-reference/public/get-public-fx-rates.md)
+- [Get Public Invoice](https://hevninc.mintlify.app/api-reference/public/get-public-invoice.md): Public invoice details — no auth required.
+- [Get Public Product](https://hevninc.mintlify.app/api-reference/public/get-public-product.md): Public product details — no auth required.
+- [Join Waitlist](https://hevninc.mintlify.app/api-reference/public/join-waitlist.md)
+- [Pay Product](https://hevninc.mintlify.app/api-reference/public/pay-product.md): Create one_click quote for product payment. No auth required.
+- [Server Time](https://hevninc.mintlify.app/api-reference/public/server-time.md)
+- [Submit Product Deposit](https://hevninc.mintlify.app/api-reference/public/submit-product-deposit.md): Submit deposit tx_hash to speed up settlement. No auth required.
+- [Root](https://hevninc.mintlify.app/api-reference/root/root.md): Root endpoint.
+- [Add Team Member](https://hevninc.mintlify.app/api-reference/team/add-team-member.md): Add a user to your team by email.
+- [Add Team Member Package Alias](https://hevninc.mintlify.app/api-reference/team/add-team-member-package-alias.md): Add a user to your team by email.
+- [List Available Spaces](https://hevninc.mintlify.app/api-reference/team/list-available-spaces.md): List team spaces where the current user is a member.
+- [List Available Spaces Package Alias](https://hevninc.mintlify.app/api-reference/team/list-available-spaces-package-alias.md): List team spaces where the current user is a member.
+- [List Team](https://hevninc.mintlify.app/api-reference/team/list-team.md): List team members for the current user's account.
+- [List Team Package Alias](https://hevninc.mintlify.app/api-reference/team/list-team-package-alias.md): List team members for the current user's account.
+- [Remove Team Member](https://hevninc.mintlify.app/api-reference/team/remove-team-member.md): Remove a user from your team.
+- [Remove Team Member Package Alias](https://hevninc.mintlify.app/api-reference/team/remove-team-member-package-alias.md): Remove a user from your team.
+- [Send invite](https://hevninc.mintlify.app/api-reference/team/send-invite.md): Send an invite to the specified email and track the corresponding analytics event.
+- [Send invite](https://hevninc.mintlify.app/api-reference/team/send-invite-1.md): Send an invite to the specified email and track the corresponding analytics event.
+- [Attestate Jwt](https://hevninc.mintlify.app/api-reference/tee-local/attestate-jwt.md): Verify Google JWT and return signed attestation.
+- [Get Public Key](https://hevninc.mintlify.app/api-reference/tee-local/get-public-key.md): Get the signing public key (ed25519:base58).
+- [Get Public Key Package Alias](https://hevninc.mintlify.app/api-reference/tee-local/get-public-key-package-alias.md): Get the signing public key (ed25519:base58).
+- [Near Call](https://hevninc.mintlify.app/api-reference/tee-local/near-call.md): Execute w_execute_signed transaction using near_wallet key.
+- [Near Call Package Alias](https://hevninc.mintlify.app/api-reference/tee-local/near-call-package-alias.md): Execute w_execute_signed transaction using near_wallet key.
+- [Attestate Jwt](https://hevninc.mintlify.app/api-reference/tee/attestate-jwt.md): Google JWT attestation via Nitro Enclave.
+- [Get Encryption Key](https://hevninc.mintlify.app/api-reference/tee/get-encryption-key.md): Get the enclave's Curve25519 encryption public key for E2E encrypted requests.
+- [Get Google Certs](https://hevninc.mintlify.app/api-reference/tee/get-google-certs.md): Get Google JWKS certs signed by enclave — allows clients to verify enclave integrity.
+- [Attach a document to a transaction](https://hevninc.mintlify.app/api-reference/transactions/attach-a-document-to-a-transaction.md): Append an already-uploaded document (by id) to the transaction's attachments. The document must belong to the same user. Idempotent — re-attaching an existing id is a no-op. Returns the full updated list with signed download links.
+- [Create a share link for a transaction](https://hevninc.mintlify.app/api-reference/transactions/create-a-share-link-for-a-transaction.md): Owner-only. Creates a temp access key scoped to this transaction_id. Pass the raw key back to `GET /transactions/{id}/details?key=<key>` to fetch the receipt without auth.
+- [Export transactions](https://hevninc.mintlify.app/api-reference/transactions/export-transactions.md): Export transactions as CSV or XLSX file.
+- [Get transaction details](https://hevninc.mintlify.app/api-reference/transactions/get-transaction-details.md): Authenticated owners get the full UX (status auto-sync, document download links, crypto→internal repair). Unauthenticated callers must pass `?key=` with a share key issued by `POST /transactions/{id}/share`. Without auth and without a valid key the endpoint returns 401.
+- [Get user transactions](https://hevninc.mintlify.app/api-reference/transactions/get-user-transactions.md): Get latest user transactions sorted by time.
+- [Set transaction memo](https://hevninc.mintlify.app/api-reference/transactions/set-transaction-memo.md): Set or clear a memo (description) on a transaction.
+- [Set transaction tag](https://hevninc.mintlify.app/api-reference/transactions/set-transaction-tag.md): Set or clear a tag on a transaction.
+- [Transaction volume breakdown](https://hevninc.mintlify.app/api-reference/transactions/transaction-volume-breakdown.md): Volume + count grouped by tag or type, with the same filters as the list.
+- [Transaction volume breakdown over time](https://hevninc.mintlify.app/api-reference/transactions/transaction-volume-breakdown-over-time.md): Volume + count grouped by tag or type, split into time buckets across the fromDate..toDate range. Granularity is auto-picked: >6 months → month, >30 days → week, otherwise day. Empty periods are returned as zero-filled buckets so the frontend gets a complete x-axis. Same filter set as /transactions…
+- [Create contact](https://hevninc.mintlify.app/api-reference/user/create-contact.md): Create a new contact for the current user.
+- [Create or get current user](https://hevninc.mintlify.app/api-reference/user/create-or-get-current-user.md): Create or update user profile data for KYC.
+- [Delete contact](https://hevninc.mintlify.app/api-reference/user/delete-contact.md): Delete a contact.
+- [Geocode address](https://hevninc.mintlify.app/api-reference/user/geocode-address.md): Search address via Google Maps Geocoding API and return structured address components.
+- [Get current user](https://hevninc.mintlify.app/api-reference/user/get-current-user.md): Get the profile of the currently authenticated user.
+- [Get invite code for current user](https://hevninc.mintlify.app/api-reference/user/get-invite-code-for-current-user.md): Get the current user's invite code, creating one if needed.
+- [Get KYC status](https://hevninc.mintlify.app/api-reference/user/get-kyc-status.md): Check the current KYC verification status. Use provider=align for Align.
+- [Get recent notifications](https://hevninc.mintlify.app/api-reference/user/get-recent-notifications.md): Return recent notifications (email/push) for the current user.
+- [Get referral rewards earned by current user](https://hevninc.mintlify.app/api-reference/user/get-referral-rewards-earned-by-current-user.md): Return list of referral rewards (KYB and volume bonuses) for the current user.
+- [Get user contacts](https://hevninc.mintlify.app/api-reference/user/get-user-contacts.md): Get all contacts for the current user.
+- [Get user settings](https://hevninc.mintlify.app/api-reference/user/get-user-settings.md)
+- [Get users invited by current user](https://hevninc.mintlify.app/api-reference/user/get-users-invited-by-current-user.md): Return all users who joined via the current user's invite code.
+- [Prevalidate bank contact details](https://hevninc.mintlify.app/api-reference/user/prevalidate-bank-contact-details.md): Validate bank identifiers before creating a contact.
+- [Preview contact by wallet or email](https://hevninc.mintlify.app/api-reference/user/preview-contact-by-wallet-or-email.md): Look up a HEVN user by wallet address or email and return a preview.
+- [Send invite](https://hevninc.mintlify.app/api-reference/user/send-invite.md): Legacy mapping for team invites. Prefer POST /team/invite.
+- [Share KYB link](https://hevninc.mintlify.app/api-reference/user/share-kyb-link.md): Send a KYB verification link to the specified email.
+- [Share KYB link](https://hevninc.mintlify.app/api-reference/user/share-kyb-link-1.md): Send a KYB verification link to the specified email.
+- [Submit KYC data](https://hevninc.mintlify.app/api-reference/user/submit-kyc-data.md): Get Swipelux KYC verification link.
+- [Track user event](https://hevninc.mintlify.app/api-reference/user/track-user-event.md): Proxy user events to Customer.io for analytics tracking.
+- [Update contact name](https://hevninc.mintlify.app/api-reference/user/update-contact-name.md): Update safe contact metadata.
+- [Update requested bank rails](https://hevninc.mintlify.app/api-reference/user/update-requested-bank-rails.md)
+- [Update user settings](https://hevninc.mintlify.app/api-reference/user/update-user-settings.md)
+- [Upload user avatar](https://hevninc.mintlify.app/api-reference/user/upload-user-avatar.md): Upload avatar image to public storage and save URL to user profile.
+- [Get BIC (SWIFT) info](https://hevninc.mintlify.app/api-reference/utils/get-bic-swift-info.md): Look up bank/branch info by BIC code via API Ninjas.
+- [Get BIC (SWIFT) info](https://hevninc.mintlify.app/api-reference/utils/get-bic-swift-info-1.md): Look up bank/branch info by BIC code via API Ninjas.
+- [Get FX rates](https://hevninc.mintlify.app/api-reference/utils/get-fx-rates.md): Public endpoint. Returns FX rates from the given currency to USD: `bankTransfer` (Swipelux), `card` (Wirex), and `usdRate` (exchangerate-api.com). `usdRate` is populated for every currency in the invoice Currency enum (G10 + AED/HKD).
+- [Get FX rates](https://hevninc.mintlify.app/api-reference/utils/get-fx-rates-1.md): Public endpoint. Returns FX rates from the given currency to USD: `bankTransfer` (Swipelux), `card` (Wirex), and `usdRate` (exchangerate-api.com). `usdRate` is populated for every currency in the invoice Currency enum (G10 + AED/HKD).
+- [Parse IBAN from plain text](https://hevninc.mintlify.app/api-reference/utils/parse-iban-from-plain-text.md): Extract SEPA IBAN data from plain text using AI. Returns structured ImportIbanSepaData.
+- [Parse IBAN from plain text](https://hevninc.mintlify.app/api-reference/utils/parse-iban-from-plain-text-1.md): Extract SEPA IBAN data from plain text using AI. Returns structured ImportIbanSepaData.
+- [Validate IBAN](https://hevninc.mintlify.app/api-reference/utils/validate-iban.md): Validate IBAN and return bank/account info via API Ninjas.
+- [Validate IBAN](https://hevninc.mintlify.app/api-reference/utils/validate-iban-1.md): Validate IBAN and return bank/account info via API Ninjas.
+- [Validate US routing number (RTN)](https://hevninc.mintlify.app/api-reference/utils/validate-us-routing-number-rtn.md): Look up US ABA/RTN routing number via API Ninjas.
+- [Validate US routing number (RTN)](https://hevninc.mintlify.app/api-reference/utils/validate-us-routing-number-rtn-1.md): Look up US ABA/RTN routing number via API Ninjas.
+- [Add account owner extension](https://hevninc.mintlify.app/api-reference/wallet/add-account-owner-extension.md): Without session: validates op, simulates, sends OTP, returns 403 with session_key. With session: verifies OTP session, executes on-chain, returns 200.
+- [Create wallet](https://hevninc.mintlify.app/api-reference/wallet/create-wallet.md): Create a new NEAR wallet for authenticated user.
+- [Deploy Safe 2/2 multisig with passkey + backend EOA](https://hevninc.mintlify.app/api-reference/wallet/deploy-safe-22-multisig-with-passkey-+-backend-eoa.md): Deploys a Safe v1.4.1 wallet with threshold 2/2. Owners are the backend EOA (from config) and a SafeWebAuthnSigner contract derived from the provided passkey (x, y) P-256 coordinates.
+- [Execute transaction](https://hevninc.mintlify.app/api-reference/wallet/execute-transaction.md): Execute a NEAR transaction.
+- [Get Permissions](https://hevninc.mintlify.app/api-reference/wallet/get-permissions.md): Sync spend permissions from chain and return active ones.
+- [Import external wallet](https://hevninc.mintlify.app/api-reference/wallet/import-external-wallet.md): Import an external EVM wallet to track its balance.
+- [List imported wallets](https://hevninc.mintlify.app/api-reference/wallet/list-imported-wallets.md): List all imported external wallets for the current user.
+- [List user passkeys](https://hevninc.mintlify.app/api-reference/wallet/list-user-passkeys.md): Return all active passkeys for the current user, synced with on-chain state.
+- [Paymaster](https://hevninc.mintlify.app/api-reference/wallet/paymaster.md): JSON-RPC endpoint.
+- [Proxy](https://hevninc.mintlify.app/api-reference/wallet/proxy.md)
+- [Push a fully-built UserOperation through EntryPoint.handleOps from the backend EOA](https://hevninc.mintlify.app/api-reference/wallet/push-a-fully-built-useroperation-through-entrypointhandleops-from-the-backend-eoa.md): Submit a pre-built UserOperation through EntryPoint.handleOps from backend EOA.
+- [Remove imported wallet](https://hevninc.mintlify.app/api-reference/wallet/remove-imported-wallet.md): Remove an imported external wallet.
+- [Resolve smart wallet address by email](https://hevninc.mintlify.app/api-reference/wallet/resolve-smart-wallet-address-by-email.md): Return or create a smart wallet address for the given email.
+- [Sign login message](https://hevninc.mintlify.app/api-reference/wallet/sign-login-message.md): Sign a login message for authentication.
+- [Privy Webhook](https://hevninc.mintlify.app/api-reference/webhook/privy-webhook.md): Handle Privy webhook events (Svix-signed).
+- [Webhook Align](https://hevninc.mintlify.app/api-reference/webhook/webhook-align.md): Process Align webhook (customer.kycs.updated, virtual_account.* etc.).
+- [Webhook Base Spend Permission](https://hevninc.mintlify.app/api-reference/webhook/webhook-base-spend-permission.md): Handle Hook0 Base SpendPermission events.
+- [Webhook Cdp](https://hevninc.mintlify.app/api-reference/webhook/webhook-cdp.md): Process Coinbase CDP transfer webhooks.
+- [Webhook Firma](https://hevninc.mintlify.app/api-reference/webhook/webhook-firma.md): Handle Firma e-signature webhooks.
+- [Webhook Kyc](https://hevninc.mintlify.app/api-reference/webhook/webhook-kyc.md): Receive KYC webhook payload; log body and return 200.
+- [Webhook Resend](https://hevninc.mintlify.app/api-reference/webhook/webhook-resend.md): Handle Resend email webhooks with Svix signature verification.
+- [Webhook Swipelux](https://hevninc.mintlify.app/api-reference/webhook/webhook-swipelux.md): Handle Swipelux webhooks: customer.verification_changed, transfer.*.
+- [Webhook Wirex](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex.md)
+- [Webhook Wirex Activities](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex-activities.md)
+- [Webhook Wirex Balances](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex-balances.md)
+- [Webhook Wirex Card Limits](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex-card-limits.md)
+- [Webhook Wirex Cards](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex-cards.md)
+- [Webhook Wirex Users](https://hevninc.mintlify.app/api-reference/webhook/webhook-wirex-users.md)
+- [Xero Callback](https://hevninc.mintlify.app/api-reference/xero/xero-callback.md): OAuth callback from Xero. Exchanges code for tokens.
+- [Xero Callback Package Alias](https://hevninc.mintlify.app/api-reference/xero/xero-callback-package-alias.md): OAuth callback from Xero. Exchanges code for tokens.
+- [Xero Connect](https://hevninc.mintlify.app/api-reference/xero/xero-connect.md): Start Xero OAuth flow. Returns redirect to Xero login.
+- [Xero Connect Package Alias](https://hevninc.mintlify.app/api-reference/xero/xero-connect-package-alias.md): Start Xero OAuth flow. Returns redirect to Xero login.
+- [Xero Disconnect](https://hevninc.mintlify.app/api-reference/xero/xero-disconnect.md): Disconnect Xero integration.
+- [Xero Disconnect Package Alias](https://hevninc.mintlify.app/api-reference/xero/xero-disconnect-package-alias.md): Disconnect Xero integration.
+- [Xero Export](https://hevninc.mintlify.app/api-reference/xero/xero-export.md): Export transactions to Xero as Bank Transactions.
+- [Xero Export Package Alias](https://hevninc.mintlify.app/api-reference/xero/xero-export-package-alias.md): Export transactions to Xero as Bank Transactions.
+- [Xero Status](https://hevninc.mintlify.app/api-reference/xero/xero-status.md): Check Xero connection status.
+- [Xero Status Package Alias](https://hevninc.mintlify.app/api-reference/xero/xero-status-package-alias.md): Check Xero connection status.
+- [Account and profile](https://hevninc.mintlify.app/commands/account.md): Inspect the active HEVN account, update profile fields, and manage KYC status.
+- [Cards and banks](https://hevninc.mintlify.app/commands/cards-banks.md): Inspect card status, card KYC links, available bank rails, and bank detail validation.
+- [Contacts](https://hevninc.mintlify.app/commands/contacts.md): Create, list, update, and delete email, crypto, and bank contacts.
+- [Contracts](https://hevninc.mintlify.app/commands/contracts.md): Upload existing contracts, generate HEVN templates, preview, approve, update, pause, and manage payment methods.
+- [Invoices](https://hevninc.mintlify.app/commands/invoices.md): List, create, upload, decline, batch, and pay HEVN invoices.
+- [Money movement](https://hevninc.mintlify.app/commands/money-movement.md): Check balances, create deposit quotes, inspect transactions, and send app-scoped transfers.
+- [Configuration](https://hevninc.mintlify.app/configuration.md): Configure HEVN environments, API credentials, output formats, and debug behavior.
+- [Connect AI coding agents](https://hevninc.mintlify.app/connect-agents.md): Expose the HEVN CLI to Claude Code, Codex, Cursor, and other MCP agents with a single install command.
+- [Development](https://hevninc.mintlify.app/development.md): Install dependencies, run tests, build distributions, and publish HEVN CLI.
+- [HEVN CLI](https://hevninc.mintlify.app/index.md): Install, authenticate, and operate HEVN payments, invoices, contracts, cards, and app-scoped transfers from the command line.
+- [Quickstart](https://hevninc.mintlify.app/quickstart.md): Install HEVN CLI, authenticate, and run your first account and balance commands.
+
+## OpenAPI Specs
+
+- [openapi](https://hevninc.mintlify.app/openapi.json)

@@ -1,0 +1,102 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/hevn-inc-openapi-original.json
+note: >-
+  Entity graph derived from HEVN OpenAPI path structure and id-reference
+  parameters (app_id, key_id, contact_id, invoice_id, contract_id, bank_id,
+  quote_id). id prefixes shown where observed in docs examples (bank_..., op_...).
+entities:
+  - name: User
+    domain: user
+    description: Authenticated HEVN account holder / business.
+  - name: App
+    domain: apps
+    description: API application owned by a user; scopes keys, cards, banks, and spend permissions.
+    id_prefix: null
+  - name: ApiKey
+    domain: apps
+    description: API key issued under an app (raw key returned once); carries scopes and spend limits.
+  - name: Contact
+    domain: contacts
+    description: Payout recipient (IBAN / onchain / internal).
+  - name: Transfer
+    domain: transfers
+    description: Money movement to a contact, user, or against an invoice; idempotency-keyed.
+    id_prefix: op_
+  - name: Invoice
+    domain: invoices
+    description: Issued or incoming invoice tied to a contract.
+    id_prefix: inv_
+  - name: Contract
+    domain: contracts
+    description: Templated agreement with e-signature that can generate invoices.
+  - name: Card
+    domain: cards
+    description: USD business card (issued via Wirex).
+  - name: Bank
+    domain: banks
+    description: Bank account / rail (ACH, SEPA, SWIFT, UAE FTS) with KYC state.
+    id_prefix: bank_
+  - name: Wallet
+    domain: wallet
+    description: Smart wallet holding USDC balance on Base; supports cross-chain payin.
+  - name: PayoutQuote
+    domain: balance
+    description: Quote for a payout; activated to create pending records and a deposit address.
+    id_prefix: quote_
+  - name: KybDraft
+    domain: b2b
+    description: KYB verification draft submitted to a provider (Align / Swipelux).
+relationships:
+  - from: App
+    to: User
+    type: belongs_to
+    via: user
+  - from: ApiKey
+    to: App
+    type: belongs_to
+    via: app_id
+  - from: App
+    to: ApiKey
+    type: has_many
+    via: keys
+  - from: Contact
+    to: User
+    type: belongs_to
+    via: user
+  - from: Transfer
+    to: Contact
+    type: belongs_to
+    via: contact_id
+  - from: Transfer
+    to: Invoice
+    type: belongs_to
+    via: invoice_id
+  - from: Transfer
+    to: App
+    type: belongs_to
+    via: app
+  - from: Invoice
+    to: Contract
+    type: belongs_to
+    via: contract
+  - from: Contract
+    to: Invoice
+    type: has_many
+    via: invoices
+  - from: Card
+    to: App
+    type: belongs_to
+    via: app
+  - from: Bank
+    to: User
+    type: belongs_to
+    via: user
+  - from: PayoutQuote
+    to: Contact
+    type: belongs_to
+    via: contact
+  - from: Wallet
+    to: User
+    type: belongs_to
+    via: user

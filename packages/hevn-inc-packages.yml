@@ -1,0 +1,20 @@
+generated: '2026-07-19'
+method: searched
+source: https://pypi.org/project/hevn-cli/
+packages:
+  - language: python
+    registry: pypi
+    name: hevn-cli
+    url: https://pypi.org/project/hevn-cli/
+    install: pip install hevn-cli
+    version: 0.1.4
+    official: true
+    description: Command-line client for the HEVN backend API and MCP transfers.
+    repository: https://github.com/hevn-inc/hevn-cli
+  - language: shell
+    registry: homebrew
+    name: hevn-inc/tap/hevn-cli
+    url: https://github.com/hevn-inc/homebrew-tap
+    install: brew install hevn-inc/tap/hevn-cli
+    official: true
+    description: Homebrew tap for the HEVN CLI.

@@ -1,0 +1,41 @@
+generated: '2026-07-19'
+method: searched
+status: published
+source: https://hevninc.mintlify.app/connect-agents
+server:
+  name: hevn
+  transport: stdio
+  install: hevn mcp install
+  serve: hevn mcp serve
+  description: >-
+    HEVN ships a first-party MCP server through its CLI. `hevn mcp install`
+    wires the HEVN command surface into MCP coding agents (Claude Code, Codex,
+    Cursor); `hevn mcp serve` runs the server. The MCP tool surface maps to the
+    dedicated /api/v1/mcp/* operations in the HEVN API, authenticated with a
+    HEVN API key (hvn_...). Money-movement tools are guarded by user spend
+    permissions.
+tools:
+  - name: create_api_key
+    description: Create a new MCP API key
+    source_operation: openapi/hevn-inc-openapi-original.json#create_api_key_api_v1_mcp_api_key_post
+  - name: list_api_keys
+    description: List all MCP API keys
+    source_operation: openapi/hevn-inc-openapi-original.json#list_api_keys_api_v1_mcp_api_key_get
+  - name: delete_api_key
+    description: Delete an MCP API key
+    source_operation: openapi/hevn-inc-openapi-original.json#delete_api_key_api_v1_mcp_api_key__key_id__delete
+  - name: get_balance
+    description: Get USDC balance on Base
+    source_operation: openapi/hevn-inc-openapi-original.json#get_mcp_balance_api_v1_mcp_get_balance_get
+  - name: resolve_address
+    description: Resolve smart wallet address by email
+    source_operation: openapi/hevn-inc-openapi-original.json#resolve_address_api_v1_mcp_resolve_address_get
+  - name: transfer
+    description: Transfer USDC through MCP using invoice/contact/quote context
+    source_operation: openapi/hevn-inc-openapi-original.json#transfer_api_v1_mcp_transfer_post
+  - name: transfer_to_user
+    description: Transfer USDC to a user via spend permission
+    source_operation: openapi/hevn-inc-openapi-original.json#transfer_to_user_api_v1_mcp_transfer_to_user_post
+  - name: list_transfers
+    description: List MCP transfers for the authenticated user
+    source_operation: openapi/hevn-inc-openapi-original.json#list_transfers_api_v1_mcp_transfers_get

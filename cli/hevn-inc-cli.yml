@@ -1,0 +1,61 @@
+generated: '2026-07-19'
+method: searched
+source: https://hevninc.mintlify.app/quickstart
+name: hevn
+summary: >-
+  First-party command-line client for the HEVN backend API, designed primarily
+  for AI agents and automation with human terminal output as a convenience
+  layer. Every command supports structured --json / --yaml output and a machine
+  schema via `hevn --schema`, and the whole surface can be exposed to MCP agents
+  with `hevn mcp install`.
+package: hevn-cli
+install:
+  - method: pip
+    command: pip install hevn-cli
+  - method: homebrew
+    command: brew install hevn-inc/tap/hevn-cli
+auth:
+  command: hevn login --api-key hvn_...
+  header_default: Authorization Bearer
+  header_alternate: X-Api-Key (HEVN_API_KEY_HEADER=X-Api-Key)
+global_flags:
+  - --json
+  - --yaml
+  - --schema
+  - --dry-run
+  - --yes
+  - --non-interactive
+  - --env
+  - --base-url
+  - --idempotency-key
+commands:
+  - group: login
+    description: Store API key, header mode, and optional base URL in local config.
+  - group: whoami
+    description: Introspect the current API key (identity, app, scopes, balance, spend limit).
+  - group: account
+    description: List and inspect accounts; run KYC for bank rails.
+  - group: banks
+    description: List and validate bank accounts and rails.
+  - group: cards
+    description: List cards and generate KYC links.
+  - group: contacts
+    description: Create, list, and delete payout contacts.
+  - group: transfer
+    description: Send funds to a contact, by email, or against an invoice; list transfers.
+  - group: deposit
+    description: Deposit funds into a HEVN account.
+  - group: invoice
+    description: Create, list, get, batch, upload-incoming, and decline invoices.
+  - group: contracts
+    description: Create, generate, preview, update, pause, and delete contracts.
+  - group: profile
+    description: Get and set profile settings.
+  - group: rate
+    description: Fetch FX rates by currency.
+  - group: mcp
+    description: Install, uninstall, or serve the HEVN MCP server for AI agents.
+agent_safety:
+  dry_run: Use --dry-run to inspect the would-be request for mutating commands before sending.
+  confirmation: Use --yes only when the user or upstream workflow has already approved the action.
+  idempotency: Pass --idempotency-key <stable-operation-id> for payment automation.

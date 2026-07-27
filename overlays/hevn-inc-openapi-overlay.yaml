@@ -1,0 +1,26 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for HEVN API
+  version: 1.0.0
+extends: openapi/hevn-inc-openapi-original.json
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-enriched: '2026-07-19'
+      x-apievangelist-provider: hevn-inc
+      x-apievangelist-notes: >-
+        HEVN is a YC S26 fintech providing USD business accounts and
+        stablecoin (USDC on Base) money movement for non-US companies. The API
+        is agent-first: a dedicated /api/v1/mcp/* surface plus a first-party
+        MCP server (hevn mcp install) and CLI (hevn-cli).
+  - target: $.info
+    update:
+      x-agentic-summary:
+        auth: API key (hvn_) bearer or X-Api-Key header
+        idempotency: Idempotency-Key header / idempotency_key query on transfers
+        mcp_server: published (hevn mcp install / hevn mcp serve)
+        money_movement_guard: user spend permissions
+  - target: $.servers
+    update:
+      - url: https://api.hevn.finance
+        description: Production

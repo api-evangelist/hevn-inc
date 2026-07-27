@@ -1,22 +1,545 @@
 aid: hevn-inc
 name: Hevn Inc
-description: Hevn Inc is a company surfaced as a portfolio company of y-combinator and added to the API
-  Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  HEVN Inc (Y Combinator S26) is a fintech platform that lets non-US companies
+  operate in USD without a US entity. It opens named virtual business accounts
+  with sponsor banks across the US, Europe, the UK, the UAE, Latin America, and
+  Puerto Rico, issues zero-FX USD business cards, and moves money across ACH,
+  SEPA, SWIFT, and UAE FTS rails as well as USDC stablecoin rails on Base. HEVN
+  is agent-first: its REST API, first-party CLI (hevn-cli), and hosted MCP
+  server expose account, contact, transfer, invoice, contract, card, and KYB
+  operations to AI coding agents, guarded by per-API-key spend permissions and
+  idempotency keys.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://app.gethevn.com/apple-touch-icon.png
 url: https://raw.githubusercontent.com/api-evangelist/hevn-inc/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - y-combinator
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: portfolio-lead-enriched
+x-yc-batch: S26
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Financial Services
+- Fintech
+- Banking
+- Payments
+- Stablecoin
+- USDC
+- Cross-Border Payments
+- Business Accounts
+- MCP
+- Agents
+- API
+apis:
+- aid: hevn-inc:hevn-inc-2fa-api
+  name: Hevn Inc 2FA API
+  description: The 2FA API from Hevn Inc — 10 operation(s) for 2fa.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - 2FA
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-2fa-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-activity-api
+  name: Hevn Inc Activity API
+  description: The Activity API from Hevn Inc — 2 operation(s) for activity.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Activity
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-activity-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-apps-api
+  name: Hevn Inc apps API
+  description: The apps API from Hevn Inc — 10 operation(s) for apps.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - apps
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-apps-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-apps-transfer-api
+  name: Hevn Inc apps-transfer API
+  description: The apps-transfer API from Hevn Inc — 3 operation(s) for apps-transfer.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - apps-transfer
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-apps-transfer-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-auth-api
+  name: Hevn Inc auth API
+  description: The auth API from Hevn Inc — 7 operation(s) for auth.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - auth
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-auth-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-b2b-api
+  name: Hevn Inc B2B API
+  description: The B2B API from Hevn Inc — 10 operation(s) for b2b.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - B2B
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-b2b-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-balance-api
+  name: Hevn Inc Balance API
+  description: The Balance API from Hevn Inc — 20 operation(s) for balance.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Balance
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-balance-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-banks-api
+  name: Hevn Inc Banks API
+  description: The Banks API from Hevn Inc — 14 operation(s) for banks.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Banks
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-banks-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-cards-api
+  name: Hevn Inc Cards API
+  description: The Cards API from Hevn Inc — 28 operation(s) for cards.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-cards-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-chat-api
+  name: Hevn Inc Chat API
+  description: The Chat API from Hevn Inc — 8 operation(s) for chat.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-chat-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-contracts-api
+  name: Hevn Inc contracts API
+  description: The contracts API from Hevn Inc — 28 operation(s) for contracts.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-contracts-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-devices-api
+  name: Hevn Inc Devices API
+  description: The Devices API from Hevn Inc — 4 operation(s) for devices.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Devices
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-devices-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-documents-api
+  name: Hevn Inc documents API
+  description: The documents API from Hevn Inc — 7 operation(s) for documents.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - documents
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-documents-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-exports-api
+  name: Hevn Inc Exports API
+  description: The Exports API from Hevn Inc — 8 operation(s) for exports.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Exports
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-exports-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-health-api
+  name: Hevn Inc Health API
+  description: The Health API from Hevn Inc — 1 operation(s) for health.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-health-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-incorporate-api
+  name: Hevn Inc Incorporate API
+  description: The Incorporate API from Hevn Inc — 4 operation(s) for incorporate.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Incorporate
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-incorporate-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-invoices-api
+  name: Hevn Inc invoices API
+  description: The invoices API from Hevn Inc — 14 operation(s) for invoices.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-invoices-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-kyb-api
+  name: Hevn Inc kyb API
+  description: The kyb API from Hevn Inc — 8 operation(s) for kyb.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - kyb
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-kyb-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-mcp-api
+  name: Hevn Inc mcp API
+  description: The mcp API from Hevn Inc — 14 operation(s) for mcp.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - mcp
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-mcp-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-merchant-api
+  name: Hevn Inc Merchant API
+  description: The Merchant API from Hevn Inc — 6 operation(s) for merchant.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Merchant
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-merchant-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-public-api
+  name: Hevn Inc Public API
+  description: The Public API from Hevn Inc — 8 operation(s) for public.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Public
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-public-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-root-api
+  name: Hevn Inc Root API
+  description: The Root API from Hevn Inc — 1 operation(s) for root.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Root
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-root-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-team-api
+  name: Hevn Inc team API
+  description: The team API from Hevn Inc — 8 operation(s) for team.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - team
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-team-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-tee-api
+  name: Hevn Inc tee API
+  description: The tee API from Hevn Inc — 3 operation(s) for tee.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - tee
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-tee-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-tee-local-api
+  name: Hevn Inc tee-local API
+  description: The tee-local API from Hevn Inc — 5 operation(s) for tee-local.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - tee-local
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-tee-local-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-transactions-api
+  name: Hevn Inc Transactions API
+  description: The Transactions API from Hevn Inc — 9 operation(s) for transactions.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-user-api
+  name: Hevn Inc User API
+  description: The User API from Hevn Inc — 21 operation(s) for user.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-user-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-utils-api
+  name: Hevn Inc Utils API
+  description: The Utils API from Hevn Inc — 10 operation(s) for utils.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Utils
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-utils-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-wallet-api
+  name: Hevn Inc Wallet API
+  description: The Wallet API from Hevn Inc — 14 operation(s) for wallet.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-wallet-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-webhook-api
+  name: Hevn Inc Webhook API
+  description: The Webhook API from Hevn Inc — 14 operation(s) for webhook.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Webhook
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-webhook-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-xero-api
+  name: Hevn Inc Xero API
+  description: The Xero API from Hevn Inc — 10 operation(s) for xero.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - Xero
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-xero-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+common:
+- type: DeveloperPortal
+  url: https://hevninc.mintlify.app/
+- type: Documentation
+  url: https://hevninc.mintlify.app/
+- type: APIReference
+  url: https://hevninc.mintlify.app/api-reference/authentication
+- type: GettingStarted
+  url: https://hevninc.mintlify.app/quickstart
+- type: GitHubOrganization
+  url: https://github.com/hevn-inc
+- type: SignUp
+  url: https://app.gethevn.com/
+- type: TermsOfService
+  url: https://gethevn.com/terms-of-use
+- type: PrivacyPolicy
+  url: https://gethevn.com/privacy-policy
+- type: Website
+  url: https://gethevn.com
+- type: OpenAPI
+  url: openapi/hevn-inc-openapi-original.json
+- type: LLMsTxt
+  url: llms/hevn-inc-llms.txt
+- type: MCPServer
+  url: mcp/hevn-inc-mcp.yml
+- type: Packages
+  url: packages/hevn-inc-packages.yml
+- type: SDKs
+  url: packages/hevn-inc-packages.yml
+- type: CLI
+  url: cli/hevn-inc-cli.yml
+- type: Authentication
+  url: authentication/hevn-inc-authentication.yml
+- type: Conventions
+  url: conventions/hevn-inc-conventions.yml
+- type: Idempotency
+  url: conventions/hevn-inc-conventions.yml
+- type: ErrorCatalog
+  url: errors/hevn-inc-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/hevn-inc-lifecycle.yml
+- type: Conformance
+  url: conformance/hevn-inc-conformance.yml
+- type: Overlay
+  url: overlays/hevn-inc-openapi-overlay.yaml
+- type: DataModel
+  url: data-model/hevn-inc-data-model.yml
+- type: DomainSecurity
+  url: security/hevn-inc-domain-security.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
