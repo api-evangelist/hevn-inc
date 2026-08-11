@@ -507,7 +507,7 @@ common:
 - type: Website
   url: https://gethevn.com
 - type: OpenAPI
-  url: openapi/hevn-inc-openapi-original.json
+  url: openapi/_original/hevn-inc-openapi-original.json
 - type: LLMsTxt
   url: llms/hevn-inc-llms.txt
 - type: MCPServer
