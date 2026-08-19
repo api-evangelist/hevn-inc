@@ -1,0 +1,379 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA apps API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List user's API apps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List user's API apps"
+        },
+        {
+          "info": {
+            "name": "Create a new API app",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new API app"
+        },
+        {
+          "info": {
+            "name": "App details: keys + matching spend permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "App details: keys + matching spend permissions"
+        },
+        {
+          "info": {
+            "name": "Delete an API app (soft-delete; cascades to all keys)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an API app (soft-delete; cascades to all keys)"
+        },
+        {
+          "info": {
+            "name": "Replace an app's access (cards/banks/scope) — owner only",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/access",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Replace an app's access (cards/banks/scope) — owner only"
+        },
+        {
+          "info": {
+            "name": "Issue a new API key under the app (raw key returned ONCE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/keys",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Issue a new API key under the app (raw key returned ONCE)"
+        },
+        {
+          "info": {
+            "name": "Revoke an API key from the app (soft-delete)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/keys/:key_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Revoke an API key from the app (soft-delete)"
+        },
+        {
+          "info": {
+            "name": "Recent notifications produced by this app's API keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/activity",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Recent notifications produced by this app's API keys"
+        },
+        {
+          "info": {
+            "name": "Legacy app-id transfer route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resolve recipient + amount from context, then spend USDC from the\napp's smart wallet via the user's SpendPermission.\n\nMirrors the body of ``POST /mcp/transfer``; the only differences are\nthe auth model (new ``api_keys`` instead of ``mcp_api_keys``) and the\nspender wallet (shared ``app.smart_wallet_address`` instead of per-key).\n\nDeprecated for HEVN CLI usage: current CLI calls POST /apps/transfer and the backend resolves the app from the API key."
+        },
+        {
+          "info": {
+            "name": "Introspect the current API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps/me",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return the user identity, owning app, granted scopes, balance, and remaining spend limit for the configured API key. Used by `hevn whoami`."
+        },
+        {
+          "info": {
+            "name": "Send USDC from the app resolved by the API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI."
+        },
+        {
+          "info": {
+            "name": "List transfers for the app resolved by the API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps/transfers",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

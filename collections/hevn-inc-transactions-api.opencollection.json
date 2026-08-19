@@ -1,0 +1,556 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Transactions API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Export transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/export",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated transaction types"
+              },
+              {
+                "name": "incomeOnly",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated tags"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated unified statuses"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated contact UUIDs"
+              },
+              {
+                "name": "bank_account_id",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "bankAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "cardId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated Card UUIDs"
+              },
+              {
+                "name": "fromDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across description, merchant, tag, hash/wallet, contact name, counterparty user, invoice contractor, IBAN, and exact amount. Min 2 chars; values shorter are ignored."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Export transactions as CSV or XLSX file."
+        },
+        {
+          "info": {
+            "name": "Get user transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated transaction types"
+              },
+              {
+                "name": "incomeOnly",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated tags"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated unified statuses"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated contact UUIDs"
+              },
+              {
+                "name": "bank_account_id",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "bankAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "cardId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated Card UUIDs"
+              },
+              {
+                "name": "fromDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across description, merchant, tag, hash/wallet, contact name, counterparty user, invoice contractor, IBAN, and exact amount. Min 2 chars; values shorter are ignored."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get latest user transactions sorted by time."
+        },
+        {
+          "info": {
+            "name": "Transaction volume breakdown",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/breakdown",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupBy",
+                "value": "",
+                "type": "query",
+                "description": "Group by tag or type"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated transaction types"
+              },
+              {
+                "name": "incomeOnly",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated tags"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated unified statuses"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated contact UUIDs"
+              },
+              {
+                "name": "bank_account_id",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "bankAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "cardId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated Card UUIDs"
+              },
+              {
+                "name": "fromDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across description, merchant, tag, hash/wallet, contact name, counterparty user, invoice contractor, IBAN, and exact amount. Min 2 chars; values shorter are ignored."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Volume + count grouped by tag or type, with the same filters as the list."
+        },
+        {
+          "info": {
+            "name": "Transaction volume breakdown over time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/breakdown/series",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupBy",
+                "value": "",
+                "type": "query",
+                "description": "Group by tag or type"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated transaction types"
+              },
+              {
+                "name": "incomeOnly",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated tags"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated unified statuses"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated contact UUIDs"
+              },
+              {
+                "name": "bank_account_id",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "bankAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated bank account UUIDs"
+              },
+              {
+                "name": "cardId",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated Card UUIDs"
+              },
+              {
+                "name": "fromDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "toDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search across description, merchant, tag, hash/wallet, contact name, counterparty user, invoice contractor, IBAN, and exact amount. Min 2 chars; values shorter are ignored."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Volume + count grouped by tag or type, split into time buckets across the fromDate..toDate range. Granularity is auto-picked: >6 months → month, >30 days → week, otherwise day. Empty periods are returned as zero-filled buckets so the frontend gets a complete x-axis. Same filter set as /transactions and /transactions/breakdown. `fromDate` and `toDate` are required."
+        },
+        {
+          "info": {
+            "name": "Get transaction details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/:transaction_id/details",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Authenticated owners get the full UX (status auto-sync, document download links, crypto→internal repair). Unauthenticated callers must pass `?key=` with a share key issued by `POST /transactions/{id}/share`. Without auth and without a valid key the endpoint returns 401."
+        },
+        {
+          "info": {
+            "name": "Create a share link for a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/transactions/:transaction_id/share",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Owner-only. Creates a temp access key scoped to this transaction_id. Pass the raw key back to `GET /transactions/{id}/details?key=<key>` to fetch the receipt without auth."
+        },
+        {
+          "info": {
+            "name": "Set transaction tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/transactions/:transaction_id/tag",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set or clear a tag on a transaction."
+        },
+        {
+          "info": {
+            "name": "Set transaction memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/transactions/:transaction_id/memo",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set or clear a memo (description) on a transaction."
+        },
+        {
+          "info": {
+            "name": "Attach a document to a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/transactions/:transaction_id/attachments",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Append an already-uploaded document (by id) to the transaction's attachments. The document must belong to the same user. Idempotent — re-attaching an existing id is a no-op. Returns the full updated list with signed download links."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

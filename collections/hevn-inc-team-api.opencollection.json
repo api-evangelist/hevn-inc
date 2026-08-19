@@ -1,0 +1,246 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA team API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "team",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send invite",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/team/invite",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send an invite to the specified email and track the corresponding analytics event."
+        },
+        {
+          "info": {
+            "name": "List Available Spaces",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/team/spaces",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List team spaces where the current user is a member."
+        },
+        {
+          "info": {
+            "name": "List Team",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/team",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List team members for the current user's account."
+        },
+        {
+          "info": {
+            "name": "Add Team Member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/team",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "cf-ipcountry",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a user to your team by email."
+        },
+        {
+          "info": {
+            "name": "Remove Team Member",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/team/:user_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove a user from your team."
+        },
+        {
+          "info": {
+            "name": "Send invite",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/team/invite",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send an invite to the specified email and track the corresponding analytics event."
+        },
+        {
+          "info": {
+            "name": "List Available Spaces Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/team/spaces",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List team spaces where the current user is a member."
+        },
+        {
+          "info": {
+            "name": "List Team Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/team",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List team members for the current user's account."
+        },
+        {
+          "info": {
+            "name": "Add Team Member Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/team",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "cf-ipcountry",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a user to your team by email."
+        },
+        {
+          "info": {
+            "name": "Remove Team Member Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/user/team/:user_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove a user from your team."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

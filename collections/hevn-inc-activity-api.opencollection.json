@@ -1,0 +1,84 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Activity API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Activity",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Recent account activity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/activity",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available)."
+        },
+        {
+          "info": {
+            "name": "Recent account activity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/activity",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return recent notifications attributed to the current user. Each item carries its type, the originating device label, and the client IP captured at trigger time (when available)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,185 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA auth API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Auth Start",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/start",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "user-agent",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start authentication: verify TEE signature, then send OTP to email."
+        },
+        {
+          "info": {
+            "name": "Auth Email Otp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/email_otp",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify email OTP code. Sets email_otp_validated flag on session."
+        },
+        {
+          "info": {
+            "name": "Auth Totp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/totp",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify TOTP code. Sets totp_validated flag on session."
+        },
+        {
+          "info": {
+            "name": "Submit Signed Jwt",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/submit_signed_jwt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify TEE-signed Google JWT attestation. Sets tee_validated flag on session.\n\nChecks:\n- msg in auth_payload == session_key (binds attestation to this session)\n- hash_email matches session email\n- Ed25519 signature is valid using TEE_PUBLIC_KEY"
+        },
+        {
+          "info": {
+            "name": "Auth Complete",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              },
+              {
+                "name": "cf-ipcountry",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Complete auth: issue refresh token if all required steps are validated."
+        },
+        {
+          "info": {
+            "name": "Auth Privy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/privy",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Authenticate via Privy embedded wallet signature.\n\n1. Recover signer from signature of \"I am the owner of {email}\"\n2. Verify via Privy API that this address is the embedded wallet for the email\n3. Get or create user, save privy_address, deploy smart wallet if needed\n4. Return HEVN refresh token"
+        },
+        {
+          "info": {
+            "name": "Refresh Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/refresh",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Exchange a refresh token for a short-lived session token (10 min).\n\nIf user_id differs from the token owner, checks team membership\nand issues a delegated session token (sub=owner, uid=target)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

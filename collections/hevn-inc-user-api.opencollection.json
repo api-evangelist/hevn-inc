@@ -1,0 +1,614 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA User API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "User",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create or get current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/user/kyc",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or update user profile data for KYC."
+        },
+        {
+          "info": {
+            "name": "Get current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-type",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the profile of the currently authenticated user."
+        },
+        {
+          "info": {
+            "name": "Submit KYC data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/kyc_link",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get Swipelux KYC verification link."
+        },
+        {
+          "info": {
+            "name": "Get KYC status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/kyc/status",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check the current KYC verification status. Use provider=align for Align."
+        },
+        {
+          "info": {
+            "name": "Geocode address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/geo",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Search address via Google Maps Geocoding API and return structured address components."
+        },
+        {
+          "info": {
+            "name": "Track user event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/event",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Proxy user events to Customer.io for analytics tracking."
+        },
+        {
+          "info": {
+            "name": "Get user settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/settings",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get user settings"
+        },
+        {
+          "info": {
+            "name": "Update user settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/user/settings",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update user settings"
+        },
+        {
+          "info": {
+            "name": "Update requested bank rails",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/user/bank_requested",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update requested bank rails"
+        },
+        {
+          "info": {
+            "name": "Get recent notifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/notifications",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return recent notifications (email/push) for the current user."
+        },
+        {
+          "info": {
+            "name": "Upload user avatar",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/avatar",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Upload avatar image to public storage and save URL to user profile."
+        },
+        {
+          "info": {
+            "name": "Share KYB link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/share_kyb_link",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send a KYB verification link to the specified email."
+        },
+        {
+          "info": {
+            "name": "Send invite",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/invite",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Legacy mapping for team invites. Prefer POST /team/invite."
+        },
+        {
+          "info": {
+            "name": "Prevalidate bank contact details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/contact/bank/validate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Validate bank identifiers before creating a contact."
+        },
+        {
+          "info": {
+            "name": "Get user contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/contacts",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all contacts for the current user."
+        },
+        {
+          "info": {
+            "name": "Preview contact by wallet or email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/contact/preview",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "wallet",
+                "value": "",
+                "type": "query",
+                "description": "EVM wallet address"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "Email address"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Look up a HEVN user by wallet address or email and return a preview."
+        },
+        {
+          "info": {
+            "name": "Create contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/contact",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new contact for the current user."
+        },
+        {
+          "info": {
+            "name": "Update contact name",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.hevn.finance/api/v1/user/contacts/:contact_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update safe contact metadata."
+        },
+        {
+          "info": {
+            "name": "Delete contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/user/contacts/:contact_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a contact."
+        },
+        {
+          "info": {
+            "name": "Get invite code for current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/invite_code",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the current user's invite code, creating one if needed."
+        },
+        {
+          "info": {
+            "name": "Get users invited by current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/invited",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return all users who joined via the current user's invite code."
+        },
+        {
+          "info": {
+            "name": "Get referral rewards earned by current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/rewards",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Reserved for future pagination"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return list of referral rewards (KYB and volume bonuses) for the current user."
+        },
+        {
+          "info": {
+            "name": "Share KYB link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/kyb/user/share_kyb_link",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send a KYB verification link to the specified email."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

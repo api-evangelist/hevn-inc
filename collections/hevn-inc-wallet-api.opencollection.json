@@ -1,0 +1,389 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Wallet API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Wallet",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Resolve smart wallet address by email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/address_by_email",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "email",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return or create a smart wallet address for the given email."
+        },
+        {
+          "info": {
+            "name": "Create wallet",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              },
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-type",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new NEAR wallet for authenticated user."
+        },
+        {
+          "info": {
+            "name": "Import external wallet",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/import",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Import an external EVM wallet to track its balance."
+        },
+        {
+          "info": {
+            "name": "List imported wallets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/imported",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List all imported external wallets for the current user."
+        },
+        {
+          "info": {
+            "name": "Remove imported wallet",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/wallet/imported/:wallet_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "wallet_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove an imported external wallet."
+        },
+        {
+          "info": {
+            "name": "Deploy Safe 2/2 multisig with passkey + backend EOA",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/deploy_safe_msig",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deploys a Safe v1.4.1 wallet with threshold 2/2. Owners are the backend EOA (from config) and a SafeWebAuthnSigner contract derived from the provided passkey (x, y) P-256 coordinates."
+        },
+        {
+          "info": {
+            "name": "Push a fully-built UserOperation through EntryPoint.handleOps from the backend EOA",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/paymaster_raw",
+            "headers": [
+              {
+                "name": "payment-id",
+                "value": ""
+              },
+              {
+                "name": "payment-memo",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Submit a pre-built UserOperation through EntryPoint.handleOps from backend EOA."
+        },
+        {
+          "info": {
+            "name": "Execute transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/execute_transaction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Execute a NEAR transaction."
+        },
+        {
+          "info": {
+            "name": "Sign login message",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/login",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              },
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-type",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sign a login message for authentication."
+        },
+        {
+          "info": {
+            "name": "Paymaster",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/paymaster",
+            "headers": [
+              {
+                "name": "payment-id",
+                "value": ""
+              },
+              {
+                "name": "payment-memo",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "JSON-RPC endpoint.\n\n`eth_sendUserOperation` is handled by `paymaster_raw`.\nAll other methods are proxied to the Coinbase paymaster URL."
+        },
+        {
+          "info": {
+            "name": "Get Permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/permissions",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sync spend permissions from chain and return active ones."
+        },
+        {
+          "info": {
+            "name": "List user passkeys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/passkeys",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return all active passkeys for the current user, synced with on-chain state."
+        },
+        {
+          "info": {
+            "name": "Add account owner extension",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/account_owner",
+            "headers": [
+              {
+                "name": "auth-session-id",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Without session: validates op, simulates, sends OTP, returns 403 with session_key. With session: verifies OTP session, executes on-chain, returns 200."
+        },
+        {
+          "info": {
+            "name": "Proxy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/rpc/:chain_id",
+            "params": [
+              {
+                "name": "chain_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Proxy"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

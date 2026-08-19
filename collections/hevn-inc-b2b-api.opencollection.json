@@ -1,0 +1,316 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA B2B API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "B2B",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get KYB draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/b2b/kyb/draft",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get current KYB draft with all data and signed URLs for documents."
+        },
+        {
+          "info": {
+            "name": "Save KYB draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/b2b/kyb/draft",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents."
+        },
+        {
+          "info": {
+            "name": "Upload draft document (deprecated, use POST /documents/upload)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/b2b/kyb/draft/documents",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Backward-compatible proxy to POST /documents/upload."
+        },
+        {
+          "info": {
+            "name": "Submit KYB",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/b2b/kyb/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux."
+        },
+        {
+          "info": {
+            "name": "Request KYB for a provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/b2b/kyb/request",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Request KYB verification for a provider"
+        },
+        {
+          "info": {
+            "name": "List uploaded documents (deprecated, use GET /documents)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/b2b/documents",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "doc_type",
+                "value": "",
+                "type": "query",
+                "description": "Document filter type, e.g. 'uploaded'"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Backward-compatible proxy to GET /documents."
+        },
+        {
+          "info": {
+            "name": "Get KYB draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/kyb/draft",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get current KYB draft with all data and signed URLs for documents."
+        },
+        {
+          "info": {
+            "name": "Save KYB draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/kyb/draft",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents."
+        },
+        {
+          "info": {
+            "name": "Upload draft document (deprecated, use POST /documents/upload)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/kyb/draft/documents",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Backward-compatible proxy to POST /documents/upload."
+        },
+        {
+          "info": {
+            "name": "Submit KYB",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/kyb/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux."
+        },
+        {
+          "info": {
+            "name": "Request KYB for a provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/kyb/request",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Request KYB verification for a provider"
+        },
+        {
+          "info": {
+            "name": "List uploaded documents (deprecated, use GET /documents)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/kyb/b2b/documents",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "doc_type",
+                "value": "",
+                "type": "query",
+                "description": "Document filter type, e.g. 'uploaded'"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Backward-compatible proxy to GET /documents."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

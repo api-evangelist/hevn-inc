@@ -1,0 +1,2597 @@
+{
+  "item": [
+    {
+      "id": "b223775b-f3a1-433c-9477-09b2c17c27d6",
+      "name": "Banks",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1d71eb1c-acfd-472b-b296-76a6b44d3118",
+          "name": "Pre-approve a bank rail",
+          "request": {
+            "name": "Pre-approve a bank rail",
+            "description": {
+              "content": "Read-only KYC info for the rail. Does not mutate Bank rows.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "bank",
+                ":rail",
+                "pre-approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "rail",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "615d08d2-194e-41e4-a68e-f43f3bb3d178",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "bank",
+                    ":rail",
+                    "pre-approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"kycUrl\": \"string\",\n  \"kycStatus\": \"not_started\",\n  \"requirePhoneNumber\": false,\n  \"requireAddress\": false,\n  \"requireKyb\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b28fa825-cca6-4f4c-9e0f-2a6f72b708fb",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "bank",
+                    ":rail",
+                    "pre-approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "930a8f4f-3b28-428a-a69d-810c16546bed",
+          "name": "Activate a bank rail",
+          "request": {
+            "name": "Activate a bank rail",
+            "description": {
+              "content": "Create or upsert a Bank row for the given rail. Idempotent.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "bank",
+                ":rail",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "rail",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "469af49b-19a7-4c8f-aa17-4a1d8f31fd30",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "bank",
+                    ":rail",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rail\": \"fedwire_named-cfsb\",\n  \"bankName\": \"string\",\n  \"country\": \"string\",\n  \"currency\": \"string\",\n  \"type\": \"ach\",\n  \"method\": \"swift\",\n  \"methods\": [\n    \"sepa\",\n    \"uaefts\"\n  ],\n  \"pooled\": true,\n  \"compliance\": 5237,\n  \"bankIcon\": \"string\",\n  \"depositFee\": 3786.4764058450796,\n  \"timeToOpen\": \"2-3 days\",\n  \"status\": \"pending_kyc\",\n  \"accountHolderBusinessName\": \"string\",\n  \"accountHolderFirstName\": \"string\",\n  \"accountHolderLastName\": \"string\",\n  \"ibanData\": {\n    \"bankName\": \"string\",\n    \"accountHolderType\": \"individual\",\n    \"ibanNumber\": \"string\",\n    \"beneficiaryName\": \"string\",\n    \"bankAddress\": \"string\",\n    \"currency\": \"string\",\n    \"accountHolderFirstName\": \"string\",\n    \"accountHolderLastName\": \"string\",\n    \"accountHolderBusinessName\": \"string\",\n    \"accountHolderAddress\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"EE\",\n      \"zip\": \"string\"\n    },\n    \"relationship\": \"good_sold\",\n    \"paymentReference\": \"string\",\n    \"accountType\": \"sepa\",\n    \"bic\": \"string\"\n  },\n  \"id\": \"ca943b95-ecb2-0575-264a-07fe88f841a9\",\n  \"externalAccountId\": \"string\",\n  \"createdAt\": \"1997-06-22T21:51:40.488Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5675890b-3956-41f8-8dcc-663c4eee8a38",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "bank",
+                    ":rail",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "09022c1e-3308-4123-8b51-54599700ba33",
+          "name": "Get a pooled bank payin quote",
+          "request": {
+            "name": "Get a pooled bank payin quote",
+            "description": {
+              "content": "Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "banks",
+                "payin",
+                "quote"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5e2819d8-ab3d-4b99-9ec0-f1df5231d84e",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"quoteId\": \"string\",\n  \"bankAccountId\": \"fbf1d5a5-2551-4525-77fd-fe7a121c107f\",\n  \"rail\": \"fedwire_pooled-hsbc\",\n  \"paymentRail\": \"string\",\n  \"fromAmount\": \"-000000000033271.90\",\n  \"fromCurrency\": \"string\",\n  \"toAmount\": \"0000000003170341626384\",\n  \"expiresAt\": \"1955-09-05T18:10:56.499Z\",\n  \"provider\": \"swipelux\",\n  \"toCurrency\": \"USDC\",\n  \"feeAmount\": \"+064506467532464124278\",\n  \"feeCurrency\": \"string\",\n  \"rate\": \"+00000000006149504519\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afaf9d19-617a-41e8-8443-34db322532f2",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f210c698-c50c-415b-b907-fd7bd365b1cd",
+          "name": "Submit a pooled bank payin quote",
+          "request": {
+            "name": "Submit a pooled bank payin quote",
+            "description": {
+              "content": "Execute a Swipelux payin quote and return payment instructions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "banks",
+                "payin",
+                "quote",
+                "submit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "16235f85-e3ca-416a-9041-c517ca1255c6",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"quoteId\": \"string\",\n  \"bankAccountId\": \"2d28ffd1-bd71-2b8e-f778-ebbb0eb8b12b\",\n  \"resource\": \"string\",\n  \"recipientDetails\": {\n    \"bankName\": \"string\",\n    \"accountHolderType\": \"business\",\n    \"ibanNumber\": \"string\",\n    \"beneficiaryName\": \"string\",\n    \"bankAddress\": \"string\",\n    \"currency\": \"string\",\n    \"accountHolderFirstName\": \"string\",\n    \"accountHolderLastName\": \"string\",\n    \"accountHolderBusinessName\": \"string\",\n    \"accountHolderAddress\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"JO\",\n      \"zip\": \"string\"\n    },\n    \"relationship\": \"credit_card\",\n    \"paymentReference\": \"string\",\n    \"accountType\": \"sepa\",\n    \"bic\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "874884d2-9fa9-467f-abca-5c64036fdd4b",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cd249c16-66ea-4519-b9bc-adf9787712c3",
+          "name": "Cancel a locally tracked bank payin quote",
+          "request": {
+            "name": "Cancel a locally tracked bank payin quote",
+            "description": {
+              "content": "Mark the local FiatTransfer created from a Swipelux payin quote as canceled.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "banks",
+                "payin",
+                "quote",
+                ":quote_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "quote_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f0cffdd2-c3ee-497e-8422-736e2afe81f6",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote",
+                    ":quote_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "quote_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferId\": \"e0c3e9d8-a647-12fb-0c70-bfe1fabf6452\",\n  \"quoteId\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c41d5f4-4030-475a-96bc-50636ab641fa",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "payin",
+                    "quote",
+                    ":quote_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "quote_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2213a54a-ac83-409c-a4ce-da95d006bc07",
+          "name": "Activate multiple bank rails",
+          "request": {
+            "name": "Activate multiple bank rails",
+            "description": {
+              "content": "Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "banks",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rails\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fb18d5aa-4815-473b-bc1c-bc74772fe2ae",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rails\": [\n    \"ach_named-jpmorgan_chase\",\n    \"sepa_named-zen\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"rail\": \"ach_named-cfsb\",\n      \"ok\": false,\n      \"bank\": {\n        \"rail\": \"ach_pooled-hsbc\",\n        \"bankName\": \"string\",\n        \"country\": \"string\",\n        \"currency\": \"string\",\n        \"type\": \"fedwire\",\n        \"method\": \"ach\",\n        \"methods\": [\n          \"swift\",\n          \"ach\"\n        ],\n        \"pooled\": false,\n        \"compliance\": 9095,\n        \"bankIcon\": \"string\",\n        \"depositFee\": 3328.020444493269,\n        \"timeToOpen\": \"1-2 days\",\n        \"status\": \"not_started\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"ibanData\": {\n          \"bankName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ibanNumber\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"beneficiaryName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bankAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currency\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderFirstName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderLastName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderBusinessName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"relationship\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"paymentReference\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bic\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"id\": \"71126a77-9ac5-1e6f-dfcf-faf9aabd0f43\",\n        \"externalAccountId\": \"string\",\n        \"createdAt\": \"2022-07-26T22:47:22.733Z\"\n      },\n      \"error\": {\n        \"statusCode\": 3990,\n        \"message\": \"string\",\n        \"detail\": {}\n      }\n    },\n    {\n      \"rail\": \"sepa_pooled-zen\",\n      \"ok\": false,\n      \"bank\": {\n        \"rail\": \"ach_named-citi\",\n        \"bankName\": \"string\",\n        \"country\": \"string\",\n        \"currency\": \"string\",\n        \"type\": \"sepa\",\n        \"method\": \"fedwire\",\n        \"methods\": [\n          \"sepa\",\n          \"swift\"\n        ],\n        \"pooled\": true,\n        \"compliance\": 1003,\n        \"bankIcon\": \"string\",\n        \"depositFee\": 6523.439584876821,\n        \"timeToOpen\": \"2-3 days\",\n        \"status\": \"pending_kyc\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"ibanData\": {\n          \"bankName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ibanNumber\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"beneficiaryName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bankAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currency\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderFirstName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderLastName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderBusinessName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"relationship\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"paymentReference\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bic\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"id\": \"97b48944-c142-79c3-336a-c03841d21c16\",\n        \"externalAccountId\": \"string\",\n        \"createdAt\": \"1997-10-20T18:12:01.225Z\"\n      },\n      \"error\": {\n        \"statusCode\": 2733,\n        \"message\": \"string\",\n        \"detail\": {}\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5130e81e-b302-4f36-a9c8-e8c39ffefdbe",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rails\": [\n    \"ach_named-jpmorgan_chase\",\n    \"sepa_named-zen\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6a7bb64f-70c4-4e9f-8e89-1078f4447abb",
+          "name": "List all bank rails",
+          "request": {
+            "name": "List all bank rails",
+            "description": {
+              "content": "Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row exists yet, syncs lazily from Swipelux / Align before returning.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "banks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1ba3dc48-5061-4c31-bb17-d7970c3f6cb0",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"banks\": [\n    {\n      \"rail\": \"swift_pooled-hsbc\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"swift\",\n      \"method\": \"ach\",\n      \"methods\": [\n        \"sepa\",\n        \"fedwire\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 6161,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 5961.315740149681,\n      \"timeToOpen\": \"1-2 days\",\n      \"status\": \"document_requested\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"rental\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"ba381127-336e-9d8d-c237-1e0b2b155cc7\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"2015-12-25T20:06:15.912Z\"\n    },\n    {\n      \"rail\": \"fedwire_pooled-cfsb\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"sepa\",\n      \"method\": \"sepa\",\n      \"methods\": [\n        \"swift\",\n        \"swift\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 5910,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 9942.898509208879,\n      \"timeToOpen\": \"1-2 days\",\n      \"status\": \"hidden\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"leasing\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"f05a158b-441a-d1a6-2482-9c3cae7466b9\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1991-02-20T10:10:33.761Z\"\n    }\n  ],\n  \"rails\": {\n    \"us\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"swift\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"eu\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"uae\": {\n      \"pooled\": false,\n      \"named\": false\n    }\n  },\n  \"allOptions\": [\n    {\n      \"rail\": \"ach_named-citi\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"ach\",\n      \"method\": \"uaefts\",\n      \"methods\": [\n        \"sepa\",\n        \"uaefts\"\n      ],\n      \"pooled\": true,\n      \"compliance\": 1222,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 5793.415000034693,\n      \"timeToOpen\": \"2-3 days\",\n      \"status\": \"active\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"loan_charges\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"24503f9a-d41b-e723-a0f9-cc7cd1fce43c\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1960-01-10T12:14:23.123Z\"\n    },\n    {\n      \"rail\": \"swift_pooled-hsbc\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"ach\",\n      \"method\": \"sepa\",\n      \"methods\": [\n        \"ach\",\n        \"swift\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 8419,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 2597.565689925498,\n      \"timeToOpen\": \"5-7 days\",\n      \"status\": \"requested\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"business\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"utility_bill\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"3191180a-d4ac-c92c-be5d-4a99a7e026dd\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1991-07-26T06:51:39.542Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5be87281-7e18-47e2-8edc-8307ca5c821c",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "banks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "72cec16c-679f-40f6-b712-bd147228049c",
+          "name": "Pre-approve a bank rail",
+          "request": {
+            "name": "Pre-approve a bank rail",
+            "description": {
+              "content": "Read-only KYC info for the rail. Does not mutate Bank rows.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "bank",
+                ":rail",
+                "pre-approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "rail",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b5540b88-7af4-494d-b231-12775dbdd471",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "bank",
+                    ":rail",
+                    "pre-approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"kycUrl\": \"string\",\n  \"kycStatus\": \"not_started\",\n  \"requirePhoneNumber\": false,\n  \"requireAddress\": false,\n  \"requireKyb\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "be2c0b11-5f2e-41d4-9150-ac357fc04976",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "bank",
+                    ":rail",
+                    "pre-approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "501820c7-f13c-4f61-871d-dd19325b1f6f",
+          "name": "Activate a bank rail",
+          "request": {
+            "name": "Activate a bank rail",
+            "description": {
+              "content": "Create or upsert a Bank row for the given rail. Idempotent.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "bank",
+                ":rail",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "rail",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "78e3e83a-d9b1-414c-9368-c62d2673bf5e",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "bank",
+                    ":rail",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rail\": \"fedwire_named-cfsb\",\n  \"bankName\": \"string\",\n  \"country\": \"string\",\n  \"currency\": \"string\",\n  \"type\": \"ach\",\n  \"method\": \"swift\",\n  \"methods\": [\n    \"sepa\",\n    \"uaefts\"\n  ],\n  \"pooled\": true,\n  \"compliance\": 5237,\n  \"bankIcon\": \"string\",\n  \"depositFee\": 3786.4764058450796,\n  \"timeToOpen\": \"2-3 days\",\n  \"status\": \"pending_kyc\",\n  \"accountHolderBusinessName\": \"string\",\n  \"accountHolderFirstName\": \"string\",\n  \"accountHolderLastName\": \"string\",\n  \"ibanData\": {\n    \"bankName\": \"string\",\n    \"accountHolderType\": \"individual\",\n    \"ibanNumber\": \"string\",\n    \"beneficiaryName\": \"string\",\n    \"bankAddress\": \"string\",\n    \"currency\": \"string\",\n    \"accountHolderFirstName\": \"string\",\n    \"accountHolderLastName\": \"string\",\n    \"accountHolderBusinessName\": \"string\",\n    \"accountHolderAddress\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"EE\",\n      \"zip\": \"string\"\n    },\n    \"relationship\": \"good_sold\",\n    \"paymentReference\": \"string\",\n    \"accountType\": \"sepa\",\n    \"bic\": \"string\"\n  },\n  \"id\": \"ca943b95-ecb2-0575-264a-07fe88f841a9\",\n  \"externalAccountId\": \"string\",\n  \"createdAt\": \"1997-06-22T21:51:40.488Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c0d0f438-620d-4aad-b163-91320449aaf6",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "bank",
+                    ":rail",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "rail",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "79d47903-2138-402d-b867-af8d0f763664",
+          "name": "Get a pooled bank payin quote",
+          "request": {
+            "name": "Get a pooled bank payin quote",
+            "description": {
+              "content": "Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "banks",
+                "payin",
+                "quote"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3fb58a49-5109-43fc-8654-a2ff4150b100",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"quoteId\": \"string\",\n  \"bankAccountId\": \"fbf1d5a5-2551-4525-77fd-fe7a121c107f\",\n  \"rail\": \"fedwire_pooled-hsbc\",\n  \"paymentRail\": \"string\",\n  \"fromAmount\": \"-000000000033271.90\",\n  \"fromCurrency\": \"string\",\n  \"toAmount\": \"0000000003170341626384\",\n  \"expiresAt\": \"1955-09-05T18:10:56.499Z\",\n  \"provider\": \"swipelux\",\n  \"toCurrency\": \"USDC\",\n  \"feeAmount\": \"+064506467532464124278\",\n  \"feeCurrency\": \"string\",\n  \"rate\": \"+00000000006149504519\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "450b2e3b-43c5-4a02-9a48-2f078101803b",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<number>\",\n  \"bankAccountId\": \"<uuid>\",\n  \"memo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "60c42779-06b7-4421-80a4-8df690f72885",
+          "name": "Submit a pooled bank payin quote",
+          "request": {
+            "name": "Submit a pooled bank payin quote",
+            "description": {
+              "content": "Execute a Swipelux payin quote and return payment instructions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "banks",
+                "payin",
+                "quote",
+                "submit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "895ec667-4673-4c1d-bd7f-06b7b003937c",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"quoteId\": \"string\",\n  \"bankAccountId\": \"2d28ffd1-bd71-2b8e-f778-ebbb0eb8b12b\",\n  \"resource\": \"string\",\n  \"recipientDetails\": {\n    \"bankName\": \"string\",\n    \"accountHolderType\": \"business\",\n    \"ibanNumber\": \"string\",\n    \"beneficiaryName\": \"string\",\n    \"bankAddress\": \"string\",\n    \"currency\": \"string\",\n    \"accountHolderFirstName\": \"string\",\n    \"accountHolderLastName\": \"string\",\n    \"accountHolderBusinessName\": \"string\",\n    \"accountHolderAddress\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"JO\",\n      \"zip\": \"string\"\n    },\n    \"relationship\": \"credit_card\",\n    \"paymentReference\": \"string\",\n    \"accountType\": \"sepa\",\n    \"bic\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d28d4c29-d1ad-405c-9605-fdf4bc0d37d5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f3ec761b-1d04-45d0-80dd-e95b7981439e",
+          "name": "Cancel a locally tracked bank payin quote",
+          "request": {
+            "name": "Cancel a locally tracked bank payin quote",
+            "description": {
+              "content": "Mark the local FiatTransfer created from a Swipelux payin quote as canceled.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "banks",
+                "payin",
+                "quote",
+                ":quote_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "quote_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "de5554a3-b2e3-462b-8b01-5da2bc966a7a",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote",
+                    ":quote_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "quote_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferId\": \"e0c3e9d8-a647-12fb-0c70-bfe1fabf6452\",\n  \"quoteId\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7920a15d-1757-40b4-8ed4-44d380a6592d",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "payin",
+                    "quote",
+                    ":quote_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "quote_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "389f5b06-cc54-49ca-a312-8a66e66f9d9e",
+          "name": "Activate multiple bank rails",
+          "request": {
+            "name": "Activate multiple bank rails",
+            "description": {
+              "content": "Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "banks",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rails\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "40e032dd-7139-4af3-8427-cc8353c7c457",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rails\": [\n    \"ach_named-jpmorgan_chase\",\n    \"sepa_named-zen\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"rail\": \"ach_named-cfsb\",\n      \"ok\": false,\n      \"bank\": {\n        \"rail\": \"ach_pooled-hsbc\",\n        \"bankName\": \"string\",\n        \"country\": \"string\",\n        \"currency\": \"string\",\n        \"type\": \"fedwire\",\n        \"method\": \"ach\",\n        \"methods\": [\n          \"swift\",\n          \"ach\"\n        ],\n        \"pooled\": false,\n        \"compliance\": 9095,\n        \"bankIcon\": \"string\",\n        \"depositFee\": 3328.020444493269,\n        \"timeToOpen\": \"1-2 days\",\n        \"status\": \"not_started\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"ibanData\": {\n          \"bankName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ibanNumber\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"beneficiaryName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bankAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currency\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderFirstName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderLastName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderBusinessName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"relationship\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"paymentReference\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bic\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"id\": \"71126a77-9ac5-1e6f-dfcf-faf9aabd0f43\",\n        \"externalAccountId\": \"string\",\n        \"createdAt\": \"2022-07-26T22:47:22.733Z\"\n      },\n      \"error\": {\n        \"statusCode\": 3990,\n        \"message\": \"string\",\n        \"detail\": {}\n      }\n    },\n    {\n      \"rail\": \"sepa_pooled-zen\",\n      \"ok\": false,\n      \"bank\": {\n        \"rail\": \"ach_named-citi\",\n        \"bankName\": \"string\",\n        \"country\": \"string\",\n        \"currency\": \"string\",\n        \"type\": \"sepa\",\n        \"method\": \"fedwire\",\n        \"methods\": [\n          \"sepa\",\n          \"swift\"\n        ],\n        \"pooled\": true,\n        \"compliance\": 1003,\n        \"bankIcon\": \"string\",\n        \"depositFee\": 6523.439584876821,\n        \"timeToOpen\": \"2-3 days\",\n        \"status\": \"pending_kyc\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"ibanData\": {\n          \"bankName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ibanNumber\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"beneficiaryName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bankAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currency\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderFirstName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderLastName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderBusinessName\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountHolderAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"relationship\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"paymentReference\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"accountType\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"bic\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"id\": \"97b48944-c142-79c3-336a-c03841d21c16\",\n        \"externalAccountId\": \"string\",\n        \"createdAt\": \"1997-10-20T18:12:01.225Z\"\n      },\n      \"error\": {\n        \"statusCode\": 2733,\n        \"message\": \"string\",\n        \"detail\": {}\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba58a59b-96d1-4534-9b17-1958b343dfa2",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rails\": [\n    \"ach_named-jpmorgan_chase\",\n    \"sepa_named-zen\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9c08f472-bdd6-4203-b8ce-a9b36ec7789a",
+          "name": "List all bank rails",
+          "request": {
+            "name": "List all bank rails",
+            "description": {
+              "content": "Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row exists yet, syncs lazily from Swipelux / Align before returning.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "banks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c25a27b1-cdca-451b-86bd-d79ca63efe01",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"banks\": [\n    {\n      \"rail\": \"swift_pooled-hsbc\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"swift\",\n      \"method\": \"ach\",\n      \"methods\": [\n        \"sepa\",\n        \"fedwire\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 6161,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 5961.315740149681,\n      \"timeToOpen\": \"1-2 days\",\n      \"status\": \"document_requested\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"rental\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"ba381127-336e-9d8d-c237-1e0b2b155cc7\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"2015-12-25T20:06:15.912Z\"\n    },\n    {\n      \"rail\": \"fedwire_pooled-cfsb\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"sepa\",\n      \"method\": \"sepa\",\n      \"methods\": [\n        \"swift\",\n        \"swift\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 5910,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 9942.898509208879,\n      \"timeToOpen\": \"1-2 days\",\n      \"status\": \"hidden\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"leasing\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"f05a158b-441a-d1a6-2482-9c3cae7466b9\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1991-02-20T10:10:33.761Z\"\n    }\n  ],\n  \"rails\": {\n    \"us\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"swift\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"eu\": {\n      \"pooled\": false,\n      \"named\": false\n    },\n    \"uae\": {\n      \"pooled\": false,\n      \"named\": false\n    }\n  },\n  \"allOptions\": [\n    {\n      \"rail\": \"ach_named-citi\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"ach\",\n      \"method\": \"uaefts\",\n      \"methods\": [\n        \"sepa\",\n        \"uaefts\"\n      ],\n      \"pooled\": true,\n      \"compliance\": 1222,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 5793.415000034693,\n      \"timeToOpen\": \"2-3 days\",\n      \"status\": \"active\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"individual\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"loan_charges\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"24503f9a-d41b-e723-a0f9-cc7cd1fce43c\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1960-01-10T12:14:23.123Z\"\n    },\n    {\n      \"rail\": \"swift_pooled-hsbc\",\n      \"bankName\": \"string\",\n      \"country\": \"string\",\n      \"currency\": \"string\",\n      \"type\": \"ach\",\n      \"method\": \"sepa\",\n      \"methods\": [\n        \"ach\",\n        \"swift\"\n      ],\n      \"pooled\": false,\n      \"compliance\": 8419,\n      \"bankIcon\": \"string\",\n      \"depositFee\": 2597.565689925498,\n      \"timeToOpen\": \"5-7 days\",\n      \"status\": \"requested\",\n      \"accountHolderBusinessName\": \"string\",\n      \"accountHolderFirstName\": \"string\",\n      \"accountHolderLastName\": \"string\",\n      \"ibanData\": {\n        \"bankName\": \"string\",\n        \"accountHolderType\": \"business\",\n        \"ibanNumber\": \"string\",\n        \"beneficiaryName\": \"string\",\n        \"bankAddress\": \"string\",\n        \"currency\": \"string\",\n        \"accountHolderFirstName\": \"string\",\n        \"accountHolderLastName\": \"string\",\n        \"accountHolderBusinessName\": \"string\",\n        \"accountHolderAddress\": {\n          \"streetAddress\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"addressLine2\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"city\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"state\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"zip\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"relationship\": \"utility_bill\",\n        \"paymentReference\": \"string\",\n        \"accountType\": \"sepa\",\n        \"bic\": \"string\"\n      },\n      \"id\": \"3191180a-d4ac-c92c-be5d-4a99a7e026dd\",\n      \"externalAccountId\": \"string\",\n      \"createdAt\": \"1991-07-26T06:51:39.542Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8efc5ea-9e19-427a-bced-3cbb0763df7a",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "accounts",
+                    "banks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.hevn.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c968f766-4258-497c-a24d-a66f6828439f",
+    "name": "HEVN 2FA Banks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Backend API for HEVN mobile neobank",
+      "type": "text/plain"
+    }
+  }
+}

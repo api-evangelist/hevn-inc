@@ -1,0 +1,134 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Devices API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List user's devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/devices",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all devices associated with the authenticated user's account."
+        },
+        {
+          "info": {
+            "name": "Set push notification token",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/device",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-type",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings."
+        },
+        {
+          "info": {
+            "name": "List user's devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/devices",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all devices associated with the authenticated user's account."
+        },
+        {
+          "info": {
+            "name": "Set push notification token",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.hevn.finance/api/v1/user/device",
+            "headers": [
+              {
+                "name": "device-id",
+                "value": ""
+              },
+              {
+                "name": "device-type",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set or update the push notification token for the current device. Pass an empty pushToken to unsubscribe the device. Web subscriptions arrive as JSON-stringified PushSubscription; native tokens (APNs/FCM) are short strings."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Root API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Root",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Root",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/"
+          },
+          "docs": "Root endpoint."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

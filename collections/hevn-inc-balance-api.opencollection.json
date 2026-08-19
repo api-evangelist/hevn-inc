@@ -1,0 +1,494 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Balance API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Balance",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get wallet balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/balance",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "wallet_type",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user."
+        },
+        {
+          "info": {
+            "name": "Withdraw to onchain address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/withdraw_onchain",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send funds from Swipelux custodial wallet to external onchain address."
+        },
+        {
+          "info": {
+            "name": "Sweep custodial balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/sweep",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet."
+        },
+        {
+          "info": {
+            "name": "Get transaction status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/balance/transaction/status/:quote_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "quote_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check status of any transaction by quote_id."
+        },
+        {
+          "info": {
+            "name": "Get supported tokens for cross-chain swaps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/balance/oneclick/tokens"
+          },
+          "docs": "Get list of tokens supported by 1click for cross-chain swaps."
+        },
+        {
+          "info": {
+            "name": "Get cross-chain payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/payin/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a quote to deposit from any chain to Base USDC."
+        },
+        {
+          "info": {
+            "name": "Submit cross-chain payin",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/payin/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands."
+        },
+        {
+          "info": {
+            "name": "Get payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/payout/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal)."
+        },
+        {
+          "info": {
+            "name": "Estimate payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/payout/quote/dry_run",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Estimate payout amount and fees without a contact or provider-side activation."
+        },
+        {
+          "info": {
+            "name": "Activate payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/balance/payout/quote/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Activate a payout quote and create pending records. Returns deposit address."
+        },
+        {
+          "info": {
+            "name": "Get wallet balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "wallet_type",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get OMNI, NEAR, EVM and Swipelux wallet balances for authenticated user."
+        },
+        {
+          "info": {
+            "name": "Withdraw to onchain address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/withdraw_onchain",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send funds from Swipelux custodial wallet to external onchain address."
+        },
+        {
+          "info": {
+            "name": "Sweep custodial balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/sweep",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Withdraw all funds from Swipelux custodial wallet to user's Base smart wallet."
+        },
+        {
+          "info": {
+            "name": "Get transaction status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/transaction/status/:quote_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "quote_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check status of any transaction by quote_id."
+        },
+        {
+          "info": {
+            "name": "Get supported tokens for cross-chain swaps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/oneclick/tokens"
+          },
+          "docs": "Get list of tokens supported by 1click for cross-chain swaps."
+        },
+        {
+          "info": {
+            "name": "Get cross-chain payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/payin/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a quote to deposit from any chain to Base USDC."
+        },
+        {
+          "info": {
+            "name": "Submit cross-chain payin",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/payin/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Materialize a 1click PAYIN row by deposit address. The quote is re-fetched from /v0/status (no quote state is kept on the backend). Status, origin_tx_hash and destination_tx_hash get filled in by the background 1click explorer sync once the deposit lands."
+        },
+        {
+          "info": {
+            "name": "Get payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/payout/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get quote for payout to contact. Auto-detects payment channel (IBAN/onchain/internal)."
+        },
+        {
+          "info": {
+            "name": "Estimate payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/payout/quote/dry_run",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Estimate payout amount and fees without a contact or provider-side activation."
+        },
+        {
+          "info": {
+            "name": "Activate payout quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/wallet/balance/payout/quote/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Activate a payout quote and create pending records. Returns deposit address."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

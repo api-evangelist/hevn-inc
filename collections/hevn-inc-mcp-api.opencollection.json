@@ -1,0 +1,458 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA mcp API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "mcp",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all MCP API keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/mcp/api_key",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List all MCP API keys"
+        },
+        {
+          "info": {
+            "name": "Create a new MCP API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/mcp/api_key",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "cf-ipcountry",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new MCP API key"
+        },
+        {
+          "info": {
+            "name": "Delete an MCP API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/mcp/api_key/:key_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an MCP API key"
+        },
+        {
+          "info": {
+            "name": "Get USDC balance on Base",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/mcp/get_balance",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get USDC balance on Base"
+        },
+        {
+          "info": {
+            "name": "Resolve smart wallet address by email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/mcp/resolve_address",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "Recipient email"
+              }
+            ]
+          },
+          "docs": "Resolve or create a smart wallet address for the given email.\n\nIf the user has no wallet, pregenerates a Privy embedded wallet\nand deploys a smart wallet with it as owner."
+        },
+        {
+          "info": {
+            "name": "Transfer USDC through MCP using invoice/contact/quote context",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/mcp/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create and submit the UserOperation inside the backend.\n\nThe request body is flat typed data, e.g. {\"invoiceId\": \"...\", \"memo\": \"...\"}."
+        },
+        {
+          "info": {
+            "name": "Transfer USDC to user via spend permission",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/mcp/transfer_to_user",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transfer USDC to user via spend permission"
+        },
+        {
+          "info": {
+            "name": "List MCP transfers for authenticated user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/mcp/transfers",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List MCP transfers for authenticated user"
+        },
+        {
+          "info": {
+            "name": "List all MCP API keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/api_key",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List all MCP API keys"
+        },
+        {
+          "info": {
+            "name": "Create a new MCP API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/api_key",
+            "headers": [
+              {
+                "name": "user-agent",
+                "value": ""
+              },
+              {
+                "name": "device-name",
+                "value": ""
+              },
+              {
+                "name": "cf-ipcountry",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new MCP API key"
+        },
+        {
+          "info": {
+            "name": "Delete an MCP API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/api_key/:key_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an MCP API key"
+        },
+        {
+          "info": {
+            "name": "Get USDC balance on Base",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/get_balance",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get USDC balance on Base"
+        },
+        {
+          "info": {
+            "name": "Resolve smart wallet address by email",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/resolve_address",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "Recipient email"
+              }
+            ]
+          },
+          "docs": "Resolve or create a smart wallet address for the given email.\n\nIf the user has no wallet, pregenerates a Privy embedded wallet\nand deploys a smart wallet with it as owner."
+        },
+        {
+          "info": {
+            "name": "Transfer USDC through MCP using invoice/contact/quote context",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create and submit the UserOperation inside the backend.\n\nThe request body is flat typed data, e.g. {\"invoiceId\": \"...\", \"memo\": \"...\"}."
+        },
+        {
+          "info": {
+            "name": "Transfer USDC to user via spend permission",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/transfer_to_user",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transfer USDC to user via spend permission"
+        },
+        {
+          "info": {
+            "name": "List MCP transfers for authenticated user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/mcp/transfers",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List MCP transfers for authenticated user"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,378 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Banks API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Banks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Pre-approve a bank rail",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/bank/:rail/pre-approve",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rail",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Read-only KYC info for the rail. Does not mutate Bank rows."
+        },
+        {
+          "info": {
+            "name": "Activate a bank rail",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/bank/:rail/activate",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rail",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or upsert a Bank row for the given rail. Idempotent."
+        },
+        {
+          "info": {
+            "name": "Get a pooled bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/banks/payin/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail."
+        },
+        {
+          "info": {
+            "name": "Submit a pooled bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/banks/payin/quote/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Execute a Swipelux payin quote and return payment instructions."
+        },
+        {
+          "info": {
+            "name": "Cancel a locally tracked bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/banks/payin/quote/:quote_id/cancel",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "quote_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark the local FiatTransfer created from a Swipelux payin quote as canceled."
+        },
+        {
+          "info": {
+            "name": "Activate multiple bank rails",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/banks/activate",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch."
+        },
+        {
+          "info": {
+            "name": "List all bank rails",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/banks",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row exists yet, syncs lazily from Swipelux / Align before returning."
+        },
+        {
+          "info": {
+            "name": "Pre-approve a bank rail",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/bank/:rail/pre-approve",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rail",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Read-only KYC info for the rail. Does not mutate Bank rows."
+        },
+        {
+          "info": {
+            "name": "Activate a bank rail",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/bank/:rail/activate",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rail",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or upsert a Bank row for the given rail. Idempotent."
+        },
+        {
+          "info": {
+            "name": "Get a pooled bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/banks/payin/quote",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Swipelux quote for paying into the user's custodial wallet via a pooled bank rail."
+        },
+        {
+          "info": {
+            "name": "Submit a pooled bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/banks/payin/quote/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Execute a Swipelux payin quote and return payment instructions."
+        },
+        {
+          "info": {
+            "name": "Cancel a locally tracked bank payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/banks/payin/quote/:quote_id/cancel",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "quote_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark the local FiatTransfer created from a Swipelux payin quote as canceled."
+        },
+        {
+          "info": {
+            "name": "Activate multiple bank rails",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/banks/activate",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or upsert Bank rows for multiple rails in one request. Returns a per-rail result so one pending or failed rail does not abort the batch."
+        },
+        {
+          "info": {
+            "name": "List all bank rails",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/accounts/banks",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return every supported bank rail. Rails the user has activated come from the Bank table (with status / iban_data); rails the user has not activated are returned from the static BANK_INFO registry with status=not_started and iban_data=None. If a rail's provider KYC is APPROVED but no ACTIVE Bank row exists yet, syncs lazily from Swipelux / Align before returning."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,121 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA apps-transfer API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "apps-transfer",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Legacy app-id transfer route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps/:app_id/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resolve recipient + amount from context, then spend USDC from the\napp's smart wallet via the user's SpendPermission.\n\nMirrors the body of ``POST /mcp/transfer``; the only differences are\nthe auth model (new ``api_keys`` instead of ``mcp_api_keys``) and the\nspender wallet (shared ``app.smart_wallet_address`` instead of per-key).\n\nDeprecated for HEVN CLI usage: current CLI calls POST /apps/transfer and the backend resolves the app from the API key."
+        },
+        {
+          "info": {
+            "name": "Send USDC from the app resolved by the API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/apps/transfer",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI."
+        },
+        {
+          "info": {
+            "name": "List transfers for the app resolved by the API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/apps/transfers",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,212 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Utils API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Utils",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Parse IBAN from plain text",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/utils/parse-iban",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Extract SEPA IBAN data from plain text using AI. Returns structured ImportIbanSepaData."
+        },
+        {
+          "info": {
+            "name": "Get FX rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/utils/rates/:currency",
+            "params": [
+              {
+                "name": "currency",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Public endpoint. Returns FX rates from the given currency to USD: `bankTransfer` (Swipelux), `card` (Wirex), and `usdRate` (exchangerate-api.com). `usdRate` is populated for every currency in the invoice Currency enum (G10 + AED/HKD)."
+        },
+        {
+          "info": {
+            "name": "Get BIC (SWIFT) info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/utils/bic/:bic",
+            "params": [
+              {
+                "name": "bic",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Look up bank/branch info by BIC code via API Ninjas."
+        },
+        {
+          "info": {
+            "name": "Validate US routing number (RTN)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/utils/rtn/:routing_number",
+            "params": [
+              {
+                "name": "routing_number",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Look up US ABA/RTN routing number via API Ninjas."
+        },
+        {
+          "info": {
+            "name": "Validate IBAN",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/utils/iban/:iban",
+            "params": [
+              {
+                "name": "iban",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Validate IBAN and return bank/account info via API Ninjas."
+        },
+        {
+          "info": {
+            "name": "Parse IBAN from plain text",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/accounts/utils/parse-iban",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Extract SEPA IBAN data from plain text using AI. Returns structured ImportIbanSepaData."
+        },
+        {
+          "info": {
+            "name": "Get FX rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/accounts/utils/rates/:currency",
+            "params": [
+              {
+                "name": "currency",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Public endpoint. Returns FX rates from the given currency to USD: `bankTransfer` (Swipelux), `card` (Wirex), and `usdRate` (exchangerate-api.com). `usdRate` is populated for every currency in the invoice Currency enum (G10 + AED/HKD)."
+        },
+        {
+          "info": {
+            "name": "Get BIC (SWIFT) info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/accounts/utils/bic/:bic",
+            "params": [
+              {
+                "name": "bic",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Look up bank/branch info by BIC code via API Ninjas."
+        },
+        {
+          "info": {
+            "name": "Validate US routing number (RTN)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/accounts/utils/rtn/:routing_number",
+            "params": [
+              {
+                "name": "routing_number",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Look up US ABA/RTN routing number via API Ninjas."
+        },
+        {
+          "info": {
+            "name": "Validate IBAN",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/accounts/utils/iban/:iban",
+            "params": [
+              {
+                "name": "iban",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Validate IBAN and return bank/account info via API Ninjas."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

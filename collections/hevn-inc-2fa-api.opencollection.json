@@ -1,0 +1,192 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "2FA",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Totp Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/user/2fa/status",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check if 2FA is enabled for the current user."
+        },
+        {
+          "info": {
+            "name": "Setup Totp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/2fa/setup",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate TOTP secret and provisioning URI for QR code."
+        },
+        {
+          "info": {
+            "name": "Activate Totp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/2fa/activate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify first TOTP code and activate 2FA. Returns recovery codes."
+        },
+        {
+          "info": {
+            "name": "Disable Totp",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/user/2fa",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Disable 2FA. Requires current TOTP code."
+        },
+        {
+          "info": {
+            "name": "Regenerate Recovery Codes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/user/2fa/recovery-codes",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Regenerate recovery codes. Requires current TOTP code."
+        },
+        {
+          "info": {
+            "name": "Get Totp Status Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/user/2fa/status",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check if 2FA is enabled for the current user."
+        },
+        {
+          "info": {
+            "name": "Setup Totp Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/user/2fa/setup",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate TOTP secret and provisioning URI for QR code."
+        },
+        {
+          "info": {
+            "name": "Activate Totp Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/user/2fa/activate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify first TOTP code and activate 2FA. Returns recovery codes."
+        },
+        {
+          "info": {
+            "name": "Disable Totp Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.hevn.finance/api/v1/auth/user/2fa",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Disable 2FA. Requires current TOTP code."
+        },
+        {
+          "info": {
+            "name": "Regenerate Recovery Codes Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/user/2fa/recovery-codes",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Regenerate recovery codes. Requires current TOTP code."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

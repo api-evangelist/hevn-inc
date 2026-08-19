@@ -1,0 +1,247 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Webhook API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhook",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Webhook Kyc",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/kyc"
+          },
+          "docs": "Receive KYC webhook payload; log body and return 200."
+        },
+        {
+          "info": {
+            "name": "Webhook Swipelux",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/swipelux",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Handle Swipelux webhooks: customer.verification_changed, transfer.*."
+        },
+        {
+          "info": {
+            "name": "Webhook Base Spend Permission",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/base-spend-permission"
+          },
+          "docs": "Handle Hook0 Base SpendPermission events."
+        },
+        {
+          "info": {
+            "name": "Webhook Cdp",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/cdp-wallet-activity",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Process Coinbase CDP transfer webhooks."
+        },
+        {
+          "info": {
+            "name": "Webhook Align",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/align",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Process Align webhook (customer.kycs.updated, virtual_account.* etc.)."
+        },
+        {
+          "info": {
+            "name": "Webhook Resend",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/resend",
+            "headers": [
+              {
+                "name": "svix-id",
+                "value": ""
+              },
+              {
+                "name": "svix-timestamp",
+                "value": ""
+              },
+              {
+                "name": "svix-signature",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Handle Resend email webhooks with Svix signature verification."
+        },
+        {
+          "info": {
+            "name": "Webhook Firma",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/firma",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Handle Firma e-signature webhooks."
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex Cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/v2/webhooks/cards"
+          },
+          "docs": "Webhook Wirex Cards"
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex Balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/v2/webhooks/balances"
+          },
+          "docs": "Webhook Wirex Balances"
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex Card Limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/v2/webhooks/card-limits"
+          },
+          "docs": "Webhook Wirex Card Limits"
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex Activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/v2/webhooks/activities"
+          },
+          "docs": "Webhook Wirex Activities"
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex Users",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/webhook/users"
+          },
+          "docs": "Webhook Wirex Users"
+        },
+        {
+          "info": {
+            "name": "Webhook Wirex",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/wirex/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Webhook Wirex"
+        },
+        {
+          "info": {
+            "name": "Privy Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/webhook/privy",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Handle Privy webhook events (Svix-signed).\n\nSecurity-relevant events trigger email alerts to the affected user."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

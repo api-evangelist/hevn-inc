@@ -1,0 +1,202 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Exports API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Exports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Download account confirmation PDF",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/export/account_confirmation/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Generate and return account confirmation PDF for a Bank row."
+        },
+        {
+          "info": {
+            "name": "Download account statement PDF",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/export/account_statement/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "period_start",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "period_end",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Generate and return account statement PDF with transactions for the period."
+        },
+        {
+          "info": {
+            "name": "Get transaction receipt PDF download link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/export/transaction_receipt/:transaction_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate receipt PDF for a transaction, upload to Supabase, return download link."
+        },
+        {
+          "info": {
+            "name": "Verify generated document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/export/verify/:doc_id",
+            "params": [
+              {
+                "name": "doc_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Verify a generated PDF document by its internal ID and return metadata."
+        },
+        {
+          "info": {
+            "name": "Download account confirmation PDF",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/export/account_confirmation/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Generate and return account confirmation PDF for a Bank row."
+        },
+        {
+          "info": {
+            "name": "Download account statement PDF",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/export/account_statement/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "period_start",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "period_end",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Generate and return account statement PDF with transactions for the period."
+        },
+        {
+          "info": {
+            "name": "Get transaction receipt PDF download link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/export/transaction_receipt/:transaction_id",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate receipt PDF for a transaction, upload to Supabase, return download link."
+        },
+        {
+          "info": {
+            "name": "Verify generated document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/transactions/export/verify/:doc_id",
+            "params": [
+              {
+                "name": "doc_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Verify a generated PDF document by its internal ID and return metadata."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

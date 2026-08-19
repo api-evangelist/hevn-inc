@@ -1,0 +1,170 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Public API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Public",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Server Time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/public/time"
+          },
+          "docs": "Server Time"
+        },
+        {
+          "info": {
+            "name": "Join Waitlist",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/public/waitlist",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Join Waitlist"
+        },
+        {
+          "info": {
+            "name": "Get public FX rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/public/rates/:currency",
+            "params": [
+              {
+                "name": "currency",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get public FX rates"
+        },
+        {
+          "info": {
+            "name": "Get contractor details by invoice share key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/public/invoices/user_details",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Return the user details of the share-link owner so a third party can invoice them."
+        },
+        {
+          "info": {
+            "name": "Get Public Invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/public/invoices/:invoice_id",
+            "params": [
+              {
+                "name": "invoice_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Public invoice details — no auth required."
+        },
+        {
+          "info": {
+            "name": "Get Public Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/public/products/:product_id",
+            "params": [
+              {
+                "name": "product_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Public product details — no auth required."
+        },
+        {
+          "info": {
+            "name": "Pay Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/public/products/:product_id/pay",
+            "params": [
+              {
+                "name": "product_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create one_click quote for product payment. No auth required."
+        },
+        {
+          "info": {
+            "name": "Submit Product Deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/public/:payment_id/submit",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Submit deposit tx_hash to speed up settlement. No auth required."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

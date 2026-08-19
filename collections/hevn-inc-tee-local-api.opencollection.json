@@ -1,0 +1,85 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA tee-local API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "tee-local",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Public Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/tee/public_key"
+          },
+          "docs": "Get the signing public key (ed25519:base58)."
+        },
+        {
+          "info": {
+            "name": "Attestate Jwt",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/tee/attestate_jwt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify Google JWT and return signed attestation.\n\nSame logic as enclave GOOGLE_ATTESTATION handler, but accepts plaintext\n(no NaCl Box encryption) and signs with near_wallet key."
+        },
+        {
+          "info": {
+            "name": "Near Call",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/tee/near_call",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute w_execute_signed transaction using near_wallet key.\n\nAccepts {msg, publicKey, proof} from the frontend, extracts receiver_id\n(wallet address) from msg.signer_id."
+        },
+        {
+          "info": {
+            "name": "Get Public Key Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/tee/public_key"
+          },
+          "docs": "Get the signing public key (ed25519:base58)."
+        },
+        {
+          "info": {
+            "name": "Near Call Package Alias",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/tee/near_call",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute w_execute_signed transaction using near_wallet key.\n\nAccepts {msg, publicKey, proof} from the frontend, extracts receiver_id\n(wallet address) from msg.signer_id."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

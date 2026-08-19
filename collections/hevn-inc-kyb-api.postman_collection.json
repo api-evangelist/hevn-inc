@@ -1,0 +1,1791 @@
+{
+  "item": [
+    {
+      "id": "59f801cb-5e39-4e27-8eaf-cc7e9d8a47a5",
+      "name": "kyb",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "436f9880-ffd8-4e56-a09c-8bdb1d81cc8f",
+          "name": "Save KYB draft",
+          "request": {
+            "name": "Save KYB draft",
+            "description": {
+              "content": "Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "b2b",
+                "kyb",
+                "draft"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessData\": {\n    \"phone\": \"<string>\",\n    \"contactInfo\": \"<string>\",\n    \"jurisdiction\": \"<string>\",\n    \"entityType\": \"<string>\",\n    \"entityTypeDescription\": \"<string>\",\n    \"entityName\": \"<string>\",\n    \"tradeName\": \"<string>\",\n    \"registrationNumber\": \"<string>\",\n    \"incorporationDate\": \"<date>\",\n    \"taxNumber\": \"<string>\",\n    \"businessDescription\": \"<string>\",\n    \"businessType\": \"<string>\",\n    \"verifierRole\": \"<string>\",\n    \"businessTypeDescription\": \"<string>\",\n    \"websites\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"phoneNumber\": \"<string>\",\n    \"address\": {\n      \"streetAddress\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"country\": \"<string>\",\n      \"zip\": \"<string>\"\n    },\n    \"sourceOfFunds\": \"<string>\",\n    \"sourceOfFundDescription\": \"<string>\",\n    \"expectedMonthlyVolumeUsd\": \"<number>\",\n    \"purposeOfFunds\": \"<string>\",\n    \"purposeOfFundsDescription\": \"<string>\",\n    \"flowOfFundsDescription\": \"<string>\",\n    \"sanctionedCountryOperations\": \"<boolean>\",\n    \"highRiskActivities\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"operatingCountries\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"handlesCustomerFunds\": \"<boolean>\",\n    \"complianceScreeningDescription\": \"<string>\",\n    \"estimatedAnnualRevenue\": \"<number>\",\n    \"depositMethods\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"birthDate\": \"<date>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"title\": \"<string>\",\n      \"taxId\": \"<string>\",\n      \"ownershipPercentage\": \"<number>\",\n      \"hasControl\": \"<boolean>\",\n      \"isSigner\": \"<boolean>\",\n      \"isDirector\": \"<boolean>\",\n      \"address\": {\n        \"streetAddress\": \"<string>\",\n        \"city\": \"<string>\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"<string>\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"swipeluxId\": \"<string>\"\n    },\n    {\n      \"localId\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"birthDate\": \"<date>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"title\": \"<string>\",\n      \"taxId\": \"<string>\",\n      \"ownershipPercentage\": \"<number>\",\n      \"hasControl\": \"<boolean>\",\n      \"isSigner\": \"<boolean>\",\n      \"isDirector\": \"<boolean>\",\n      \"address\": {\n        \"streetAddress\": \"<string>\",\n        \"city\": \"<string>\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"<string>\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"swipeluxId\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6a4368fc-04f8-43fb-95a8-faa4d89648b4",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"IT\",\n    \"entityType\": \"other\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"1991-07-10\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"real_estate\",\n    \"verifierRole\": \"employer\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"IO\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"personal_savings\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 9313.507913736123,\n    \"purposeOfFunds\": \"vendor_payments\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": false,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"LV\",\n      \"TK\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 3163.736390437748,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1985-09-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 91.06713406188817,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1990-05-23\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 52.336719268250164,\n      \"hasControl\": true,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7352968f-c354-446e-a23b-2c6ce03b3634",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"IT\",\n    \"entityType\": \"other\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"1991-07-10\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"real_estate\",\n    \"verifierRole\": \"employer\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"IO\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"personal_savings\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 9313.507913736123,\n    \"purposeOfFunds\": \"vendor_payments\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": false,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"LV\",\n      \"TK\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 3163.736390437748,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1985-09-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 91.06713406188817,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1990-05-23\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 52.336719268250164,\n      \"hasControl\": true,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "70b24da6-0086-42fa-b797-cf601c0dc6b9",
+          "name": "Get KYB draft",
+          "request": {
+            "name": "Get KYB draft",
+            "description": {
+              "content": "Get current KYB draft with all data and signed URLs for documents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "b2b",
+                "kyb",
+                "draft"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9209515c-61b5-4a73-9423-1a1950ebd181",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"kybStatus\": \"pending\",\n  \"updatedAt\": \"1948-11-27T23:54:42.419Z\",\n  \"kybStatusByRails\": {\n    \"key_0\": \"not_started\",\n    \"key_1\": \"requested\",\n    \"key_2\": \"rejected\"\n  },\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"DM\",\n    \"entityType\": \"sole_proprietorship\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"2012-07-14\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"transportation\",\n    \"verifierRole\": \"agent\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"HN\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"investment\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 1384.5005507196884,\n    \"purposeOfFunds\": \"international_transfers\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": true,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"TJ\",\n      \"KG\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 4194.975375353492,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"companyDocuments\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"proof_of_address\",\n      \"name\": \"string\",\n      \"originName\": \"string\",\n      \"link\": \"string\",\n      \"createdAt\": \"1970-11-11T16:16:49.267Z\",\n      \"content\": {\n        \"key_0\": 2651.2161380937814\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"invoice\",\n      \"name\": \"string\",\n      \"originName\": \"string\",\n      \"link\": \"string\",\n      \"createdAt\": \"1979-05-07T14:21:59.881Z\",\n      \"content\": {\n        \"key_0\": 6700.670484208963\n      }\n    }\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1956-05-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 11.442876959029213,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": \"SA\",\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"documents\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"business_license\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2007-05-26T01:18:07.666Z\",\n          \"content\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"reference_letter\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"1975-01-17T19:15:31.379Z\",\n          \"content\": {\n            \"key_0\": 2641.442457390437,\n            \"key_1\": false,\n            \"key_2\": 929\n          }\n        }\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1981-04-10\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 37.64281375796343,\n      \"hasControl\": false,\n      \"isSigner\": true,\n      \"isDirector\": false,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": \"TG\",\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"documents\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"power_of_attorney\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2000-05-10T18:49:46.109Z\",\n          \"content\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"tax_returns\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2013-04-05T12:41:37.621Z\",\n          \"content\": {\n            \"key_0\": false\n          }\n        }\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ],\n  \"isReadyForSubmission\": false,\n  \"missingFields\": [\n    \"string\",\n    \"string\"\n  ],\n  \"requiredDocuments\": [\n    \"string\",\n    \"string\"\n  ],\n  \"requiredShareholderDocuments\": [\n    \"string\",\n    \"string\"\n  ],\n  \"swipeluxCustomerId\": \"string\",\n  \"rails\": [\n    {\n      \"provider\": \"align\",\n      \"externalUserId\": \"string\",\n      \"kycStatus\": \"not_started\",\n      \"comment\": \"string\"\n    },\n    {\n      \"provider\": \"mcp\",\n      \"externalUserId\": \"string\",\n      \"kycStatus\": \"not_started\",\n      \"comment\": \"string\"\n    }\n  ],\n  \"comment\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9695dc72-24b3-4439-8d2f-469d72644061",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eca4531c-19e4-4986-99ca-4d350d550811",
+          "name": "Upload draft document (deprecated, use POST /documents/upload)",
+          "request": {
+            "name": "Upload draft document (deprecated, use POST /documents/upload)",
+            "description": {
+              "content": "Backward-compatible proxy to POST /documents/upload.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "b2b",
+                "kyb",
+                "draft",
+                "documents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"<string>\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "02daec98-091b-41e3-8af9-6cabde9dbc90",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"national_id\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"type\": \"credit_report\",\n  \"name\": \"string\",\n  \"originName\": \"string\",\n  \"link\": \"string\",\n  \"createdAt\": \"1991-10-14T08:47:55.410Z\",\n  \"content\": {\n    \"key_0\": 7852.541525794808\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "300607cc-2417-4e36-93e9-c1fc561b11aa",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "draft",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"national_id\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6c6f8542-cfc5-4734-abcf-1508ece4999e",
+          "name": "Submit KYB",
+          "request": {
+            "name": "Submit KYB",
+            "description": {
+              "content": "Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "b2b",
+                "kyb",
+                "submit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "provider",
+                  "value": "swipelux"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a50657b5-cf5d-4360-b3b2-f9d54c13b38e",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "swipelux"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"swipeluxCustomerId\": \"string\",\n  \"kybStatus\": \"approved\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6242e921-2898-4b49-96f0-d4cf4bcb43fa",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "swipelux"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "816451e5-85be-4d31-a317-c54d8c9ec85e",
+          "name": "Request KYB for a provider",
+          "request": {
+            "name": "Request KYB for a provider",
+            "description": {
+              "content": "Request KYB verification for a provider",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "b2b",
+                "kyb",
+                "request"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4bdccd99-48aa-4cdf-b45b-9e828af73d03",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "request"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 3889.538845360553,\n  \"key_1\": \"string\",\n  \"key_2\": 1246,\n  \"key_3\": 5486\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d8e7d8af-eade-4a78-b3c9-38e85a651f16",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "b2b",
+                    "kyb",
+                    "request"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5d23eea4-ff13-4ce1-842e-9720602f56bf",
+          "name": "Save KYB draft",
+          "request": {
+            "name": "Save KYB draft",
+            "description": {
+              "content": "Save KYB draft data locally. Documents must be uploaded separately via POST /kyb/draft/documents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kyb",
+                "b2b",
+                "kyb",
+                "draft"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessData\": {\n    \"phone\": \"<string>\",\n    \"contactInfo\": \"<string>\",\n    \"jurisdiction\": \"<string>\",\n    \"entityType\": \"<string>\",\n    \"entityTypeDescription\": \"<string>\",\n    \"entityName\": \"<string>\",\n    \"tradeName\": \"<string>\",\n    \"registrationNumber\": \"<string>\",\n    \"incorporationDate\": \"<date>\",\n    \"taxNumber\": \"<string>\",\n    \"businessDescription\": \"<string>\",\n    \"businessType\": \"<string>\",\n    \"verifierRole\": \"<string>\",\n    \"businessTypeDescription\": \"<string>\",\n    \"websites\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"phoneNumber\": \"<string>\",\n    \"address\": {\n      \"streetAddress\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"country\": \"<string>\",\n      \"zip\": \"<string>\"\n    },\n    \"sourceOfFunds\": \"<string>\",\n    \"sourceOfFundDescription\": \"<string>\",\n    \"expectedMonthlyVolumeUsd\": \"<number>\",\n    \"purposeOfFunds\": \"<string>\",\n    \"purposeOfFundsDescription\": \"<string>\",\n    \"flowOfFundsDescription\": \"<string>\",\n    \"sanctionedCountryOperations\": \"<boolean>\",\n    \"highRiskActivities\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"operatingCountries\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"handlesCustomerFunds\": \"<boolean>\",\n    \"complianceScreeningDescription\": \"<string>\",\n    \"estimatedAnnualRevenue\": \"<number>\",\n    \"depositMethods\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"birthDate\": \"<date>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"title\": \"<string>\",\n      \"taxId\": \"<string>\",\n      \"ownershipPercentage\": \"<number>\",\n      \"hasControl\": \"<boolean>\",\n      \"isSigner\": \"<boolean>\",\n      \"isDirector\": \"<boolean>\",\n      \"address\": {\n        \"streetAddress\": \"<string>\",\n        \"city\": \"<string>\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"<string>\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"swipeluxId\": \"<string>\"\n    },\n    {\n      \"localId\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"birthDate\": \"<date>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"title\": \"<string>\",\n      \"taxId\": \"<string>\",\n      \"ownershipPercentage\": \"<number>\",\n      \"hasControl\": \"<boolean>\",\n      \"isSigner\": \"<boolean>\",\n      \"isDirector\": \"<boolean>\",\n      \"address\": {\n        \"streetAddress\": \"<string>\",\n        \"city\": \"<string>\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"<string>\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"swipeluxId\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "676e6e41-ba2d-4373-b704-bd85e4107ae5",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"IT\",\n    \"entityType\": \"other\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"1991-07-10\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"real_estate\",\n    \"verifierRole\": \"employer\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"IO\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"personal_savings\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 9313.507913736123,\n    \"purposeOfFunds\": \"vendor_payments\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": false,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"LV\",\n      \"TK\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 3163.736390437748,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1985-09-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 91.06713406188817,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1990-05-23\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 52.336719268250164,\n      \"hasControl\": true,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf1d75ce-b813-44e5-b7eb-2f370f485342",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"IT\",\n    \"entityType\": \"other\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"1991-07-10\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"real_estate\",\n    \"verifierRole\": \"employer\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"IO\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"personal_savings\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 9313.507913736123,\n    \"purposeOfFunds\": \"vendor_payments\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": false,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"LV\",\n      \"TK\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 3163.736390437748,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"documentIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1985-09-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 91.06713406188817,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1990-05-23\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 52.336719268250164,\n      \"hasControl\": true,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47b1ff84-b4f1-4743-b6bb-1c59a9fed2f8",
+          "name": "Get KYB draft",
+          "request": {
+            "name": "Get KYB draft",
+            "description": {
+              "content": "Get current KYB draft with all data and signed URLs for documents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kyb",
+                "b2b",
+                "kyb",
+                "draft"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0da74d28-f742-4a9b-9ed2-7865d57af16f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"kybStatus\": \"pending\",\n  \"updatedAt\": \"1948-11-27T23:54:42.419Z\",\n  \"kybStatusByRails\": {\n    \"key_0\": \"not_started\",\n    \"key_1\": \"requested\",\n    \"key_2\": \"rejected\"\n  },\n  \"businessData\": {\n    \"phone\": \"string\",\n    \"contactInfo\": \"string\",\n    \"jurisdiction\": \"DM\",\n    \"entityType\": \"sole_proprietorship\",\n    \"entityTypeDescription\": \"string\",\n    \"entityName\": \"string\",\n    \"tradeName\": \"string\",\n    \"registrationNumber\": \"string\",\n    \"incorporationDate\": \"2012-07-14\",\n    \"taxNumber\": \"string\",\n    \"businessDescription\": \"stringstring\",\n    \"businessType\": \"transportation\",\n    \"verifierRole\": \"agent\",\n    \"businessTypeDescription\": \"string\",\n    \"websites\": [\n      \"string\",\n      \"string\"\n    ],\n    \"phoneNumber\": \"string\",\n    \"address\": {\n      \"streetAddress\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"country\": \"HN\",\n      \"zip\": \"string\"\n    },\n    \"sourceOfFunds\": \"investment\",\n    \"sourceOfFundDescription\": \"string\",\n    \"expectedMonthlyVolumeUsd\": 1384.5005507196884,\n    \"purposeOfFunds\": \"international_transfers\",\n    \"purposeOfFundsDescription\": \"string\",\n    \"flowOfFundsDescription\": \"stringstring\",\n    \"sanctionedCountryOperations\": true,\n    \"highRiskActivities\": [\n      \"string\",\n      \"string\"\n    ],\n    \"operatingCountries\": [\n      \"TJ\",\n      \"KG\"\n    ],\n    \"handlesCustomerFunds\": false,\n    \"complianceScreeningDescription\": \"string\",\n    \"estimatedAnnualRevenue\": 4194.975375353492,\n    \"depositMethods\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"companyDocuments\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"proof_of_address\",\n      \"name\": \"string\",\n      \"originName\": \"string\",\n      \"link\": \"string\",\n      \"createdAt\": \"1970-11-11T16:16:49.267Z\",\n      \"content\": {\n        \"key_0\": 2651.2161380937814\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"invoice\",\n      \"name\": \"string\",\n      \"originName\": \"string\",\n      \"link\": \"string\",\n      \"createdAt\": \"1979-05-07T14:21:59.881Z\",\n      \"content\": {\n        \"key_0\": 6700.670484208963\n      }\n    }\n  ],\n  \"shareholders\": [\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1956-05-19\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 11.442876959029213,\n      \"hasControl\": false,\n      \"isSigner\": false,\n      \"isDirector\": true,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": \"SA\",\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"documents\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"business_license\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2007-05-26T01:18:07.666Z\",\n          \"content\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"reference_letter\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"1975-01-17T19:15:31.379Z\",\n          \"content\": {\n            \"key_0\": 2641.442457390437,\n            \"key_1\": false,\n            \"key_2\": 929\n          }\n        }\n      ],\n      \"swipeluxId\": \"string\"\n    },\n    {\n      \"localId\": \"string\",\n      \"firstName\": \"string\",\n      \"lastName\": \"string\",\n      \"birthDate\": \"1981-04-10\",\n      \"email\": \"string\",\n      \"phone\": \"string\",\n      \"title\": \"string\",\n      \"taxId\": \"string\",\n      \"ownershipPercentage\": 37.64281375796343,\n      \"hasControl\": false,\n      \"isSigner\": true,\n      \"isDirector\": false,\n      \"address\": {\n        \"streetAddress\": \"string\",\n        \"city\": \"string\",\n        \"country\": \"TG\",\n        \"zip\": \"string\"\n      },\n      \"identityDocuments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issuingCountry\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": \"string\"\n        }\n      ],\n      \"documentIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"documents\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"power_of_attorney\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2000-05-10T18:49:46.109Z\",\n          \"content\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"tax_returns\",\n          \"name\": \"string\",\n          \"originName\": \"string\",\n          \"link\": \"string\",\n          \"createdAt\": \"2013-04-05T12:41:37.621Z\",\n          \"content\": {\n            \"key_0\": false\n          }\n        }\n      ],\n      \"swipeluxId\": \"string\"\n    }\n  ],\n  \"isReadyForSubmission\": false,\n  \"missingFields\": [\n    \"string\",\n    \"string\"\n  ],\n  \"requiredDocuments\": [\n    \"string\",\n    \"string\"\n  ],\n  \"requiredShareholderDocuments\": [\n    \"string\",\n    \"string\"\n  ],\n  \"swipeluxCustomerId\": \"string\",\n  \"rails\": [\n    {\n      \"provider\": \"align\",\n      \"externalUserId\": \"string\",\n      \"kycStatus\": \"not_started\",\n      \"comment\": \"string\"\n    },\n    {\n      \"provider\": \"mcp\",\n      \"externalUserId\": \"string\",\n      \"kycStatus\": \"not_started\",\n      \"comment\": \"string\"\n    }\n  ],\n  \"comment\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ce6c809-9f97-4460-957b-ecbd728a46a5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f1951fae-1131-49d4-a95f-6fa68d37b3f9",
+          "name": "Upload draft document (deprecated, use POST /documents/upload)",
+          "request": {
+            "name": "Upload draft document (deprecated, use POST /documents/upload)",
+            "description": {
+              "content": "Backward-compatible proxy to POST /documents/upload.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kyb",
+                "b2b",
+                "kyb",
+                "draft",
+                "documents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"<string>\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "00566d36-79da-44cb-9dc4-f6ed3e4463de",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"national_id\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"type\": \"credit_report\",\n  \"name\": \"string\",\n  \"originName\": \"string\",\n  \"link\": \"string\",\n  \"createdAt\": \"1991-10-14T08:47:55.410Z\",\n  \"content\": {\n    \"key_0\": 7852.541525794808\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fec65de5-cc03-4d8b-95d0-8e25bce76b33",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "draft",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"base64\": \"<string>\",\n  \"type\": \"national_id\",\n  \"name\": \"<string>\",\n  \"originName\": \"<string>\",\n  \"context\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b7aaf399-5447-4de4-a458-d46e8913ba94",
+          "name": "Submit KYB",
+          "request": {
+            "name": "Submit KYB",
+            "description": {
+              "content": "Submit all KYB data to a provider. Use provider=align for Align, provider=swipelux (default) for Swipelux.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kyb",
+                "b2b",
+                "kyb",
+                "submit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "provider",
+                  "value": "swipelux"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f2ea4eec-8596-4c76-8630-34ec45c50152",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "swipelux"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"swipeluxCustomerId\": \"string\",\n  \"kybStatus\": \"approved\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7e62a3b-728f-4742-8ce6-f89888d16937",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "submit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "provider",
+                      "value": "swipelux"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eda62bc6-0caf-4813-bad1-984f7c311301",
+          "name": "Request KYB for a provider",
+          "request": {
+            "name": "Request KYB for a provider",
+            "description": {
+              "content": "Request KYB verification for a provider",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kyb",
+                "b2b",
+                "kyb",
+                "request"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "x-api-key",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5b8cb7bb-6f15-47ff-a9b5-0a4c7b62b02b",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "request"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 5977,\n  \"key_1\": true,\n  \"key_2\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c3a4453c-5ffe-4741-84b8-e6a7b67f0fb5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyb",
+                    "b2b",
+                    "kyb",
+                    "request"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "x-api-key",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.hevn.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "f166c531-16b1-4c0a-a7c8-e87fc6614f21",
+    "name": "HEVN 2FA kyb API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Backend API for HEVN mobile neobank",
+      "type": "text/plain"
+    }
+  }
+}

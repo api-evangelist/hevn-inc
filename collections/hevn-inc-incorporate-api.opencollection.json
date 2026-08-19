@@ -1,0 +1,90 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA Incorporate API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Incorporate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get incorporation service prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/incorporate/prices"
+          },
+          "docs": "Return available services and prices by jurisdiction."
+        },
+        {
+          "info": {
+            "name": "Apply for incorporation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/incorporate/apply",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Apply for company incorporation.\n\nValidates that all shareholders have ownership_percentage filled\nand total equals 100%. Creates an invoice for incorporation services,\nsets KYC status to 'incorporating' and sends Slack notification."
+        },
+        {
+          "info": {
+            "name": "Get incorporation service prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/kyb/incorporate/prices"
+          },
+          "docs": "Return available services and prices by jurisdiction."
+        },
+        {
+          "info": {
+            "name": "Apply for incorporation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/kyb/incorporate/apply",
+            "headers": [
+              {
+                "name": "x-api-key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Apply for company incorporation.\n\nValidates that all shareholders have ownership_percentage filled\nand total equals 100%. Creates an invoice for incorporation services,\nsets KYC status to 'incorporating' and sends Slack notification."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

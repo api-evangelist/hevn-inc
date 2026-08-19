@@ -1,0 +1,55 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "HEVN 2FA tee API",
+    "version": "0.1.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "tee",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Attestate Jwt",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.hevn.finance/api/v1/auth/tee/attestate_jwt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Google JWT attestation via Nitro Enclave.\n\nClient encrypts {google_jwt, msg, receiver_id} with enclave's Curve25519 key,\nsends the ciphertext here. Enclave decrypts, verifies JWT, and returns a signed attestation."
+        },
+        {
+          "info": {
+            "name": "Get Encryption Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/tee/encryption_key"
+          },
+          "docs": "Get the enclave's Curve25519 encryption public key for E2E encrypted requests."
+        },
+        {
+          "info": {
+            "name": "Get Google Certs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.hevn.finance/api/v1/auth/tee/google_certs"
+          },
+          "docs": "Get Google JWKS certs signed by enclave — allows clients to verify enclave integrity."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
