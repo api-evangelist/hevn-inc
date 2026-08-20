@@ -36,6 +36,18 @@ created: '2026-07-17'
 modified: '2026-07-19'
 tags:
 - Company
+- Financial-Services
+- Fintech
+- Banking
+- Payments
+- Stablecoins
+- USDC
+- Cross-Border Payments
+- Business Accounts
+- MCP
+- Agents
+tags_raw:
+- Company
 - Financial Services
 - Fintech
 - Banking
@@ -82,6 +94,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Application
+  tags_raw:
   - apps
   properties:
   - type: OpenAPI
@@ -110,6 +124,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Authentication
+  tags_raw:
   - auth
   properties:
   - type: OpenAPI
@@ -138,6 +154,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Balances
+  tags_raw:
   - Balance
   properties:
   - type: OpenAPI
@@ -194,6 +212,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Contracts
+  tags_raw:
   - contracts
   properties:
   - type: OpenAPI
@@ -222,6 +242,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Documents
+  tags_raw:
   - documents
   properties:
   - type: OpenAPI
@@ -236,6 +258,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Export
+  tags_raw:
   - Exports
   properties:
   - type: OpenAPI
@@ -278,6 +302,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Invoices
+  tags_raw:
   - invoices
   properties:
   - type: OpenAPI
@@ -292,6 +318,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - KYB
+  tags_raw:
   - kyb
   properties:
   - type: OpenAPI
@@ -306,6 +334,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - MCP
+  tags_raw:
   - mcp
   properties:
   - type: OpenAPI
@@ -362,6 +392,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Team
+  tags_raw:
   - team
   properties:
   - type: OpenAPI
@@ -376,6 +408,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - TEE
+  tags_raw:
   - tee
   properties:
   - type: OpenAPI
@@ -404,6 +438,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -446,6 +482,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Wallets
+  tags_raw:
   - Wallet
   properties:
   - type: OpenAPI
