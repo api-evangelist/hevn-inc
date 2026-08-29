@@ -1,0 +1,74 @@
+slug: hevn-inc
+provider: Hevn Inc
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Banking & Capital Markets
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: B2B
+  spec_file: hevn-inc-b2b-api-openapi.yml
+  capability_id: BC-1300.20
+  capability_id_l1: BC-1300
+  capability_name: KYC & Customer Due Diligence Management
+  confidence: 0.9
+  evidence: POST /api/v1/b2b/kyb/submit  Submit KYB; PUT /api/v1/b2b/kyb/draft  Save KYB draft; POST /api/v1/b2b/kyb/request  Request
+    KYB for a provider; schemas FiatShareholder, FiatIdentityDocument, KybSubmitResponse
+  reason: Operations collect, draft and submit Know-Your-Business dossiers (shareholders, identity documents,
+    purpose of funds) to a provider — this is customer due diligence for onboarding a business customer.
+- tag: kyb
+  spec_file: hevn-inc-kyb-api-openapi.yml
+  capability_id: BC-1300.20
+  capability_id_l1: BC-1300
+  capability_name: KYC & Customer Due Diligence Management
+  confidence: 0.9
+  evidence: POST /api/v1/b2b/kyb/submit  Submit KYB; schemas FiatShareholder, FiatIdentityDocument, FiatPurposeOfFunds
+  reason: Know-Your-Business draft capture, document upload and submission to a provider with shareholder,
+    identity document and purpose-of-funds data is exactly customer due diligence for business onboarding.
+- tag: Cards
+  spec_file: hevn-inc-cards-api-openapi.yml
+  capability_id: BC-1340.60
+  capability_id_l1: BC-1340
+  capability_name: Card Issuance Management
+  confidence: 0.88
+  evidence: POST /api/v1/cards  Issue new card; POST /api/v1/cards/{card_id}/freeze  Freeze card; POST
+    /api/v1/cards/{card_id}/details  Reveal full card details; schemas IssueCardRequest, CardStatus, CardFormat,
+    SetCardLimitRequest
+  reason: The operations issue, reveal, freeze, limit and delete payment cards for users — card issuance
+    and card lifecycle management, matching the vendor's zero-FX USD business card product.
+- tag: 2FA
+  spec_file: hevn-inc-2fa-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: '"Setup Totp", "Activate Totp", "Regenerate Recovery Codes"; schemas TotpVerifyRequest, TotpStatusResponse'
+  reason: Multi-factor authentication enrolment and lifecycle for user accounts, which is Identity & Access
+    Management. It is authentication plumbing, but IAM is an explicit candidate capability so the edge
+    is honest; nothing here touches the vendor's banking capabilities.
+- tag: User
+  spec_file: hevn-inc-user-api-openapi.yml
+  capability_id: BC-1300.20
+  capability_id_l1: BC-1300
+  capability_name: KYC & Customer Due Diligence Management
+  confidence: 0.72
+  evidence: '"Submit KYC data", "Get KYC status", "update_user_kyc_data", "Share KYB link"'
+  reason: Customer profile plus KYC/KYB submission and status for onboarding to sponsor-bank accounts;
+    the KYC/CDD sub-capability dominates, though settings/notifications endpoints add some customer-information-management
+    noise.
+- tag: apps-transfer
+  spec_file: hevn-inc-apps-transfer-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.7
+  evidence: '"Send USDC from the app resolved by the API key", "List transfers for the app", schema "AppTransferResponse"'
+  reason: Programmatic initiation of outbound value transfers (USDC on the vendor's stablecoin rail) and
+    listing of resulting transfers — payment instruction capture and authorisation via API.

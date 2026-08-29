@@ -538,6 +538,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/hevn-inc-capability-edges.yml
+  name: Hevn Inc Business Capability Map
 - type: DeveloperPortal
   url: https://hevninc.mintlify.app/
 - type: Documentation
