@@ -52,7 +52,7 @@ tags:
 - Fintech
 - Banking
 - Payments
-- Stablecoin
+- Stablecoins
 - USDC
 - Cross-Border Payments
 - Business Accounts
@@ -224,7 +224,7 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
-  - contracts
+  - Contracts
   tags_raw:
   - contracts
   properties:
@@ -330,7 +330,7 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
-  - kyb
+  - KYB
   tags_raw:
   - kyb
   properties:
@@ -420,7 +420,7 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
-  - tee
+  - TEE
   tags_raw:
   - tee
   properties:
