@@ -73,20 +73,6 @@ tags_raw:
 - Agents
 - API
 apis:
-- aid: hevn-inc:hevn-inc-2fa-api
-  name: Hevn Inc 2FA API
-  description: The 2FA API from Hevn Inc — 10 operation(s) for 2fa.
-  humanURL: https://hevninc.mintlify.app/
-  baseURL: https://api.hevn.finance/api/v1
-  tags:
-  - 2FA
-  properties:
-  - type: OpenAPI
-    url: openapi/hevn-inc-2fa-api-openapi.yml
-  - type: Documentation
-    url: https://hevninc.mintlify.app/
-  - type: APIReference
-    url: https://hevninc.mintlify.app/api-reference/authentication
 - aid: hevn-inc:hevn-inc-activity-api
   name: Hevn Inc Activity API
   description: The Activity API from Hevn Inc — 2 operation(s) for activity.
@@ -143,20 +129,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/hevn-inc-auth-api-openapi.yml
-  - type: Documentation
-    url: https://hevninc.mintlify.app/
-  - type: APIReference
-    url: https://hevninc.mintlify.app/api-reference/authentication
-- aid: hevn-inc:hevn-inc-b2b-api
-  name: Hevn Inc B2B API
-  description: The B2B API from Hevn Inc — 10 operation(s) for b2b.
-  humanURL: https://hevninc.mintlify.app/
-  baseURL: https://api.hevn.finance/api/v1
-  tags:
-  - B2B
-  properties:
-  - type: OpenAPI
-    url: openapi/hevn-inc-b2b-api-openapi.yml
   - type: Documentation
     url: https://hevninc.mintlify.app/
   - type: APIReference
@@ -529,6 +501,34 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/hevn-inc-xero-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-2-fa-api
+  name: Hevn Inc 2 FA API
+  description: The 2 FA API from Hevn Inc — 10 operation(s) for 2 fa.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - 2 FA
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-2-fa-api-openapi.yml
+  - type: Documentation
+    url: https://hevninc.mintlify.app/
+  - type: APIReference
+    url: https://hevninc.mintlify.app/api-reference/authentication
+- aid: hevn-inc:hevn-inc-b2-b-api
+  name: Hevn Inc B2 B API
+  description: The B2 B API from Hevn Inc — 10 operation(s) for b2 b.
+  humanURL: https://hevninc.mintlify.app/
+  baseURL: https://api.hevn.finance/api/v1
+  tags:
+  - B2 B
+  properties:
+  - type: OpenAPI
+    url: openapi/hevn-inc-b2-b-api-openapi.yml
   - type: Documentation
     url: https://hevninc.mintlify.app/
   - type: APIReference
