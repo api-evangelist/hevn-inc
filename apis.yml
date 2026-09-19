@@ -335,6 +335,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - Merchants
+  tags_raw:
   - Merchant
   properties:
   - type: OpenAPI
@@ -511,6 +513,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - 2FA
+  tags_raw:
   - 2 FA
   properties:
   - type: OpenAPI
@@ -525,6 +529,8 @@ apis:
   humanURL: https://hevninc.mintlify.app/
   baseURL: https://api.hevn.finance/api/v1
   tags:
+  - B2B
+  tags_raw:
   - B2 B
   properties:
   - type: OpenAPI
