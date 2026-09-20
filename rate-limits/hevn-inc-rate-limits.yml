@@ -1,0 +1,23 @@
+# Rate limits transcribed from the provider's own documentation — see provenance. Quoted, not derived.
+generated: '2026-09-20'
+method: searched
+source: https://hevninc.mintlify.app/api-reference/authentication
+sources:
+- https://hevninc.mintlify.app/api-reference/authentication
+provenance:
+  tool: planning/api-economics/harvest_ratelimits.py
+  run: 20260920T133210
+  grounding: every limit_text was found verbatim in the fetched page text
+published: false
+note: 'Page states rate limits are per credential: 120 writes and 600 reads a minute, with separate per-IP,
+  per-email and per-challenge windows on login (no numbers given for those). Exceeding returns 429 rate_limited
+  with Retry-After. Two numbers appear in a single sentence, so limit left null.'
+limit_count: 1
+limits:
+- name: Per-credential write/read rate limit
+  limit_text: 120 writes and 600 reads a minute
+  window: minute
+  scope: unclear
+headers:
+- Retry-After
+exceeded_status: 429
