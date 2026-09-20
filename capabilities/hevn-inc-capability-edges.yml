@@ -14,7 +14,8 @@ capability_model:
 edge_count: 6
 edges:
 - tag: B2B
-  spec_file: hevn-inc-b2b-api-openapi.yml
+  spec_file: hevn-inc-b2-b-api-openapi.yml
+  reanchored_from: hevn-inc-b2b-api-openapi.yml
   capability_id: BC-1300.20
   capability_id_l1: BC-1300
   capability_name: KYC & Customer Due Diligence Management
@@ -44,7 +45,8 @@ edges:
   reason: The operations issue, reveal, freeze, limit and delete payment cards for users — card issuance
     and card lifecycle management, matching the vendor's zero-FX USD business card product.
 - tag: 2FA
-  spec_file: hevn-inc-2fa-api-openapi.yml
+  spec_file: hevn-inc-2-fa-api-openapi.yml
+  reanchored_from: hevn-inc-2fa-api-openapi.yml
   capability_id: BC-620.20
   capability_id_l1: BC-620
   capability_name: Identity & Access Management
