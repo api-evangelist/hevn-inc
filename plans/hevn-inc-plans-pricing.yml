@@ -1,0 +1,43 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-09-20'
+method: searched
+source: https://gethevn.com/pricing
+sources:
+- https://gethevn.com/pricing
+provenance:
+  tool: planning/api-economics/harvest_pricing.py
+  run: 20260920T124425
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: tiered-subscription
+published: true
+note: Monthly subscription tiers plus percentage transaction fees; 10% off if billed 3 months. Enterprise
+  is custom priced.
+plan_count: 3
+currency: USD
+plans:
+- name: Basic Plan
+  price_text: $ 25 /month
+  price: 25
+  currency: USD
+  period: month
+  unit: account plan
+  included_quota: 1 Virtual bank account; AI agent with $100 credit/mo; up to $50k monthly payment volume
+  overage: SEPA • 0.75%, ACH, Wire • 0.75%, SWIFT • 0.75% + $25, UAE FTS • 0.75%, UK FTS • 0.75%, Stablecoins
+    • $0
+- name: HEVN Pro
+  price_text: $ 89 /month
+  price: 89
+  currency: USD
+  period: month
+  unit: account plan
+  included_quota: 3 Virtual bank accounts; AI agent with $250 credit/mo; up to $250k monthly payment volume
+  overage: SEPA • 0.50%, ACH, Wire • 0.50%, SWIFT • 0.50% + $25, UAE FTS • 0.50%, UK FTS • 0.50%, Stablecoins
+    • $0
+- name: Enterprise Plan
+  price_text: Custom price
+  period: none
+  included_quota: Unlimited Virtual bank accounts; dedicated relationship manager; AI agent with $1000
+    credit/mo
+  overage: SEPA • 0.10–0.20%, ACH, Wire • 0.10–0.20%, SWIFT • 0.10–0.20% + $25, UAE FTS • 0.10–0.20%,
+    UK FTS • 0.10–0.20%, Stablecoins • $0

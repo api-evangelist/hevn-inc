@@ -545,6 +545,10 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Pricing
+  url: https://gethevn.com/pricing
+- type: Plans
+  url: plans/hevn-inc-plans-pricing.yml
 - type: CapabilityMap
   url: capabilities/hevn-inc-capability-edges.yml
   name: Hevn Inc Business Capability Map
