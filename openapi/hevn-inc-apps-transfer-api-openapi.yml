@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA apps-transfer API
+  title: HEVN Apps Transfer API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -178,27 +178,47 @@ paths:
       - ApiKeyAuth: []
 components:
   schemas:
-    ValidationError:
+    AppTransferContext:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: AppTransferContext
+      description: 'Body of POST /apps/transfer.
+
+
+        Exactly one of ``contactId`` / ``quoteId`` / ``invoiceId`` MUST be set
+
+        (mirrors the /mcp/transfer body). ``amount`` is required when
+
+        ``contactId`` is the dispatch path; otherwise it''s derived from the
+
+        referenced invoice / quote.'
     McpTransactionResponse:
       properties:
         txHash:
@@ -251,47 +271,27 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    AppTransferContext:
+    ValidationError:
       properties:
-        contactId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Contactid
-        quoteId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Quoteid
-        invoiceId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Invoiceid
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
-      title: AppTransferContext
-      description: 'Body of POST /apps/transfer.
-
-
-        Exactly one of ``contactId`` / ``quoteId`` / ``invoiceId`` MUST be set
-
-        (mirrors the /mcp/transfer body). ``amount`` is required when
-
-        ``contactId`` is the dispatch path; otherwise it''s derived from the
-
-        referenced invoice / quote.'
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA Webhook API
+  title: HEVN Webhook API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -363,6 +363,15 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AlignWebhookEvent:
       properties:
         eventType:
@@ -391,15 +400,6 @@ components:
       - createdAt
       title: AlignWebhookEvent
       description: Align webhook payload.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

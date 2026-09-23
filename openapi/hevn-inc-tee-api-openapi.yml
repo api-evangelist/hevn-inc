@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA tee API
+  title: HEVN Tee API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -70,6 +70,41 @@ paths:
                 $ref: '#/components/schemas/GoogleCertsResponse'
 components:
   schemas:
+    GoogleCertsResponse:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        signature:
+          type: string
+          title: Signature
+        public_key:
+          type: string
+          title: Public Key
+      type: object
+      required:
+      - msg
+      - signature
+      - public_key
+      title: GoogleCertsResponse
+    EncryptionKeyResponse:
+      properties:
+        encryption_key:
+          type: string
+          title: Encryption Key
+      type: object
+      required:
+      - encryption_key
+      title: EncryptionKeyResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -116,41 +151,6 @@ components:
       - public_key
       - timestamp
       title: AttestateJwtResponse
-    EncryptionKeyResponse:
-      properties:
-        encryption_key:
-          type: string
-          title: Encryption Key
-      type: object
-      required:
-      - encryption_key
-      title: EncryptionKeyResponse
-    GoogleCertsResponse:
-      properties:
-        msg:
-          type: string
-          title: Msg
-        signature:
-          type: string
-          title: Signature
-        public_key:
-          type: string
-          title: Public Key
-      type: object
-      required:
-      - msg
-      - signature
-      - public_key
-      title: GoogleCertsResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     app__routers__security__tee__AttestateJwtRequest:
       properties:
         encrypted_data:

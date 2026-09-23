@@ -1,18 +1,18 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA auth API
+  title: HEVN Auth API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
 - url: https://api.hevn.finance
   description: Production
 tags:
-- name: auth
+- name: Auth
 paths:
   /api/v1/auth/start:
     post:
       tags:
-      - auth
+      - Auth
       summary: Auth Start
       description: 'Start authentication: verify TEE signature, then send OTP to email.'
       operationId: auth_start_api_v1_auth_start_post
@@ -55,7 +55,7 @@ paths:
   /api/v1/auth/email_otp:
     post:
       tags:
-      - auth
+      - Auth
       summary: Auth Email Otp
       description: Verify email OTP code. Sets email_otp_validated flag on session.
       operationId: auth_email_otp_api_v1_auth_email_otp_post
@@ -90,7 +90,7 @@ paths:
   /api/v1/auth/totp:
     post:
       tags:
-      - auth
+      - Auth
       summary: Auth Totp
       description: Verify TOTP code. Sets totp_validated flag on session.
       operationId: auth_totp_api_v1_auth_totp_post
@@ -116,7 +116,7 @@ paths:
   /api/v1/auth/submit_signed_jwt:
     post:
       tags:
-      - auth
+      - Auth
       summary: Submit Signed Jwt
       description: 'Verify TEE-signed Google JWT attestation. Sets tee_validated flag on session.
 
@@ -151,7 +151,7 @@ paths:
   /api/v1/auth:
     post:
       tags:
-      - auth
+      - Auth
       summary: Auth Complete
       description: 'Complete auth: issue refresh token if all required steps are validated.'
       operationId: auth_complete_api_v1_auth_post
@@ -204,7 +204,7 @@ paths:
   /api/v1/auth/privy:
     post:
       tags:
-      - auth
+      - Auth
       summary: Auth Privy
       description: 'Authenticate via Privy embedded wallet signature.
 
@@ -266,7 +266,7 @@ paths:
   /api/v1/auth/refresh:
     post:
       tags:
-      - auth
+      - Auth
       summary: Refresh Session
       description: 'Exchange a refresh token for a short-lived session token (10 min).
 
@@ -307,6 +307,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    AuthEmailOtpRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        otpCode:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Otpcode
+          description: 6-digit OTP code
+      type: object
+      required:
+      - sessionKey
+      - otpCode
+      title: AuthEmailOtpRequest
+      description: Request schema for email OTP verification.
     AuthMethod:
       type: string
       enum:
@@ -336,6 +354,24 @@ components:
       - nonce
       title: PrivyLoginRequest
       description: Request to link a Privy wallet.
+    TotpLoginRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from email OTP step
+        code:
+          type: string
+          maxLength: 8
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code or 8-char recovery code
+      type: object
+      required:
+      - sessionKey
+      - code
+      title: TotpLoginRequest
+      description: Request to complete login with TOTP code.
     RefreshRequest:
       properties:
         userId:
@@ -347,6 +383,15 @@ components:
       - userId
       title: RefreshRequest
       description: Request for refreshing a session token.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     SubmitSignedJwtRequest:
       properties:
         sessionKey:
@@ -379,6 +424,35 @@ components:
       - email
       title: AuthStartRequest
       description: Request schema for starting authentication.
+    AuthSessionResponse:
+      properties:
+        refreshToken:
+          type: string
+          title: Refreshtoken
+          description: JWT refresh token (7 days)
+        tokenType:
+          type: string
+          title: Tokentype
+          default: bearer
+        userId:
+          type: string
+          title: Userid
+          description: User UUID
+        email:
+          type: string
+          title: Email
+          description: User email
+        isNewUser:
+          type: boolean
+          title: Isnewuser
+          default: false
+      type: object
+      required:
+      - refreshToken
+      - userId
+      - email
+      title: AuthSessionResponse
+      description: Response for POST /auth/complete — refresh token.
     AuthStartResponse:
       properties:
         sessionKey:
@@ -401,76 +475,6 @@ components:
       - sessionKey
       title: AuthStartResponse
       description: Response schema for auth start.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AuthCompleteRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-      type: object
-      required:
-      - sessionKey
-      title: AuthCompleteRequest
-      description: Request for completing authentication.
-    TotpLoginRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from email OTP step
-        code:
-          type: string
-          maxLength: 8
-          minLength: 6
-          title: Code
-          description: 6-digit TOTP code or 8-char recovery code
-      type: object
-      required:
-      - sessionKey
-      - code
-      title: TotpLoginRequest
-      description: Request to complete login with TOTP code.
-    SessionTokenResponse:
-      properties:
-        accessToken:
-          type: string
-          title: Accesstoken
-          description: JWT access token (10 min)
-        tokenType:
-          type: string
-          title: Tokentype
-          default: bearer
-        expiresIn:
-          type: integer
-          title: Expiresin
-          description: Token TTL in seconds
-          default: 600
-      type: object
-      required:
-      - accessToken
-      title: SessionTokenResponse
-      description: Response with short-lived JWT session token.
     PrivyLoginResponse:
       properties:
         refreshToken:
@@ -502,6 +506,58 @@ components:
       - privyAddress
       title: PrivyLoginResponse
       description: Response after Privy wallet auth.
+    AuthCompleteRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+      type: object
+      required:
+      - sessionKey
+      title: AuthCompleteRequest
+      description: Request for completing authentication.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SessionTokenResponse:
+      properties:
+        accessToken:
+          type: string
+          title: Accesstoken
+          description: JWT access token (10 min)
+        tokenType:
+          type: string
+          title: Tokentype
+          default: bearer
+        expiresIn:
+          type: integer
+          title: Expiresin
+          description: Token TTL in seconds
+          default: 600
+      type: object
+      required:
+      - accessToken
+      title: SessionTokenResponse
+      description: Response with short-lived JWT session token.
     StatusResponse:
       properties:
         status:
@@ -511,62 +567,6 @@ components:
       type: object
       title: StatusResponse
       description: Simple status response.
-    AuthSessionResponse:
-      properties:
-        refreshToken:
-          type: string
-          title: Refreshtoken
-          description: JWT refresh token (7 days)
-        tokenType:
-          type: string
-          title: Tokentype
-          default: bearer
-        userId:
-          type: string
-          title: Userid
-          description: User UUID
-        email:
-          type: string
-          title: Email
-          description: User email
-        isNewUser:
-          type: boolean
-          title: Isnewuser
-          default: false
-      type: object
-      required:
-      - refreshToken
-      - userId
-      - email
-      title: AuthSessionResponse
-      description: Response for POST /auth/complete — refresh token.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AuthEmailOtpRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-        otpCode:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Otpcode
-          description: 6-digit OTP code
-      type: object
-      required:
-      - sessionKey
-      - otpCode
-      title: AuthEmailOtpRequest
-      description: Request schema for email OTP verification.
   securitySchemes:
     HTTPBearer:
       type: http

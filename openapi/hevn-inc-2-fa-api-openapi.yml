@@ -1,18 +1,18 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA API
+  title: HEVN 2 FA API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
 - url: https://api.hevn.finance
   description: Production
 tags:
-- name: 2FA
+- name: 2 FA
 paths:
   /api/v1/user/2fa/status:
     get:
       tags:
-      - 2FA
+      - 2 FA
       summary: Get Totp Status
       description: Check if 2FA is enabled for the current user.
       operationId: get_totp_status_api_v1_user_2fa_status_get
@@ -28,7 +28,7 @@ paths:
   /api/v1/user/2fa/setup:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Setup Totp
       description: Generate TOTP secret and provisioning URI for QR code.
       operationId: setup_totp_api_v1_user_2fa_setup_post
@@ -44,7 +44,7 @@ paths:
   /api/v1/user/2fa/activate:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Activate Totp
       description: Verify first TOTP code and activate 2FA. Returns recovery codes.
       operationId: activate_totp_api_v1_user_2fa_activate_post
@@ -72,7 +72,7 @@ paths:
   /api/v1/user/2fa:
     delete:
       tags:
-      - 2FA
+      - 2 FA
       summary: Disable Totp
       description: Disable 2FA. Requires current TOTP code.
       operationId: disable_totp_api_v1_user_2fa_delete
@@ -102,7 +102,7 @@ paths:
   /api/v1/user/2fa/recovery-codes:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Regenerate Recovery Codes
       description: Regenerate recovery codes. Requires current TOTP code.
       operationId: regenerate_recovery_codes_api_v1_user_2fa_recovery_codes_post
@@ -130,7 +130,7 @@ paths:
   /api/v1/auth/user/2fa/status:
     get:
       tags:
-      - 2FA
+      - 2 FA
       summary: Get Totp Status Package Alias
       description: Check if 2FA is enabled for the current user.
       operationId: get_totp_status_package_alias_api_v1_auth_user_2fa_status_get
@@ -146,7 +146,7 @@ paths:
   /api/v1/auth/user/2fa/setup:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Setup Totp Package Alias
       description: Generate TOTP secret and provisioning URI for QR code.
       operationId: setup_totp_package_alias_api_v1_auth_user_2fa_setup_post
@@ -162,7 +162,7 @@ paths:
   /api/v1/auth/user/2fa/activate:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Activate Totp Package Alias
       description: Verify first TOTP code and activate 2FA. Returns recovery codes.
       operationId: activate_totp_package_alias_api_v1_auth_user_2fa_activate_post
@@ -190,7 +190,7 @@ paths:
   /api/v1/auth/user/2fa:
     delete:
       tags:
-      - 2FA
+      - 2 FA
       summary: Disable Totp Package Alias
       description: Disable 2FA. Requires current TOTP code.
       operationId: disable_totp_package_alias_api_v1_auth_user_2fa_delete
@@ -220,7 +220,7 @@ paths:
   /api/v1/auth/user/2fa/recovery-codes:
     post:
       tags:
-      - 2FA
+      - 2 FA
       summary: Regenerate Recovery Codes Package Alias
       description: Regenerate recovery codes. Requires current TOTP code.
       operationId: regenerate_recovery_codes_package_alias_api_v1_auth_user_2fa_recovery_codes_post
@@ -247,6 +247,58 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
+    TotpDisableRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Code
+          description: Current TOTP code
+      type: object
+      required:
+      - code
+      title: TotpDisableRequest
+      description: Request to disable 2FA.
+    TotpActivateResponse:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          default: true
+        recoveryCodes:
+          items:
+            type: string
+          type: array
+          title: Recoverycodes
+          description: One-time recovery codes. Store these safely.
+      type: object
+      required:
+      - recoveryCodes
+      title: TotpActivateResponse
+      description: Response after successfully activating 2FA.
+    TotpVerifyRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code
+      type: object
+      required:
+      - code
+      title: TotpVerifyRequest
+      description: Request to verify a TOTP code.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TotpStatusResponse:
       properties:
         enabled:
@@ -282,23 +334,6 @@ components:
       - msg
       - type
       title: ValidationError
-    TotpActivateResponse:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          default: true
-        recoveryCodes:
-          items:
-            type: string
-          type: array
-          title: Recoverycodes
-          description: One-time recovery codes. Store these safely.
-      type: object
-      required:
-      - recoveryCodes
-      title: TotpActivateResponse
-      description: Response after successfully activating 2FA.
     TotpSetupResponse:
       properties:
         secret:
@@ -315,41 +350,6 @@ components:
       - provisioningUri
       title: TotpSetupResponse
       description: Response when initiating 2FA setup.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TotpDisableRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Code
-          description: Current TOTP code
-      type: object
-      required:
-      - code
-      title: TotpDisableRequest
-      description: Request to disable 2FA.
-    TotpVerifyRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Code
-          description: 6-digit TOTP code
-      type: object
-      required:
-      - code
-      title: TotpVerifyRequest
-      description: Request to verify a TOTP code.
   securitySchemes:
     HTTPBearer:
       type: http

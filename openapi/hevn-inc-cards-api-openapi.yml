@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA Cards API
+  title: HEVN Cards API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -1133,209 +1133,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    SetCardLabelRequest:
-      properties:
-        label:
-          anyOf:
-          - type: string
-            maxLength: 64
-          - type: 'null'
-          title: Label
-          description: Label/nickname (null to clear)
-      type: object
-      title: SetCardLabelRequest
-      description: Request to set a user-defined card label.
-    PendingWithdrawal:
-      properties:
-        accountAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountaddress
-        tokenAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tokenaddress
-        toAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Toaddress
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        validAfter:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Validafter
-          description: Earliest timestamp at which the withdrawal may be executed
-        hash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hash
-        callData:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Calldata
-      type: object
-      title: PendingWithdrawal
-      description: Single pending withdrawal request as returned by Wirex.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    CardDetailsResponse:
-      properties:
-        cardNumber:
-          type: string
-          title: Cardnumber
-          description: Full card number (PAN)
-        cvv:
-          type: string
-          title: Cvv
-        expiryDate:
-          type: string
-          title: Expirydate
-      type: object
-      required:
-      - cardNumber
-      - cvv
-      - expiryDate
-      title: CardDetailsResponse
-      description: Sensitive card details.
-    CardResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        walletAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Walletaddress
-          description: Linked wallet address
-        status:
-          $ref: '#/components/schemas/CardStatus'
-          default: pending
-        limit:
-          anyOf:
-          - $ref: '#/components/schemas/CardLimit'
-          - type: 'null'
-        cardData:
-          anyOf:
-          - $ref: '#/components/schemas/CardData'
-          - type: 'null'
-        createdAt:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Createdat
-        activated:
-          type: boolean
-          title: Activated
-          description: True if card details have been revealed and cached
-          default: false
-        billingAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        dailySpend:
-          type: number
-          title: Dailyspend
-          description: Total spent today on this card (from fiat_transfers)
-          default: 0
-        label:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Label
-          description: User-defined card label/nickname
-      type: object
-      required:
-      - id
-      title: CardResponse
-      description: Card response - universal format for any provider.
-    SetCardLimitRequest:
-      properties:
-        dailyLimit:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Dailylimit
-          description: Daily limit. Set to -1 to disable.
-        monthlyLimit:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Monthlylimit
-          description: Monthly limit. Set to -1 to disable.
-        lifetimeLimit:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Lifetimelimit
-          description: Lifetime limit. Set to -1 to disable.
-        currency:
-          type: string
-          title: Currency
-          description: Limit currency.
-          default: EUR
-      type: object
-      title: SetCardLimitRequest
-      description: Request to set card spending limits.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SetPhoneRequest:
-      properties:
-        phoneNumber:
-          type: string
-          title: Phonenumber
-          description: Phone with country code, e.g. +33755881784
-      type: object
-      required:
-      - phoneNumber
-      title: SetPhoneRequest
-      description: Request to set phone number.
-    SendOtpResponse:
-      properties:
-        sessionId:
-          type: string
-          title: Sessionid
-      type: object
-      required:
-      - sessionId
-      title: SendOtpResponse
-      description: Response after sending OTP.
     VerifyOtpRequest:
       properties:
         sessionId:
@@ -1352,155 +1149,13 @@ components:
       - code
       title: VerifyOtpRequest
       description: Request to verify OTP code.
-    CardData:
-      properties:
-        nameOnCard:
-          type: string
-          title: Nameoncard
-        paymentSystem:
-          type: string
-          title: Paymentsystem
-          description: Visa, Mastercard, etc.
-        lastFour:
-          type: string
-          title: Lastfour
-          description: Last 4 digits of card number
-        expiryDate:
-          type: string
-          title: Expirydate
-          description: MM/YY format
-        format:
-          $ref: '#/components/schemas/CardFormat'
-        cardName:
-          type: string
-          title: Cardname
-          description: Display name like 'Visa **** 1234'
-      type: object
-      required:
-      - nameOnCard
-      - paymentSystem
-      - lastFour
-      - expiryDate
-      - format
-      - cardName
-      title: CardData
-      description: Card display data (non-sensitive).
-    CardUserRegisterRequest:
-      properties:
-        country:
-          $ref: '#/components/schemas/CountryCode'
-        walletAddress:
-          type: string
-          title: Walletaddress
-          description: EOA wallet address
-      type: object
-      required:
-      - country
-      - walletAddress
-      title: CardUserRegisterRequest
-      description: Request to register user for card services.
-    CardsListResponse:
-      properties:
-        cards:
-          items:
-            $ref: '#/components/schemas/CardResponse'
-          type: array
-          title: Cards
-        total:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total
-        created:
-          type: boolean
-          title: Created
-          default: false
-        kycStatus:
-          $ref: '#/components/schemas/KycStatus'
-          default: not_started
-        phoneVerified:
-          type: boolean
-          title: Phoneverified
-          default: false
-      type: object
-      required:
-      - cards
-      title: CardsListResponse
-      description: Paginated list of cards.
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    CardStatus:
+    CardFormat:
       type: string
       enum:
-      - pending
-      - active
-      - blocked
-      - closed
-      title: CardStatus
-      description: Card status.
-    IssueCardRequest:
-      properties:
-        format:
-          $ref: '#/components/schemas/CardFormat'
-          default: virtual
-      type: object
-      title: IssueCardRequest
-      description: Request to issue a new card.
-    PendingWithdrawalsResponse:
-      properties:
-        withdrawals:
-          items:
-            $ref: '#/components/schemas/PendingWithdrawal'
-          type: array
-          title: Withdrawals
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - withdrawals
-      - total
-      title: PendingWithdrawalsResponse
-      description: List of pending withdrawals for a user.
+      - virtual
+      - physical
+      title: CardFormat
+      description: Card format.
     CountryCode:
       type: string
       enum:
@@ -1755,6 +1410,215 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
+    CardRevealRequest:
+      properties:
+        messageSignature:
+          type: string
+          title: Messagesignature
+          description: Wallet signature of confirmation message
+        nonce:
+          type: integer
+          title: Nonce
+          description: Unix timestamp used in the signed message (valid 5 min)
+      type: object
+      required:
+      - messageSignature
+      - nonce
+      title: CardRevealRequest
+      description: Request to reveal card details. Requires wallet signature.
+    SetCardLimitRequest:
+      properties:
+        dailyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Dailylimit
+          description: Daily limit. Set to -1 to disable.
+        monthlyLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Monthlylimit
+          description: Monthly limit. Set to -1 to disable.
+        lifetimeLimit:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lifetimelimit
+          description: Lifetime limit. Set to -1 to disable.
+        currency:
+          type: string
+          title: Currency
+          description: Limit currency.
+          default: EUR
+      type: object
+      title: SetCardLimitRequest
+      description: Request to set card spending limits.
+    PendingWithdrawal:
+      properties:
+        accountAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountaddress
+        tokenAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tokenaddress
+        toAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Toaddress
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        validAfter:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Validafter
+          description: Earliest timestamp at which the withdrawal may be executed
+        hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hash
+        callData:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Calldata
+      type: object
+      title: PendingWithdrawal
+      description: Single pending withdrawal request as returned by Wirex.
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    KycLinkResponse:
+      properties:
+        link:
+          type: string
+          title: Link
+      type: object
+      required:
+      - link
+      title: KycLinkResponse
+      description: KYC verification link.
+    CardUserRegisterRequest:
+      properties:
+        country:
+          $ref: '#/components/schemas/CountryCode'
+        walletAddress:
+          type: string
+          title: Walletaddress
+          description: EOA wallet address
+      type: object
+      required:
+      - country
+      - walletAddress
+      title: CardUserRegisterRequest
+      description: Request to register user for card services.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SendOtpResponse:
+      properties:
+        sessionId:
+          type: string
+          title: Sessionid
+      type: object
+      required:
+      - sessionId
+      title: SendOtpResponse
+      description: Response after sending OTP.
+    PendingWithdrawalsResponse:
+      properties:
+        withdrawals:
+          items:
+            $ref: '#/components/schemas/PendingWithdrawal'
+          type: array
+          title: Withdrawals
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - withdrawals
+      - total
+      title: PendingWithdrawalsResponse
+      description: List of pending withdrawals for a user.
+    SetPhoneRequest:
+      properties:
+        phoneNumber:
+          type: string
+          title: Phonenumber
+          description: Phone with country code, e.g. +33755881784
+      type: object
+      required:
+      - phoneNumber
+      title: SetPhoneRequest
+      description: Request to set phone number.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
     CardsPreApproveResponse:
       properties:
         kycUrl:
@@ -1776,22 +1640,75 @@ components:
       type: object
       title: CardsPreApproveResponse
       description: Pre-flight info for issuing Wirex cards.
-    CardRevealRequest:
+    IssueCardRequest:
       properties:
-        messageSignature:
+        format:
+          $ref: '#/components/schemas/CardFormat'
+          default: virtual
+      type: object
+      title: IssueCardRequest
+      description: Request to issue a new card.
+    CardStatus:
+      type: string
+      enum:
+      - pending
+      - active
+      - blocked
+      - closed
+      title: CardStatus
+      description: Card status.
+    CardResponse:
+      properties:
+        id:
           type: string
-          title: Messagesignature
-          description: Wallet signature of confirmation message
-        nonce:
-          type: integer
-          title: Nonce
-          description: Unix timestamp used in the signed message (valid 5 min)
+          title: Id
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+          description: Linked wallet address
+        status:
+          $ref: '#/components/schemas/CardStatus'
+          default: pending
+        limit:
+          anyOf:
+          - $ref: '#/components/schemas/CardLimit'
+          - type: 'null'
+        cardData:
+          anyOf:
+          - $ref: '#/components/schemas/CardData'
+          - type: 'null'
+        createdAt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Createdat
+        activated:
+          type: boolean
+          title: Activated
+          description: True if card details have been revealed and cached
+          default: false
+        billingAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        dailySpend:
+          type: number
+          title: Dailyspend
+          description: Total spent today on this card (from fiat_transfers)
+          default: 0
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+          description: User-defined card label/nickname
       type: object
       required:
-      - messageSignature
-      - nonce
-      title: CardRevealRequest
-      description: Request to reveal card details. Requires wallet signature.
+      - id
+      title: CardResponse
+      description: Card response - universal format for any provider.
     CardLimit:
       properties:
         dailyLimit:
@@ -1834,36 +1751,119 @@ components:
       type: object
       title: CardLimit
       description: Card spending limit.
-    KycStatus:
-      type: string
-      enum:
-      - not_started
-      - requested
-      - incorporating
-      - pending
-      - under_review
-      - in_review
-      - approved
-      - rejected
-      title: KycStatus
-      description: KYC verification status.
-    CardFormat:
-      type: string
-      enum:
-      - virtual
-      - physical
-      title: CardFormat
-      description: Card format.
-    KycLinkResponse:
+    SetCardLabelRequest:
       properties:
-        link:
+        label:
+          anyOf:
+          - type: string
+            maxLength: 64
+          - type: 'null'
+          title: Label
+          description: Label/nickname (null to clear)
+      type: object
+      title: SetCardLabelRequest
+      description: Request to set a user-defined card label.
+    CardData:
+      properties:
+        nameOnCard:
           type: string
-          title: Link
+          title: Nameoncard
+        paymentSystem:
+          type: string
+          title: Paymentsystem
+          description: Visa, Mastercard, etc.
+        lastFour:
+          type: string
+          title: Lastfour
+          description: Last 4 digits of card number
+        expiryDate:
+          type: string
+          title: Expirydate
+          description: MM/YY format
+        format:
+          $ref: '#/components/schemas/CardFormat'
+        cardName:
+          type: string
+          title: Cardname
+          description: Display name like 'Visa **** 1234'
       type: object
       required:
-      - link
-      title: KycLinkResponse
-      description: KYC verification link.
+      - nameOnCard
+      - paymentSystem
+      - lastFour
+      - expiryDate
+      - format
+      - cardName
+      title: CardData
+      description: Card display data (non-sensitive).
+    CardDetailsResponse:
+      properties:
+        cardNumber:
+          type: string
+          title: Cardnumber
+          description: Full card number (PAN)
+        cvv:
+          type: string
+          title: Cvv
+        expiryDate:
+          type: string
+          title: Expirydate
+      type: object
+      required:
+      - cardNumber
+      - cvv
+      - expiryDate
+      title: CardDetailsResponse
+      description: Sensitive card details.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CardsListResponse:
+      properties:
+        cards:
+          items:
+            $ref: '#/components/schemas/CardResponse'
+          type: array
+          title: Cards
+        total:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total
+        created:
+          type: boolean
+          title: Created
+          default: false
+        kycStatus:
+          $ref: '#/components/schemas/KycStatus'
+          default: not_started
+        phoneVerified:
+          type: boolean
+          title: Phoneverified
+          default: false
+      type: object
+      required:
+      - cards
+      title: CardsListResponse
+      description: Paginated list of cards.
   securitySchemes:
     HTTPBearer:
       type: http

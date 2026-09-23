@@ -1,18 +1,18 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA mcp API
+  title: HEVN MCP API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
 - url: https://api.hevn.finance
   description: Production
 tags:
-- name: mcp
+- name: MCP
 paths:
   /api/v1/mcp/api_key:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Create a new MCP API key
       operationId: create_api_key_api_v1_mcp_api_key_post
       security:
@@ -71,7 +71,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - mcp
+      - MCP
       summary: List all MCP API keys
       operationId: list_api_keys_api_v1_mcp_api_key_get
       security:
@@ -104,7 +104,7 @@ paths:
   /api/v1/mcp/api_key/{key_id}:
     delete:
       tags:
-      - mcp
+      - MCP
       summary: Delete an MCP API key
       operationId: delete_api_key_api_v1_mcp_api_key__key_id__delete
       security:
@@ -143,7 +143,7 @@ paths:
   /api/v1/mcp/get_balance:
     get:
       tags:
-      - mcp
+      - MCP
       summary: Get USDC balance on Base
       operationId: get_mcp_balance_api_v1_mcp_get_balance_get
       parameters:
@@ -169,7 +169,7 @@ paths:
   /api/v1/mcp/resolve_address:
     get:
       tags:
-      - mcp
+      - MCP
       summary: Resolve smart wallet address by email
       description: 'Resolve or create a smart wallet address for the given email.
 
@@ -211,7 +211,7 @@ paths:
   /api/v1/mcp/transfer:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Transfer USDC through MCP using invoice/contact/quote context
       description: 'Create and submit the UserOperation inside the backend.
 
@@ -257,7 +257,7 @@ paths:
   /api/v1/mcp/transfer_to_user:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Transfer USDC to user via spend permission
       operationId: transfer_to_user_api_v1_mcp_transfer_to_user_post
       security:
@@ -297,7 +297,7 @@ paths:
   /api/v1/mcp/transfers:
     get:
       tags:
-      - mcp
+      - MCP
       summary: List MCP transfers for authenticated user
       operationId: list_transfers_api_v1_mcp_transfers_get
       parameters:
@@ -351,7 +351,7 @@ paths:
   /api/v1/auth/mcp/api_key:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Create a new MCP API key
       operationId: create_api_key_package_alias_api_v1_auth_mcp_api_key_post
       security:
@@ -410,7 +410,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - mcp
+      - MCP
       summary: List all MCP API keys
       operationId: list_api_keys_package_alias_api_v1_auth_mcp_api_key_get
       security:
@@ -443,7 +443,7 @@ paths:
   /api/v1/auth/mcp/api_key/{key_id}:
     delete:
       tags:
-      - mcp
+      - MCP
       summary: Delete an MCP API key
       operationId: delete_api_key_package_alias_api_v1_auth_mcp_api_key__key_id__delete
       security:
@@ -482,7 +482,7 @@ paths:
   /api/v1/auth/mcp/get_balance:
     get:
       tags:
-      - mcp
+      - MCP
       summary: Get USDC balance on Base
       operationId: get_mcp_balance_package_alias_api_v1_auth_mcp_get_balance_get
       parameters:
@@ -508,7 +508,7 @@ paths:
   /api/v1/auth/mcp/resolve_address:
     get:
       tags:
-      - mcp
+      - MCP
       summary: Resolve smart wallet address by email
       description: 'Resolve or create a smart wallet address for the given email.
 
@@ -550,7 +550,7 @@ paths:
   /api/v1/auth/mcp/transfer:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Transfer USDC through MCP using invoice/contact/quote context
       description: 'Create and submit the UserOperation inside the backend.
 
@@ -596,7 +596,7 @@ paths:
   /api/v1/auth/mcp/transfer_to_user:
     post:
       tags:
-      - mcp
+      - MCP
       summary: Transfer USDC to user via spend permission
       operationId: transfer_to_user_package_alias_api_v1_auth_mcp_transfer_to_user_post
       security:
@@ -636,7 +636,7 @@ paths:
   /api/v1/auth/mcp/transfers:
     get:
       tags:
-      - mcp
+      - MCP
       summary: List MCP transfers for authenticated user
       operationId: list_transfers_package_alias_api_v1_auth_mcp_transfers_get
       parameters:
@@ -689,27 +689,108 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
+    TransferRequest:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        amount:
+          type: number
+          title: Amount
+        email:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Email
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - amount
+      - email
+      title: TransferRequest
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    app__schemas__routers__security__mcp__ApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+      type: object
+      required:
+      - name
+      title: ApiKeyCreateRequest
+    McpTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: McpTransferContext
     app__schemas__routers__security__mcp__ApiKeyResponse:
       properties:
         id:
@@ -762,40 +843,58 @@ components:
       - totalSpend
       - createdAt
       title: ApiKeyResponse
-    McpTransactionResponse:
+    HTTPValidationError:
       properties:
-        txHash:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    BalanceResponse:
+      properties:
+        email:
           type: string
-          title: Txhash
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        receiverEmail:
+          title: Email
+        address:
           anyOf:
           - type: string
           - type: 'null'
-          title: Receiveremail
-        receiverAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Receiveraddress
-        transactionLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionlink
-        time:
-          type: string
-          format: date-time
-          title: Time
+          title: Address
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        remaining:
+          type: number
+          title: Remaining
+          default: 0
       type: object
       required:
-      - txHash
-      - time
-      title: McpTransactionResponse
+      - email
+      title: BalanceResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ApiKeyListResponse:
       properties:
         id:
@@ -848,55 +947,6 @@ components:
       - totalSpend
       - createdAt
       title: ApiKeyListResponse
-    BalanceResponse:
-      properties:
-        email:
-          type: string
-          title: Email
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-        balance:
-          type: number
-          title: Balance
-          default: 0
-        remaining:
-          type: number
-          title: Remaining
-          default: 0
-      type: object
-      required:
-      - email
-      title: BalanceResponse
-    TransferRequest:
-      properties:
-        amount:
-          type: number
-          title: Amount
-        email:
-          type: string
-          title: Email
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      required:
-      - amount
-      - email
-      title: TransferRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     TransferResponse:
       properties:
         txHash:
@@ -914,56 +964,6 @@ components:
           default: false
       type: object
       title: TransferResponse
-    app__schemas__routers__security__mcp__ApiKeyCreateRequest:
-      properties:
-        name:
-          type: string
-          title: Name
-        ipRestriction:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Iprestriction
-        maxSpend:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Maxspend
-      type: object
-      required:
-      - name
-      title: ApiKeyCreateRequest
-    McpTransferContext:
-      properties:
-        contactId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Contactid
-        quoteId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Quoteid
-        invoiceId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Invoiceid
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      title: McpTransferContext
   securitySchemes:
     HTTPBearer:
       type: http

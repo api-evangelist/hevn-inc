@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA Merchant API
+  title: HEVN Merchant API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -491,6 +491,85 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    PaymentTransactionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        productId:
+          type: string
+          format: uuid
+          title: Productid
+        ocQuoteId:
+          type: string
+          title: Ocquoteid
+        clientReferenceId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clientreferenceid
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+        usdAmount:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Usdamount
+        transactionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionid
+        buyerEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Buyeremail
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          default: {}
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+        status:
+          type: string
+          title: Status
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - productId
+      - ocQuoteId
+      - usdAmount
+      - status
+      - createdAt
+      title: PaymentTransactionResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -512,6 +591,178 @@ components:
       - msg
       - type
       title: ValidationError
+    ProductCreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        images:
+          items:
+            type: string
+          type: array
+          title: Images
+          default: []
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        price:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Price
+        currency:
+          type: string
+          title: Currency
+          default: USD
+        minAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Minamount
+        maxAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Maxamount
+        presetAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Presetamount
+        maxQuantity:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Maxquantity
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          default: {}
+        webhookUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Webhookurl
+        successUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Successurl
+        cancelUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cancelurl
+      type: object
+      required:
+      - name
+      title: ProductCreateRequest
+    ProductUpdateRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        images:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Images
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        price:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Price
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        minAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Minamount
+        maxAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Maxamount
+        presetAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Presetamount
+        maxQuantity:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Maxquantity
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+        webhookUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Webhookurl
+        successUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Successurl
+        cancelUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cancelurl
+        active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Active
+      type: object
+      title: ProductUpdateRequest
     ProductResponse:
       properties:
         id:
@@ -613,257 +864,6 @@ components:
       - createdAt
       - updatedAt
       title: ProductResponse
-    ProductCreateRequest:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        images:
-          items:
-            type: string
-          type: array
-          title: Images
-          default: []
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-        price:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Price
-        currency:
-          type: string
-          title: Currency
-          default: USD
-        minAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Minamount
-        maxAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Maxamount
-        presetAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Presetamount
-        maxQuantity:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxquantity
-        metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
-          default: {}
-        webhookUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Webhookurl
-        successUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Successurl
-        cancelUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cancelurl
-      type: object
-      required:
-      - name
-      title: ProductCreateRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ProductUpdateRequest:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        images:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Images
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-        price:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Price
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        minAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Minamount
-        maxAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Maxamount
-        presetAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Presetamount
-        maxQuantity:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxquantity
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-        webhookUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Webhookurl
-        successUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Successurl
-        cancelUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cancelurl
-        active:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Active
-      type: object
-      title: ProductUpdateRequest
-    PaymentTransactionResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        productId:
-          type: string
-          format: uuid
-          title: Productid
-        ocQuoteId:
-          type: string
-          title: Ocquoteid
-        clientReferenceId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Clientreferenceid
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-        usdAmount:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Usdamount
-        transactionId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionid
-        buyerEmail:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Buyeremail
-        invoiceId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Invoiceid
-        metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
-          default: {}
-        expiresAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expiresat
-        status:
-          type: string
-          title: Status
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - productId
-      - ocQuoteId
-      - usdAmount
-      - status
-      - createdAt
-      title: PaymentTransactionResponse
   securitySchemes:
     HTTPBearer:
       type: http

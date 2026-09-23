@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA Chat API
+  title: HEVN Chat API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -411,6 +411,50 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    app__schemas__routers__user__user__ChatResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        lastMessageAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastmessageat
+        updatedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updatedat
+        lastReadByUserAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastreadbyuserat
+        lastReadByAdminAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastreadbyadminat
+        unreadCount:
+          type: integer
+          title: Unreadcount
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - createdAt
+      title: ChatResponse
+      description: User-facing chat.
     UserChatType:
       type: string
       enum:
@@ -418,6 +462,15 @@ components:
       - compliance
       title: UserChatType
       description: Chat types exposed to end users (subset of db.ChatType).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -478,59 +531,6 @@ components:
       - createdAt
       title: ChatMessageResponse
       description: Single message in a chat.
-    app__schemas__routers__user__user__ChatResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        lastMessageAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastmessageat
-        updatedAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updatedat
-        lastReadByUserAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastreadbyuserat
-        lastReadByAdminAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastreadbyadminat
-        unreadCount:
-          type: integer
-          title: Unreadcount
-          default: 0
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - createdAt
-      title: ChatResponse
-      description: User-facing chat.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ChatMessageRequest:
       properties:
         text:

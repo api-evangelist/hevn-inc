@@ -1,18 +1,18 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA apps API
+  title: HEVN Apps API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
 - url: https://api.hevn.finance
   description: Production
 tags:
-- name: apps
+- name: Apps
 paths:
   /api/v1/apps:
     post:
       tags:
-      - apps
+      - Apps
       summary: Create a new API app
       operationId: create_app_api_v1_apps_post
       security:
@@ -47,7 +47,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - apps
+      - Apps
       summary: List user's API apps
       operationId: list_apps_api_v1_apps_get
       security:
@@ -80,7 +80,7 @@ paths:
   /api/v1/apps/{app_id}:
     get:
       tags:
-      - apps
+      - Apps
       summary: 'App details: keys + matching spend permissions'
       operationId: get_app_api_v1_apps__app_id__get
       security:
@@ -116,7 +116,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - apps
+      - Apps
       summary: Delete an API app (soft-delete; cascades to all keys)
       operationId: delete_app_api_v1_apps__app_id__delete
       security:
@@ -155,7 +155,7 @@ paths:
   /api/v1/apps/{app_id}/access:
     put:
       tags:
-      - apps
+      - Apps
       summary: Replace an app's access (cards/banks/scope) — owner only
       operationId: update_app_access_api_v1_apps__app_id__access_put
       security:
@@ -198,7 +198,7 @@ paths:
   /api/v1/apps/{app_id}/keys:
     post:
       tags:
-      - apps
+      - Apps
       summary: Issue a new API key under the app (raw key returned ONCE)
       operationId: create_app_key_api_v1_apps__app_id__keys_post
       security:
@@ -241,7 +241,7 @@ paths:
   /api/v1/apps/{app_id}/keys/{key_id}:
     delete:
       tags:
-      - apps
+      - Apps
       summary: Revoke an API key from the app (soft-delete)
       operationId: delete_app_key_api_v1_apps__app_id__keys__key_id__delete
       security:
@@ -287,7 +287,7 @@ paths:
   /api/v1/apps/{app_id}/activity:
     get:
       tags:
-      - apps
+      - Apps
       summary: Recent notifications produced by this app's API keys
       operationId: get_app_activity_api_v1_apps__app_id__activity_get
       security:
@@ -341,7 +341,7 @@ paths:
   /api/v1/apps/{app_id}/transfer:
     post:
       tags:
-      - apps
+      - Apps
       summary: Legacy app-id transfer route
       description: 'Resolve recipient + amount from context, then spend USDC from the
 
@@ -404,7 +404,7 @@ paths:
   /api/v1/apps/me:
     get:
       tags:
-      - apps
+      - Apps
       summary: Introspect the current API key
       description: Return the user identity, owning app, granted scopes, balance, and remaining spend limit for the configured API key. Used by `hevn whoami`.
       operationId: me_api_v1_apps_me_get
@@ -435,7 +435,7 @@ paths:
   /api/v1/apps/transfer:
     post:
       tags:
-      - apps
+      - Apps
       summary: Send USDC from the app resolved by the API key
       description: Resolve recipient and amount from context, then spend USDC through the app associated with the calling API key. This is the app-id-free transfer route used by the current HEVN CLI.
       operationId: transfer_api_v1_apps_transfer_post
@@ -480,7 +480,7 @@ paths:
   /api/v1/apps/transfers:
     get:
       tags:
-      - apps
+      - Apps
       summary: List transfers for the app resolved by the API key
       description: List app-scoped transfers for the app associated with the calling API key. This is the app-id-free transfer history route used by the current HEVN CLI wrapper.
       operationId: list_transfers_api_v1_apps_transfers_get
@@ -538,6 +538,136 @@ paths:
       - ApiKeyAuth: []
 components:
   schemas:
+    NotificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        isOpened:
+          type: boolean
+          title: Isopened
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        ipAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ipaddress
+      type: object
+      required:
+      - id
+      - type
+      - channel
+      - isOpened
+      - createdAt
+      title: NotificationResponse
+      description: Single notification response.
+    ApiAppCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Name
+        access:
+          $ref: '#/components/schemas/ApiAppAccess'
+      type: object
+      required:
+      - name
+      title: ApiAppCreateRequest
+    AppTransferResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+      type: object
+      required:
+      - txHash
+      title: AppTransferResponse
+    app__schemas__routers__apps__ApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Name
+      type: object
+      required:
+      - name
+      title: ApiKeyCreateRequest
+    PermissionStatus:
+      type: string
+      enum:
+      - active
+      - revoked
+      title: PermissionStatus
+      description: Spend permission status.
+    app__schemas__routers__apps__ApiKeyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        key:
+          type: string
+          title: Key
+        walletAddress:
+          type: string
+          title: Walletaddress
+        keyPreview:
+          type: string
+          title: Keypreview
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - key
+      - walletAddress
+      - keyPreview
+      - lastUse
+      - createdAt
+      title: ApiKeyResponse
+      description: Returned ONCE on key creation — includes raw key.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ApiAppDetailResponse:
       properties:
         id:
@@ -588,74 +718,6 @@ components:
       - createdAt
       - updatedAt
       title: ApiAppDetailResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ApiAppResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        access:
-          $ref: '#/components/schemas/ApiAppAccess'
-        smartWalletAddress:
-          type: string
-          title: Smartwalletaddress
-        lastUsed:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastused
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-        updatedAt:
-          type: string
-          format: date-time
-          title: Updatedat
-      type: object
-      required:
-      - id
-      - name
-      - access
-      - smartWalletAddress
-      - lastUsed
-      - createdAt
-      - updatedAt
-      title: ApiAppResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     AppTransferContext:
       properties:
         contactId:
@@ -697,47 +759,7 @@ components:
         ``contactId`` is the dispatch path; otherwise it''s derived from the
 
         referenced invoice / quote.'
-    NotificationListResponse:
-      properties:
-        notifications:
-          items:
-            $ref: '#/components/schemas/NotificationResponse'
-          type: array
-          title: Notifications
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - notifications
-      - total
-      title: NotificationListResponse
-      description: List of notifications response.
-    ApiAppAccess:
-      properties:
-        cards:
-          items:
-            type: string
-            format: uuid
-          type: array
-          title: Cards
-          default: []
-        banks:
-          items:
-            type: string
-            format: uuid
-          type: array
-          title: Banks
-          default: []
-        scope:
-          items:
-            type: string
-          type: array
-          title: Scope
-          default: []
-      type: object
-      title: ApiAppAccess
-    ApiKeyListItem:
+    ApiAppResponse:
       properties:
         id:
           type: string
@@ -746,105 +768,35 @@ components:
         name:
           type: string
           title: Name
-        walletAddress:
+        access:
+          $ref: '#/components/schemas/ApiAppAccess'
+        smartWalletAddress:
           type: string
-          title: Walletaddress
-        keyPreview:
-          type: string
-          title: Keypreview
-        lastUse:
+          title: Smartwalletaddress
+        lastUsed:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
-          title: Lastuse
+          title: Lastused
         createdAt:
           type: string
           format: date-time
           title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
       type: object
       required:
       - id
       - name
-      - walletAddress
-      - keyPreview
-      - lastUse
+      - access
+      - smartWalletAddress
+      - lastUsed
       - createdAt
-      title: ApiKeyListItem
-      description: Used in GET contexts — does NOT include raw key.
-    app__schemas__routers__apps__ApiKeyResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        key:
-          type: string
-          title: Key
-        walletAddress:
-          type: string
-          title: Walletaddress
-        keyPreview:
-          type: string
-          title: Keypreview
-        lastUse:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastuse
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - name
-      - key
-      - walletAddress
-      - keyPreview
-      - lastUse
-      - createdAt
-      title: ApiKeyResponse
-      description: Returned ONCE on key creation — includes raw key.
-    McpTransactionResponse:
-      properties:
-        txHash:
-          type: string
-          title: Txhash
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        receiverEmail:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Receiveremail
-        receiverAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Receiveraddress
-        transactionLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionlink
-        time:
-          type: string
-          format: date-time
-          title: Time
-      type: object
-      required:
-      - txHash
-      - time
-      title: McpTransactionResponse
+      - updatedAt
+      title: ApiAppResponse
     SmartWalletPermissionResponse:
       properties:
         id:
@@ -909,17 +861,6 @@ components:
       - txHash
       - createdAt
       title: SmartWalletPermissionResponse
-    app__schemas__routers__apps__ApiKeyCreateRequest:
-      properties:
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          title: Name
-      type: object
-      required:
-      - name
-      title: ApiKeyCreateRequest
     NotificationChannel:
       type: string
       enum:
@@ -928,116 +869,41 @@ components:
       - internal
       title: NotificationChannel
       description: Notification delivery channel.
-    AppsMeResponse:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        email:
-          type: string
-          title: Email
-        balance:
-          type: number
-          title: Balance
-          default: 0
-        spendLimit:
-          type: number
-          title: Spendlimit
-          default: 0
-        appId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Appid
-        appName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Appname
-        scope:
-          type: array
-          items:
-            type: string
-          title: Scope
-          default: []
-      type: object
-      required:
-      - email
-      title: AppsMeResponse
-      description: Introspection response for the API key used by HEVN CLI whoami. Includes user identity, owning app, scopes, balance, and remaining spend limit.
-    PermissionStatus:
-      type: string
-      enum:
-      - active
-      - revoked
-      title: PermissionStatus
-      description: Spend permission status.
-    ApiAppCreateRequest:
-      properties:
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          title: Name
-        access:
-          $ref: '#/components/schemas/ApiAppAccess'
-      type: object
-      required:
-      - name
-      title: ApiAppCreateRequest
-    AppTransferResponse:
-      properties:
-        txHash:
-          type: string
-          title: Txhash
-      type: object
-      required:
-      - txHash
-      title: AppTransferResponse
-    NotificationResponse:
+    ApiKeyListItem:
       properties:
         id:
           type: string
           format: uuid
           title: Id
-        type:
-          $ref: '#/components/schemas/NotificationType'
-        channel:
-          $ref: '#/components/schemas/NotificationChannel'
-        isOpened:
-          type: boolean
-          title: Isopened
-        content:
+        name:
+          type: string
+          title: Name
+        walletAddress:
+          type: string
+          title: Walletaddress
+        keyPreview:
+          type: string
+          title: Keypreview
+        lastUse:
           anyOf:
-          - additionalProperties: true
-            type: object
+          - type: string
+            format: date-time
           - type: 'null'
-          title: Content
+          title: Lastuse
         createdAt:
           type: string
           format: date-time
           title: Createdat
-        deviceName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Devicename
-        ipAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ipaddress
       type: object
       required:
       - id
-      - type
-      - channel
-      - isOpened
+      - name
+      - walletAddress
+      - keyPreview
+      - lastUse
       - createdAt
-      title: NotificationResponse
-      description: Single notification response.
+      title: ApiKeyListItem
+      description: Used in GET contexts — does NOT include raw key.
     NotificationType:
       type: string
       enum:
@@ -1079,6 +945,140 @@ components:
       - compliance_reply
       title: NotificationType
       description: Notification type — matches the kind of event being notified.
+    ApiAppAccess:
+      properties:
+        cards:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Cards
+          default: []
+        banks:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Banks
+          default: []
+        scope:
+          items:
+            type: string
+          type: array
+          title: Scope
+          default: []
+      type: object
+      title: ApiAppAccess
+    AppsMeResponse:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        email:
+          type: string
+          title: Email
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        spendLimit:
+          type: number
+          title: Spendlimit
+          default: 0
+        appId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Appid
+        appName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Appname
+        scope:
+          type: array
+          items:
+            type: string
+          title: Scope
+          default: []
+      type: object
+      required:
+      - email
+      title: AppsMeResponse
+      description: Introspection response for the API key used by HEVN CLI whoami. Includes user identity, owning app, scopes, balance, and remaining spend limit.
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NotificationListResponse:
+      properties:
+        notifications:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Notifications
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - notifications
+      - total
+      title: NotificationListResponse
+      description: List of notifications response.
   securitySchemes:
     HTTPBearer:
       type: http

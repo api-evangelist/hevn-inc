@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: HEVN 2FA Transactions API
+  title: HEVN Transactions API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -655,7 +655,7 @@ paths:
       tags:
       - Transactions
       summary: Create a share link for a transaction
-      description: Owner-only. Creates a temp access key scoped to this transaction_id. Pass the raw key back to `GET /transactions/{id}/details?key=<key>` to fetch the receipt without auth.
+      description: Owner-only. Creates a temp access key scoped to this transaction_id. Pass the raw key back to `GET /transactions/{id}/details?key=` to fetch the receipt without auth.
       operationId: create_transaction_share_link_api_v1_transactions__transaction_id__share_post
       security:
       - HTTPBearer: []
@@ -821,134 +821,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TransactionBreakdownItem:
-      properties:
-        key:
-          type: string
-          title: Key
-        volumeUsd:
-          type: number
-          title: Volumeusd
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - key
-      - volumeUsd
-      - count
-      title: TransactionBreakdownItem
-      description: One bucket in a breakdown — volume + count for a tag/type value.
-    app__schemas__base__ContactRelationship:
-      type: string
-      enum:
-      - charity
-      - commercial_investment
-      - corporate_card
-      - credit_card
-      - dividend
-      - family
-      - financial_services
-      - good_sold
-      - goods_bought
-      - government
-      - insurance
-      - intergroup_transfer
-      - intra_group_dividends
-      - information_technology
-      - leasing
-      - loan_charges
-      - merchant_settlement
-      - mobile_wallet
-      - none
-      - non_resident_transfer_between_accounts
-      - pension
-      - personal_expenses
-      - prepaid_cards
-      - professional
-      - rental
-      - resident_transfer_between_accounts
-      - salaries
-      - telecommunications
-      - travel
-      - utility_bill
-      title: ContactRelationship
-      description: 'Unified contact relationship / transfer purpose.
-
-
-        Values match Align AlignTransferPurpose (the more granular set).
-
-        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TransactionStatus:
-      type: string
-      enum:
-      - pending
-      - success
-      - failed
-      - refunded
-      title: TransactionStatus
-      description: Unified transaction status.
-    TransactionAmountDetail:
-      properties:
-        currency:
-          type: string
-          title: Currency
-        amount:
-          type: number
-          title: Amount
-        usdRate:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Usdrate
-        source:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source
-      type: object
-      required:
-      - currency
-      - amount
-      title: TransactionAmountDetail
-      description: Currency / amount / rate leg of a transaction.
-    TransactionSortBy:
-      type: string
-      enum:
-      - date
-      - amount
-      title: TransactionSortBy
-      description: Field to sort the transaction list by.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     TransactionSummary:
       properties:
         inflowUsd:
@@ -994,403 +866,46 @@ components:
         not just the current page. Returned only on the first page (offset=0);
 
         subsequent pages omit it since it doesn''t change with pagination.'
-    TransactionGroupBy:
+    app__schemas__base__ContactRelationship:
       type: string
       enum:
-      - tag
-      - type
-      title: TransactionGroupBy
-      description: Field to group breakdown analytics by.
-    MemoUpdateResponse:
-      properties:
-        onchainTransactionId:
-          type: string
-          title: Onchaintransactionid
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      required:
-      - onchainTransactionId
-      title: MemoUpdateResponse
-      description: Response for memo update.
-    MemoUpdateRequest:
-      properties:
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      title: MemoUpdateRequest
-      description: Request to update a transaction memo (description).
-    TransactionDetailResponse:
-      properties:
-        onchainTransactionId:
-          type: string
-          title: Onchaintransactionid
-        type:
-          type: string
-          title: Type
-        status:
-          $ref: '#/components/schemas/TransactionStatus'
-        time:
-          type: string
-          format: date-time
-          title: Time
-        isIncome:
-          type: boolean
-          title: Isincome
-        from:
-          $ref: '#/components/schemas/TransactionAmountDetail'
-        to:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionAmountDetail'
-          - type: 'null'
-        fee:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionAmountDetail'
-          - type: 'null'
-        walletFrom:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionWalletDetail'
-          - type: 'null'
-        walletTo:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionWalletDetail'
-          - type: 'null'
-        ibanFrom:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Ibanfrom
-        ibanTo:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Ibanto
-        txHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Txhash
-        originChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originchainid
-        destinationChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destinationchainid
-        explorerUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Explorerurl
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        card:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionCardDetail'
-          - type: 'null'
-        contact:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionContactDetail'
-          - type: 'null'
-        userFrom:
-          anyOf:
-          - $ref: '#/components/schemas/UserPreview'
-          - type: 'null'
-        userTo:
-          anyOf:
-          - $ref: '#/components/schemas/UserPreview'
-          - type: 'null'
-        approvedBy:
-          anyOf:
-          - $ref: '#/components/schemas/UserPreview'
-          - $ref: '#/components/schemas/ApiKeyListResponse'
-          - type: 'null'
-          title: Approvedby
-        providerTrId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Providertrid
-        invoice:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionInvoiceDetail'
-          - type: 'null'
-        attachments:
-          items:
-            $ref: '#/components/schemas/TransactionAttachment'
-          type: array
-          title: Attachments
-      type: object
-      required:
-      - onchainTransactionId
-      - type
-      - status
-      - time
-      - isIncome
-      - from
-      title: TransactionDetailResponse
-      description: Detailed transaction response with wallet/IBAN info.
-    UnifiedTransactionItem:
-      properties:
-        onchainTransactionId:
-          type: string
-          title: Onchaintransactionid
-        txHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Txhash
-        type:
-          type: string
-          title: Type
-        name:
-          type: string
-          title: Name
-        time:
-          type: string
-          format: date-time
-          title: Time
-        status:
-          $ref: '#/components/schemas/TransactionStatus'
-        isIncome:
-          type: boolean
-          title: Isincome
-        tag:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag
-        from:
-          $ref: '#/components/schemas/TransactionAmountDetail'
-        to:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionAmountDetail'
-          - type: 'null'
-        fee:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionAmountDetail'
-          - type: 'null'
-        destinationChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destinationchainid
-        usdBalanceAfter:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Usdbalanceafter
-        card:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionCardDetail'
-          - type: 'null'
-        userFrom:
-          anyOf:
-          - $ref: '#/components/schemas/UserPreview'
-          - type: 'null'
-        userTo:
-          anyOf:
-          - $ref: '#/components/schemas/UserPreview'
-          - type: 'null'
-        walletFrom:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionWalletDetail'
-          - type: 'null'
-        walletTo:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionWalletDetail'
-          - type: 'null'
-        ibanFrom:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Ibanfrom
-        ibanTo:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Ibanto
-        approved:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Approved
-        hasAttachments:
-          type: boolean
-          title: Hasattachments
-          default: false
-      type: object
-      required:
-      - onchainTransactionId
-      - type
-      - name
-      - time
-      - status
-      - isIncome
-      - from
-      title: UnifiedTransactionItem
-      description: 'Unified transaction item for the transaction list.
+      - charity
+      - commercial_investment
+      - corporate_card
+      - credit_card
+      - dividend
+      - family
+      - financial_services
+      - good_sold
+      - goods_bought
+      - government
+      - insurance
+      - intergroup_transfer
+      - intra_group_dividends
+      - information_technology
+      - leasing
+      - loan_charges
+      - merchant_settlement
+      - mobile_wallet
+      - none
+      - non_resident_transfer_between_accounts
+      - pension
+      - personal_expenses
+      - prepaid_cards
+      - professional
+      - rental
+      - resident_transfer_between_accounts
+      - salaries
+      - telecommunications
+      - travel
+      - utility_bill
+      title: ContactRelationship
+      description: 'Unified contact relationship / transfer purpose.
 
 
-        Legacy directional fields are still included for compatibility.'
-    ApiKeyListResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        keyPreview:
-          type: string
-          title: Keypreview
-        walletAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Walletaddress
-        ipRestriction:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Iprestriction
-        maxSpend:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Maxspend
-        totalSpend:
-          type: number
-          title: Totalspend
-        remaining:
-          type: integer
-          title: Remaining
-          default: 0
-        lastUse:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastuse
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - name
-      - keyPreview
-      - totalSpend
-      - createdAt
-      title: ApiKeyListResponse
-    USExternalAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - ach
-          - fedwire
-          title: Accounttype
-          default: ach
-        us:
-          $ref: '#/components/schemas/USAccountDetails'
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - us
-      - beneficiaryName
-      title: USExternalAccountDetails
-      description: US domestic (ACH) external account.
-    app__schemas__routers__transactions__transaction__AttachDocumentRequest:
-      properties:
-        documentId:
-          type: string
-          format: uuid
-          title: Documentid
-      type: object
-      required:
-      - documentId
-      title: AttachDocumentRequest
-      description: Body for POST /transactions/{id}/attachments.
-    TransactionExportFormat:
-      type: string
-      enum:
-      - csv
-      - xlsx
-      title: TransactionExportFormat
+        Values match Align AlignTransferPurpose (the more granular set).
+
+        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
     UserPreview:
       properties:
         id:
@@ -1421,345 +936,30 @@ components:
       - email
       title: UserPreview
       description: Lightweight user preview (for transaction participants, etc.).
-    TransactionCardDetail:
+    TransactionAmountDetail:
       properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        label:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Label
-        merchant:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Merchant
-        merchantIcon:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Merchanticon
-        category:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Category
-      type: object
-      title: TransactionCardDetail
-      description: Card and merchant info for card transactions.
-    TransactionBreakdownResponse:
-      properties:
-        groupBy:
-          $ref: '#/components/schemas/TransactionGroupBy'
-        items:
-          items:
-            $ref: '#/components/schemas/TransactionBreakdownItem'
-          type: array
-          title: Items
-      type: object
-      required:
-      - groupBy
-      - items
-      title: TransactionBreakdownResponse
-      description: Volume + count grouped by tag or type, with the same filters as the list.
-    USAccountDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          type: string
-          title: Routingnumber
-      type: object
-      required:
-      - accountNumber
-      - routingNumber
-      title: USAccountDetails
-      description: US domestic account details (ACH).
-    TransactionBreakdownGranularity:
-      type: string
-      enum:
-      - day
-      - week
-      - month
-      title: TransactionBreakdownGranularity
-      description: Time bucket size for the breakdown series.
-    SwiftDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Routingnumber
-        bic:
-          type: string
-          title: Bic
-      type: object
-      required:
-      - accountNumber
-      - bic
-      title: SwiftDetails
-      description: SWIFT (international wire) account details.
-    AlignAccountHolderType:
-      type: string
-      enum:
-      - individual
-      - business
-      title: AlignAccountHolderType
-      description: Account holder type.
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    TransactionWalletDetail:
-      properties:
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-        chainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chainid
-      type: object
-      title: TransactionWalletDetail
-      description: Wallet details for transaction list/detail views.
-    TransactionBreakdownSeriesBucket:
-      properties:
-        bucketStart:
-          type: string
-          format: date-time
-          title: Bucketstart
-        bucketEnd:
-          type: string
-          format: date-time
-          title: Bucketend
-        items:
-          items:
-            $ref: '#/components/schemas/TransactionBreakdownItem'
-          type: array
-          title: Items
-      type: object
-      required:
-      - bucketStart
-      - bucketEnd
-      - items
-      title: TransactionBreakdownSeriesBucket
-      description: One time-bucket in a breakdown series, with the per-key items inside it.
-    TransactionInvoiceDetail:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        documentName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentname
-        documentLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentlink
-        dueDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Duedate
-        items:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Items
-        invoiceLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Invoicelink
-        issueDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Issuedate
         currency:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Currency
-        discount:
+        amount:
+          type: number
+          title: Amount
+        usdRate:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Usdrate
+        source:
           anyOf:
           - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
           - type: 'null'
-          title: Discount
+          title: Source
       type: object
       required:
-      - id
-      title: TransactionInvoiceDetail
-      description: Invoice info embedded in transaction details.
-    IBANAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - sepa
-          - uaefts
-          title: Accounttype
-          default: sepa
-        ibanNumber:
-          type: string
-          title: Ibannumber
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - ibanNumber
-      - beneficiaryName
-      title: IBANAccountDetails
-      description: IBAN (SEPA) external account.
-    TransactionAttachment:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        downloadLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Downloadlink
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - createdAt
-      title: TransactionAttachment
-      description: A user-attached document on a transaction.
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      title: SortOrder
-      description: Sort direction.
+      - currency
+      - amount
+      title: TransactionAmountDetail
+      description: Currency / amount / rate leg of a transaction.
     TagUpdateResponse:
       properties:
         onchainTransactionId:
@@ -1775,20 +975,6 @@ components:
       - onchainTransactionId
       title: TagUpdateResponse
       description: Response for tag update.
-    TransactionShareLinkResponse:
-      properties:
-        key:
-          type: string
-          title: Key
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - key
-      - url
-      title: TransactionShareLinkResponse
-      description: Share link for a transaction receipt.
     CountryCode:
       type: string
       enum:
@@ -2043,84 +1229,13 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    TransactionBreakdownSeriesResponse:
-      properties:
-        groupBy:
-          $ref: '#/components/schemas/TransactionGroupBy'
-        granularity:
-          $ref: '#/components/schemas/TransactionBreakdownGranularity'
-        buckets:
-          items:
-            $ref: '#/components/schemas/TransactionBreakdownSeriesBucket'
-          type: array
-          title: Buckets
-      type: object
-      required:
-      - groupBy
-      - granularity
-      - buckets
-      title: TransactionBreakdownSeriesResponse
-      description: 'Time-bucketed volume + count grouped by tag or type.
-
-
-        Granularity is auto-picked from the fromDate/toDate range: months for ranges
-
-        longer than 6 months, weeks for >30 days, days otherwise. The response
-
-        always includes every bucket in the range (zero-filled when empty) so the
-
-        frontend gets a complete x-axis.'
-    TransactionContactDetail:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-      type: object
-      required:
-      - id
-      - name
-      title: TransactionContactDetail
-      description: Contact details for transaction detail view.
-    TagUpdateRequest:
-      properties:
-        tag:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag
-      type: object
-      title: TagUpdateRequest
-      description: Request to update a transaction tag.
-    UnifiedTransactionListResponse:
-      properties:
-        transactions:
-          items:
-            $ref: '#/components/schemas/UnifiedTransactionItem'
-          type: array
-          title: Transactions
-        summary:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionSummary'
-          - type: 'null'
-      type: object
-      required:
-      - transactions
-      title: UnifiedTransactionListResponse
-      description: Unified transaction list response.
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      title: SortOrder
+      description: Sort direction.
     SwiftAccountDetails-Output:
       properties:
         bankName:
@@ -2188,6 +1303,891 @@ components:
       - beneficiaryName
       title: SwiftAccountDetails
       description: SWIFT (international wire) external account.
+    TransactionGroupBy:
+      type: string
+      enum:
+      - tag
+      - type
+      title: TransactionGroupBy
+      description: Field to group breakdown analytics by.
+    TransactionWalletDetail:
+      properties:
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+        chainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainid
+      type: object
+      title: TransactionWalletDetail
+      description: Wallet details for transaction list/detail views.
+    TransactionInvoiceDetail:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        documentName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentname
+        documentLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentlink
+        dueDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Duedate
+        items:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Items
+        invoiceLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invoicelink
+        issueDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Issuedate
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        discount:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Discount
+      type: object
+      required:
+      - id
+      title: TransactionInvoiceDetail
+      description: Invoice info embedded in transaction details.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TransactionExportFormat:
+      type: string
+      enum:
+      - csv
+      - xlsx
+      title: TransactionExportFormat
+    TransactionContactDetail:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+      type: object
+      required:
+      - id
+      - name
+      title: TransactionContactDetail
+      description: Contact details for transaction detail view.
+    IBANAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - sepa
+          - uaefts
+          title: Accounttype
+          default: sepa
+        ibanNumber:
+          type: string
+          title: Ibannumber
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - ibanNumber
+      - beneficiaryName
+      title: IBANAccountDetails
+      description: IBAN (SEPA) external account.
+    MemoUpdateResponse:
+      properties:
+        onchainTransactionId:
+          type: string
+          title: Onchaintransactionid
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      required:
+      - onchainTransactionId
+      title: MemoUpdateResponse
+      description: Response for memo update.
+    TransactionCardDetail:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+        merchant:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Merchant
+        merchantIcon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Merchanticon
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+      type: object
+      title: TransactionCardDetail
+      description: Card and merchant info for card transactions.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    SwiftDetails:
+      properties:
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+        bic:
+          type: string
+          title: Bic
+      type: object
+      required:
+      - accountNumber
+      - bic
+      title: SwiftDetails
+      description: SWIFT (international wire) account details.
+    MemoUpdateRequest:
+      properties:
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: MemoUpdateRequest
+      description: Request to update a transaction memo (description).
+    TransactionBreakdownItem:
+      properties:
+        key:
+          type: string
+          title: Key
+        volumeUsd:
+          type: number
+          title: Volumeusd
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - key
+      - volumeUsd
+      - count
+      title: TransactionBreakdownItem
+      description: One bucket in a breakdown — volume + count for a tag/type value.
+    UnifiedTransactionListResponse:
+      properties:
+        transactions:
+          items:
+            $ref: '#/components/schemas/UnifiedTransactionItem'
+          type: array
+          title: Transactions
+        summary:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionSummary'
+          - type: 'null'
+      type: object
+      required:
+      - transactions
+      title: UnifiedTransactionListResponse
+      description: Unified transaction list response.
+    ApiKeyListResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        keyPreview:
+          type: string
+          title: Keypreview
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+        totalSpend:
+          type: number
+          title: Totalspend
+        remaining:
+          type: integer
+          title: Remaining
+          default: 0
+        lastUse:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastuse
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - name
+      - keyPreview
+      - totalSpend
+      - createdAt
+      title: ApiKeyListResponse
+    TransactionSortBy:
+      type: string
+      enum:
+      - date
+      - amount
+      title: TransactionSortBy
+      description: Field to sort the transaction list by.
+    TransactionBreakdownGranularity:
+      type: string
+      enum:
+      - day
+      - week
+      - month
+      title: TransactionBreakdownGranularity
+      description: Time bucket size for the breakdown series.
+    USAccountDetails:
+      properties:
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          type: string
+          title: Routingnumber
+      type: object
+      required:
+      - accountNumber
+      - routingNumber
+      title: USAccountDetails
+      description: US domestic account details (ACH).
+    TransactionAttachment:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        downloadLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Downloadlink
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - createdAt
+      title: TransactionAttachment
+      description: A user-attached document on a transaction.
+    AlignAccountHolderType:
+      type: string
+      enum:
+      - individual
+      - business
+      title: AlignAccountHolderType
+      description: Account holder type.
+    TransactionDetailResponse:
+      properties:
+        onchainTransactionId:
+          type: string
+          title: Onchaintransactionid
+        type:
+          type: string
+          title: Type
+        status:
+          $ref: '#/components/schemas/TransactionStatus'
+        time:
+          type: string
+          format: date-time
+          title: Time
+        isIncome:
+          type: boolean
+          title: Isincome
+        from:
+          $ref: '#/components/schemas/TransactionAmountDetail'
+        to:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionAmountDetail'
+          - type: 'null'
+        fee:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionAmountDetail'
+          - type: 'null'
+        walletFrom:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionWalletDetail'
+          - type: 'null'
+        walletTo:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionWalletDetail'
+          - type: 'null'
+        ibanFrom:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+          - type: 'null'
+          title: Ibanfrom
+        ibanTo:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+          - type: 'null'
+          title: Ibanto
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+        originChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originchainid
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        explorerUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Explorerurl
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        card:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionCardDetail'
+          - type: 'null'
+        contact:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionContactDetail'
+          - type: 'null'
+        userFrom:
+          anyOf:
+          - $ref: '#/components/schemas/UserPreview'
+          - type: 'null'
+        userTo:
+          anyOf:
+          - $ref: '#/components/schemas/UserPreview'
+          - type: 'null'
+        approvedBy:
+          anyOf:
+          - $ref: '#/components/schemas/UserPreview'
+          - $ref: '#/components/schemas/ApiKeyListResponse'
+          - type: 'null'
+          title: Approvedby
+        providerTrId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Providertrid
+        invoice:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionInvoiceDetail'
+          - type: 'null'
+        attachments:
+          items:
+            $ref: '#/components/schemas/TransactionAttachment'
+          type: array
+          title: Attachments
+      type: object
+      required:
+      - onchainTransactionId
+      - type
+      - status
+      - time
+      - isIncome
+      - from
+      title: TransactionDetailResponse
+      description: Detailed transaction response with wallet/IBAN info.
+    app__schemas__routers__transactions__transaction__AttachDocumentRequest:
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          title: Documentid
+      type: object
+      required:
+      - documentId
+      title: AttachDocumentRequest
+      description: Body for POST /transactions/{id}/attachments.
+    TransactionBreakdownResponse:
+      properties:
+        groupBy:
+          $ref: '#/components/schemas/TransactionGroupBy'
+        items:
+          items:
+            $ref: '#/components/schemas/TransactionBreakdownItem'
+          type: array
+          title: Items
+      type: object
+      required:
+      - groupBy
+      - items
+      title: TransactionBreakdownResponse
+      description: Volume + count grouped by tag or type, with the same filters as the list.
+    TransactionStatus:
+      type: string
+      enum:
+      - pending
+      - success
+      - failed
+      - refunded
+      title: TransactionStatus
+      description: Unified transaction status.
+    USExternalAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          title: Accounttype
+          default: ach
+        us:
+          $ref: '#/components/schemas/USAccountDetails'
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - us
+      - beneficiaryName
+      title: USExternalAccountDetails
+      description: US domestic (ACH) external account.
+    TransactionShareLinkResponse:
+      properties:
+        key:
+          type: string
+          title: Key
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - key
+      - url
+      title: TransactionShareLinkResponse
+      description: Share link for a transaction receipt.
+    TagUpdateRequest:
+      properties:
+        tag:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag
+      type: object
+      title: TagUpdateRequest
+      description: Request to update a transaction tag.
+    TransactionBreakdownSeriesResponse:
+      properties:
+        groupBy:
+          $ref: '#/components/schemas/TransactionGroupBy'
+        granularity:
+          $ref: '#/components/schemas/TransactionBreakdownGranularity'
+        buckets:
+          items:
+            $ref: '#/components/schemas/TransactionBreakdownSeriesBucket'
+          type: array
+          title: Buckets
+      type: object
+      required:
+      - groupBy
+      - granularity
+      - buckets
+      title: TransactionBreakdownSeriesResponse
+      description: 'Time-bucketed volume + count grouped by tag or type.
+
+
+        Granularity is auto-picked from the fromDate/toDate range: months for ranges
+
+        longer than 6 months, weeks for >30 days, days otherwise. The response
+
+        always includes every bucket in the range (zero-filled when empty) so the
+
+        frontend gets a complete x-axis.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TransactionBreakdownSeriesBucket:
+      properties:
+        bucketStart:
+          type: string
+          format: date-time
+          title: Bucketstart
+        bucketEnd:
+          type: string
+          format: date-time
+          title: Bucketend
+        items:
+          items:
+            $ref: '#/components/schemas/TransactionBreakdownItem'
+          type: array
+          title: Items
+      type: object
+      required:
+      - bucketStart
+      - bucketEnd
+      - items
+      title: TransactionBreakdownSeriesBucket
+      description: One time-bucket in a breakdown series, with the per-key items inside it.
+    UnifiedTransactionItem:
+      properties:
+        onchainTransactionId:
+          type: string
+          title: Onchaintransactionid
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+        type:
+          type: string
+          title: Type
+        name:
+          type: string
+          title: Name
+        time:
+          type: string
+          format: date-time
+          title: Time
+        status:
+          $ref: '#/components/schemas/TransactionStatus'
+        isIncome:
+          type: boolean
+          title: Isincome
+        tag:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag
+        from:
+          $ref: '#/components/schemas/TransactionAmountDetail'
+        to:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionAmountDetail'
+          - type: 'null'
+        fee:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionAmountDetail'
+          - type: 'null'
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        usdBalanceAfter:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Usdbalanceafter
+        card:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionCardDetail'
+          - type: 'null'
+        userFrom:
+          anyOf:
+          - $ref: '#/components/schemas/UserPreview'
+          - type: 'null'
+        userTo:
+          anyOf:
+          - $ref: '#/components/schemas/UserPreview'
+          - type: 'null'
+        walletFrom:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionWalletDetail'
+          - type: 'null'
+        walletTo:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionWalletDetail'
+          - type: 'null'
+        ibanFrom:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+          - type: 'null'
+          title: Ibanfrom
+        ibanTo:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+          - type: 'null'
+          title: Ibanto
+        approved:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Approved
+        hasAttachments:
+          type: boolean
+          title: Hasattachments
+          default: false
+      type: object
+      required:
+      - onchainTransactionId
+      - type
+      - name
+      - time
+      - status
+      - isIncome
+      - from
+      title: UnifiedTransactionItem
+      description: 'Unified transaction item for the transaction list.
+
+
+        Legacy directional fields are still included for compatibility.'
   securitySchemes:
     HTTPBearer:
       type: http
