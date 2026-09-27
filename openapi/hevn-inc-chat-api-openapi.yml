@@ -411,6 +411,31 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ChatMessageRequest:
+      properties:
+        text:
+          type: string
+          title: Text
+        documentIds:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Documentids
+      type: object
+      required:
+      - text
+      title: ChatMessageRequest
+      description: Send a message in the chat.
     app__schemas__routers__user__user__ChatResponse:
       properties:
         id:
@@ -455,43 +480,6 @@ components:
       - createdAt
       title: ChatResponse
       description: User-facing chat.
-    UserChatType:
-      type: string
-      enum:
-      - support
-      - compliance
-      title: UserChatType
-      description: Chat types exposed to end users (subset of db.ChatType).
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ChatMessageResponse:
       properties:
         id:
@@ -531,22 +519,34 @@ components:
       - createdAt
       title: ChatMessageResponse
       description: Single message in a chat.
-    ChatMessageRequest:
+    ValidationError:
       properties:
-        text:
-          type: string
-          title: Text
-        documentIds:
+        loc:
           items:
-            type: string
-            format: uuid
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Documentids
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - text
-      title: ChatMessageRequest
-      description: Send a message in the chat.
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UserChatType:
+      type: string
+      enum:
+      - support
+      - compliance
+      title: UserChatType
+      description: Chat types exposed to end users (subset of db.ChatType).
     ChatCreateRequest:
       properties:
         text:

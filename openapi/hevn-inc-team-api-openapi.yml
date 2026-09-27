@@ -333,6 +333,20 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    InviteRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        flow:
+          $ref: '#/components/schemas/InviteFlow'
+      type: object
+      required:
+      - email
+      - flow
+      title: InviteRequest
+      description: Request schema for sending an invite.
     AvailableSpaceResponse:
       properties:
         spaceId:
@@ -383,31 +397,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    TeamAddRequest:
-      properties:
-        email:
-          type: string
-          title: Email
-          description: Email of the user to add
-      type: object
-      required:
-      - email
-      title: TeamAddRequest
-      description: Request to add a team member by email.
-    InviteRequest:
-      properties:
-        email:
-          type: string
-          format: email
-          title: Email
-        flow:
-          $ref: '#/components/schemas/InviteFlow'
-      type: object
-      required:
-      - email
-      - flow
-      title: InviteRequest
-      description: Request schema for sending an invite.
     InviteFlow:
       type: string
       enum:
@@ -416,6 +405,15 @@ components:
       - team_member
       title: InviteFlow
       description: Invite flow types.
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: StatusResponse
+      description: Simple status response.
     TeamMemberResponse:
       properties:
         userId:
@@ -455,6 +453,29 @@ components:
       - createdAt
       title: TeamMemberResponse
       description: Single team member.
+    TeamListResponse:
+      properties:
+        members:
+          items:
+            $ref: '#/components/schemas/TeamMemberResponse'
+          type: array
+          title: Members
+      type: object
+      required:
+      - members
+      title: TeamListResponse
+      description: List of team members.
+    TeamAddRequest:
+      properties:
+        email:
+          type: string
+          title: Email
+          description: Email of the user to add
+      type: object
+      required:
+      - email
+      title: TeamAddRequest
+      description: Request to add a team member by email.
     ValidationError:
       properties:
         loc:
@@ -476,27 +497,6 @@ components:
       - msg
       - type
       title: ValidationError
-    StatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-          default: ok
-      type: object
-      title: StatusResponse
-      description: Simple status response.
-    TeamListResponse:
-      properties:
-        members:
-          items:
-            $ref: '#/components/schemas/TeamMemberResponse'
-          type: array
-          title: Members
-      type: object
-      required:
-      - members
-      title: TeamListResponse
-      description: List of team members.
   securitySchemes:
     HTTPBearer:
       type: http

@@ -687,6 +687,257 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    WalletType:
+      type: string
+      enum:
+      - omni
+      - base-main
+      - swipelux
+      - mcp
+      - base-aa-wallet
+      - wirex
+      title: WalletType
+    PayoutStatusResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        state:
+          type: string
+          title: State
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          type: number
+          title: Toamount
+        toCurrency:
+          type: string
+          title: Tocurrency
+        maskedIban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Maskediban
+      type: object
+      required:
+      - id
+      - state
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      title: PayoutStatusResponse
+      description: Response with payout status.
+    SubmitPayoutQuoteRequest:
+      properties:
+        quoteId:
+          type: string
+          title: Quoteid
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        bankAccountId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Bankaccountid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        toCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tocurrency
+      type: object
+      required:
+      - quoteId
+      title: SubmitPayoutQuoteRequest
+      description: Request to activate a payout quote.
+    PayoutQuoteRequest:
+      properties:
+        contactId:
+          type: string
+          format: uuid
+          title: Contactid
+        amount:
+          type: number
+          title: Amount
+        swapType:
+          $ref: '#/components/schemas/SwapType'
+          default: FLEX_INPUT
+      type: object
+      required:
+      - contactId
+      - amount
+      title: PayoutQuoteRequest
+      description: Request for payout quote to contact.
+    OneClickChain:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: OneClickChain
+      description: 1click chain codes.
+    SubmitPayoutQuoteResponse:
+      properties:
+        transferId:
+          type: string
+          title: Transferid
+        status:
+          type: string
+          title: Status
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        depositAmount:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositamount
+        quoteId:
+          type: string
+          title: Quoteid
+      type: object
+      required:
+      - transferId
+      - status
+      - quoteId
+      title: SubmitPayoutQuoteResponse
+      description: Response after activating a payout quote.
+    UniversalTransactionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        quoteId:
+          type: string
+          title: Quoteid
+        type:
+          type: string
+          title: Type
+        paymentChannel:
+          type: string
+          title: Paymentchannel
+        status:
+          type: string
+          title: Status
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Toamount
+        toCurrency:
+          type: string
+          title: Tocurrency
+        originTxHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Origintxhash
+        destinationTxHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationtxhash
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        errorMessage:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Errormessage
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - quoteId
+      - type
+      - paymentChannel
+      - status
+      - fromAmount
+      - fromCurrency
+      - toCurrency
+      - createdAt
+      title: UniversalTransactionResponse
+      description: Universal transaction response.
+    WithdrawOnchainRequest:
+      properties:
+        amount:
+          type: number
+          title: Amount
+        currency:
+          type: string
+          title: Currency
+          default: USDC
+      type: object
+      required:
+      - amount
+      title: WithdrawOnchainRequest
+      description: Request to withdraw from Swipelux wallet to onchain address.
     UniversalQuoteResponse:
       properties:
         quoteId:
@@ -779,57 +1030,15 @@ components:
       - toCurrency
       title: UniversalQuoteResponse
       description: Universal quote response.
-    SwapType:
-      type: string
-      enum:
-      - EXACT_INPUT
-      - EXACT_OUTPUT
-      - FLEX_INPUT
-      - ANY_INPUT
-      title: SwapType
-      description: Type of swap quote.
-    PayoutQuoteDryRunResponse:
+    HTTPValidationError:
       properties:
-        currencyTo:
-          type: string
-          title: Currencyto
-        amountTo:
-          type: number
-          title: Amountto
-        fee:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Fee
-        fixedFee:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Fixedfee
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - currencyTo
-      - amountTo
-      title: PayoutQuoteDryRunResponse
-      description: Approximate payout quote response without provider-side activation.
-    PayoutQuoteRequest:
-      properties:
-        contactId:
-          type: string
-          format: uuid
-          title: Contactid
-        amount:
-          type: number
-          title: Amount
-        swapType:
-          $ref: '#/components/schemas/SwapType'
-          default: FLEX_INPUT
-      type: object
-      required:
-      - contactId
-      - amount
-      title: PayoutQuoteRequest
-      description: Request for payout quote to contact.
+      title: HTTPValidationError
     PayoutQuoteDryRunRequest:
       properties:
         rail:
@@ -860,216 +1069,6 @@ components:
       - amount
       title: PayoutQuoteDryRunRequest
       description: Request for approximate payout quote without contact.
-    SubmitPayoutQuoteResponse:
-      properties:
-        transferId:
-          type: string
-          title: Transferid
-        status:
-          type: string
-          title: Status
-        depositAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Depositaddress
-        depositAmount:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Depositamount
-        quoteId:
-          type: string
-          title: Quoteid
-      type: object
-      required:
-      - transferId
-      - status
-      - quoteId
-      title: SubmitPayoutQuoteResponse
-      description: Response after activating a payout quote.
-    PayinSubmitRequest:
-      properties:
-        depositAddress:
-          type: string
-          title: Depositaddress
-      type: object
-      required:
-      - depositAddress
-      title: PayinSubmitRequest
-      description: Request to materialize a 1click PAYIN by deposit address.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SubmitPayoutQuoteRequest:
-      properties:
-        quoteId:
-          type: string
-          title: Quoteid
-        contactId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Contactid
-        bankAccountId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Bankaccountid
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        destinationChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destinationchainid
-        toCurrency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tocurrency
-      type: object
-      required:
-      - quoteId
-      title: SubmitPayoutQuoteRequest
-      description: Request to activate a payout quote.
-    PayoutStatusResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        state:
-          type: string
-          title: State
-        fromAmount:
-          type: number
-          title: Fromamount
-        fromCurrency:
-          type: string
-          title: Fromcurrency
-        toAmount:
-          type: number
-          title: Toamount
-        toCurrency:
-          type: string
-          title: Tocurrency
-        maskedIban:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Maskediban
-      type: object
-      required:
-      - id
-      - state
-      - fromAmount
-      - fromCurrency
-      - toAmount
-      - toCurrency
-      title: PayoutStatusResponse
-      description: Response with payout status.
-    BalancesResponse:
-      properties:
-        accounts:
-          items:
-            $ref: '#/components/schemas/AccountBalancesResponse'
-          type: array
-          title: Accounts
-        evmAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Evmaddress
-        privyAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Privyaddress
-      type: object
-      required:
-      - accounts
-      title: BalancesResponse
-      description: Response with wallet balances.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    OneClickChain:
-      type: string
-      enum:
-      - eth
-      - bsc
-      - avax
-      - op
-      - arb
-      - pol
-      - sol
-      - base
-      - gnosis
-      - tron
-      - xrp
-      - zec
-      - doge
-      - ltc
-      - btc
-      - cardano
-      - bera
-      - sui
-      - near
-      - near_intents
-      - xlayer
-      - plasma
-      - ton
-      - stellar
-      - monad
-      - starknet
-      - aptos
-      - adi
-      - bch
-      title: OneClickChain
-      description: 1click chain codes.
-    WithdrawOnchainRequest:
-      properties:
-        amount:
-          type: number
-          title: Amount
-        currency:
-          type: string
-          title: Currency
-          default: USDC
-      type: object
-      required:
-      - amount
-      title: WithdrawOnchainRequest
-      description: Request to withdraw from Swipelux wallet to onchain address.
     PayinQuoteRequest:
       properties:
         amount:
@@ -1091,6 +1090,60 @@ components:
       - originChainId
       title: PayinQuoteRequest
       description: Request for cross-chain payin quote.
+    PayoutQuoteDryRunResponse:
+      properties:
+        currencyTo:
+          type: string
+          title: Currencyto
+        amountTo:
+          type: number
+          title: Amountto
+        fee:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Fee
+        fixedFee:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Fixedfee
+      type: object
+      required:
+      - currencyTo
+      - amountTo
+      title: PayoutQuoteDryRunResponse
+      description: Approximate payout quote response without provider-side activation.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SwapType:
+      type: string
+      enum:
+      - EXACT_INPUT
+      - EXACT_OUTPUT
+      - FLEX_INPUT
+      - ANY_INPUT
+      title: SwapType
+      description: Type of swap quote.
     AccountBalancesResponse:
       properties:
         accountId:
@@ -1125,91 +1178,38 @@ components:
       - rawBalance
       - balanceByToken
       title: AccountBalancesResponse
-    UniversalTransactionResponse:
+    PayinSubmitRequest:
       properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        quoteId:
-          type: string
-          title: Quoteid
-        type:
-          type: string
-          title: Type
-        paymentChannel:
-          type: string
-          title: Paymentchannel
-        status:
-          type: string
-          title: Status
-        fromAmount:
-          type: number
-          title: Fromamount
-        fromCurrency:
-          type: string
-          title: Fromcurrency
-        toAmount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Toamount
-        toCurrency:
-          type: string
-          title: Tocurrency
-        originTxHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Origintxhash
-        destinationTxHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destinationtxhash
         depositAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Depositaddress
-        errorMessage:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Errormessage
-        expiresAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expiresat
-        createdAt:
           type: string
-          format: date-time
-          title: Createdat
+          title: Depositaddress
       type: object
       required:
-      - id
-      - quoteId
-      - type
-      - paymentChannel
-      - status
-      - fromAmount
-      - fromCurrency
-      - toCurrency
-      - createdAt
-      title: UniversalTransactionResponse
-      description: Universal transaction response.
-    WalletType:
-      type: string
-      enum:
-      - omni
-      - base-main
-      - swipelux
-      - mcp
-      - base-aa-wallet
-      - wirex
-      title: WalletType
+      - depositAddress
+      title: PayinSubmitRequest
+      description: Request to materialize a 1click PAYIN by deposit address.
+    BalancesResponse:
+      properties:
+        accounts:
+          items:
+            $ref: '#/components/schemas/AccountBalancesResponse'
+          type: array
+          title: Accounts
+        evmAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evmaddress
+        privyAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Privyaddress
+      type: object
+      required:
+      - accounts
+      title: BalancesResponse
+      description: Response with wallet balances.
   securitySchemes:
     HTTPBearer:
       type: http

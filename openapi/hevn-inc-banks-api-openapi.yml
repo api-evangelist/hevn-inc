@@ -513,6 +513,75 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    USExternalAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          title: Accounttype
+          default: ach
+        us:
+          $ref: '#/components/schemas/USAccountDetails'
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - us
+      - beneficiaryName
+      title: USExternalAccountDetails
+      description: US domestic (ACH) external account.
     FiatPaymentType:
       type: string
       enum:
@@ -525,65 +594,144 @@ components:
       description: 'Canonical fiat payment rail used for ``account_type`` discrimination,
 
         bank-rail methods, and contact/transaction type alignment.'
-    BankPayinQuoteCancelResponse:
+    BankPreApproveResponse:
       properties:
-        transferId:
+        kycUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kycurl
+        kycStatus:
+          $ref: '#/components/schemas/KycStatus'
+          default: not_started
+        requirePhoneNumber:
+          type: boolean
+          title: Requirephonenumber
+          default: false
+        requireAddress:
+          type: boolean
+          title: Requireaddress
+          default: false
+        requireKyb:
+          type: boolean
+          title: Requirekyb
+          default: false
+      type: object
+      title: BankPreApproveResponse
+      description: Read-only KYC info for a rail. Does not mutate Bank rows.
+    SwiftDetails:
+      properties:
+        accountNumber:
           type: string
-          format: uuid
-          title: Transferid
+          title: Accountnumber
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+        bic:
+          type: string
+          title: Bic
+      type: object
+      required:
+      - accountNumber
+      - bic
+      title: SwiftDetails
+      description: SWIFT (international wire) account details.
+    BankPayinQuoteSubmitRequest:
+      properties:
         quoteId:
           type: string
           title: Quoteid
-        status:
-          type: string
-          title: Status
       type: object
       required:
-      - transferId
       - quoteId
-      - status
-      title: BankPayinQuoteCancelResponse
-      description: Response after canceling a locally tracked bank payin quote.
-    app__schemas__base__ContactRelationship:
+      title: BankPayinQuoteSubmitRequest
+      description: Submit a previously created Swipelux bank payin quote.
+    IBANAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - sepa
+          - uaefts
+          title: Accounttype
+          default: sepa
+        ibanNumber:
+          type: string
+          title: Ibannumber
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - ibanNumber
+      - beneficiaryName
+      title: IBANAccountDetails
+      description: IBAN (SEPA) external account.
+    BankTimeToOpen:
       type: string
       enum:
-      - charity
-      - commercial_investment
-      - corporate_card
-      - credit_card
-      - dividend
-      - family
-      - financial_services
-      - good_sold
-      - goods_bought
-      - government
-      - insurance
-      - intergroup_transfer
-      - intra_group_dividends
-      - information_technology
-      - leasing
-      - loan_charges
-      - merchant_settlement
-      - mobile_wallet
-      - none
-      - non_resident_transfer_between_accounts
-      - pension
-      - personal_expenses
-      - prepaid_cards
-      - professional
-      - rental
-      - resident_transfer_between_accounts
-      - salaries
-      - telecommunications
-      - travel
-      - utility_bill
-      title: ContactRelationship
-      description: 'Unified contact relationship / transfer purpose.
-
-
-        Values match Align AlignTransferPurpose (the more granular set).
-
-        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
+      - <1 day
+      - 1-2 days
+      - 2-3 days
+      - 5-7 days
+      title: BankTimeToOpen
+      description: Expected wait time before a bank rail becomes usable.
     CountryCode:
       type: string
       enum:
@@ -838,16 +986,209 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    BankPayinQuoteSubmitRequest:
+    BankPayinQuoteSubmitResponse:
       properties:
         quoteId:
           type: string
           title: Quoteid
+        bankAccountId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Bankaccountid
+        resource:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resource
+        recipientDetails:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+          - type: 'null'
+          title: Recipientdetails
       type: object
       required:
       - quoteId
-      title: BankPayinQuoteSubmitRequest
-      description: Submit a previously created Swipelux bank payin quote.
+      title: BankPayinQuoteSubmitResponse
+      description: Swipelux payin instructions returned after quote submit.
+    BankActivateRailsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/BankActivateRailResult'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: BankActivateRailsResponse
+      description: Bulk bank activation response.
+    BankPayinQuoteResponse:
+      properties:
+        quoteId:
+          type: string
+          title: Quoteid
+        provider:
+          $ref: '#/components/schemas/FiatProvider'
+          default: swipelux
+        bankAccountId:
+          type: string
+          format: uuid
+          title: Bankaccountid
+        rail:
+          $ref: '#/components/schemas/BankRail'
+        paymentRail:
+          type: string
+          title: Paymentrail
+        fromAmount:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Toamount
+        toCurrency:
+          type: string
+          title: Tocurrency
+          default: USDC
+        feeAmount:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Feeamount
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+        rate:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Rate
+        expiresAt:
+          type: string
+          format: date-time
+          title: Expiresat
+      type: object
+      required:
+      - quoteId
+      - bankAccountId
+      - rail
+      - paymentRail
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - expiresAt
+      title: BankPayinQuoteResponse
+      description: Swipelux payin quote response normalized for bank payins.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    BankActivateRailError:
+      properties:
+        statusCode:
+          type: integer
+          title: Statuscode
+        message:
+          type: string
+          title: Message
+        detail:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Detail
+      type: object
+      required:
+      - statusCode
+      - message
+      title: BankActivateRailError
+      description: Per-rail bulk activation error.
+    IBANStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - document_requested
+      - approved
+      - pending_kyc
+      - pending
+      - active
+      - hidden
+      - frozen
+      - closed
+      - rejected
+      title: IBANStatus
+      description: 'IBAN account status.
+
+
+        State machine:
+
+        ``not_started`` → ``requested`` → ``document_requested`` → ``approved`` → ``pending`` → ``active``
+
+
+        - ``not_started``       — default for every rail until the user opts in.
+
+        - ``requested``         — user asked for this rail via /pre-approve; awaiting KYC.
+
+        - ``document_requested``— admin asked the user for more documents (KYB).
+
+        - ``approved``          — KYB passed, account ready to be created at provider.
+
+        - ``pending_kyc``       — provider rejected creation until KYC is approved.
+
+        - ``pending``           — provider accepted/created the account, waiting.
+
+        - ``active``            — real bank details are attached to the row.
+
+        - ``frozen`` / ``closed``— terminal/blocked states.'
     SwiftAccountDetails-Output:
       properties:
         bankName:
@@ -915,78 +1256,6 @@ components:
       - beneficiaryName
       title: SwiftAccountDetails
       description: SWIFT (international wire) external account.
-    BankActivateRailError:
-      properties:
-        statusCode:
-          type: integer
-          title: Statuscode
-        message:
-          type: string
-          title: Message
-        detail:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Detail
-      type: object
-      required:
-      - statusCode
-      - message
-      title: BankActivateRailError
-      description: Per-rail bulk activation error.
-    BankActivateRailsRequest:
-      properties:
-        rails:
-          items:
-            $ref: '#/components/schemas/BankRail'
-          type: array
-          title: Rails
-      type: object
-      required:
-      - rails
-      title: BankActivateRailsRequest
-      description: Bulk bank activation request.
-    BankRail:
-      type: string
-      enum:
-      - uaefts_named-zand
-      - ach_pooled-hsbc
-      - ach_named-citi
-      - ach_named-jpmorgan_chase
-      - ach_named-cfsb
-      - fedwire_pooled-hsbc
-      - fedwire_pooled-jpmorgan_chase
-      - fedwire_pooled-cfsb
-      - fedwire_named-hsbc
-      - fedwire_named-citi
-      - fedwire_named-jpmorgan_chase
-      - fedwire_named-cfsb
-      - sepa_pooled-zen
-      - sepa_named-zen
-      - swift_pooled-hsbc
-      - swift_named-hsbc
-      title: BankRail
-      description: 'Bank account route: provider rail + bank id (`{rail}-{bank}`).'
-    BanksListResponse:
-      properties:
-        banks:
-          items:
-            $ref: '#/components/schemas/BankResponse'
-          type: array
-          title: Banks
-        allOptions:
-          items:
-            $ref: '#/components/schemas/BankResponse'
-          type: array
-          title: Alloptions
-        rails:
-          $ref: '#/components/schemas/BankRequestedRails'
-      type: object
-      required:
-      - banks
-      - rails
-      title: BanksListResponse
-      description: List bank rails plus user's requested rail preferences.
     BankPayinQuoteRequest:
       properties:
         amount:
@@ -1012,241 +1281,6 @@ components:
       - bankAccountId
       title: BankPayinQuoteRequest
       description: Request a Swipelux payin quote for a pooled bank rail.
-    KycStatus:
-      type: string
-      enum:
-      - not_started
-      - requested
-      - incorporating
-      - pending
-      - under_review
-      - in_review
-      - approved
-      - rejected
-      title: KycStatus
-      description: KYC verification status.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    BankActivateRailsResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/BankActivateRailResult'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: BankActivateRailsResponse
-      description: Bulk bank activation response.
-    IBANAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - sepa
-          - uaefts
-          title: Accounttype
-          default: sepa
-        ibanNumber:
-          type: string
-          title: Ibannumber
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - ibanNumber
-      - beneficiaryName
-      title: IBANAccountDetails
-      description: IBAN (SEPA) external account.
-    BankPreApproveResponse:
-      properties:
-        kycUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Kycurl
-        kycStatus:
-          $ref: '#/components/schemas/KycStatus'
-          default: not_started
-        requirePhoneNumber:
-          type: boolean
-          title: Requirephonenumber
-          default: false
-        requireAddress:
-          type: boolean
-          title: Requireaddress
-          default: false
-        requireKyb:
-          type: boolean
-          title: Requirekyb
-          default: false
-      type: object
-      title: BankPreApproveResponse
-      description: Read-only KYC info for a rail. Does not mutate Bank rows.
-    BankRequestedRails:
-      properties:
-        us:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        swift:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        eu:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        uae:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-      type: object
-      title: BankRequestedRails
-      description: Rails the user is interested in opening.
-    BankPayinQuoteSubmitResponse:
-      properties:
-        quoteId:
-          type: string
-          title: Quoteid
-        bankAccountId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Bankaccountid
-        resource:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Resource
-        recipientDetails:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Recipientdetails
-      type: object
-      required:
-      - quoteId
-      title: BankPayinQuoteSubmitResponse
-      description: Swipelux payin instructions returned after quote submit.
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    SwiftDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Routingnumber
-        bic:
-          type: string
-          title: Bic
-      type: object
-      required:
-      - accountNumber
-      - bic
-      title: SwiftDetails
-      description: SWIFT (international wire) account details.
     BankRequestedRailSettings:
       properties:
         pooled:
@@ -1260,71 +1294,125 @@ components:
       type: object
       title: BankRequestedRailSettings
       description: User interest in a bank rail group.
-    BankPayinQuoteResponse:
+    BankRequestedRails:
       properties:
+        us:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        swift:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        eu:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        uae:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+      type: object
+      title: BankRequestedRails
+      description: Rails the user is interested in opening.
+    BankActivateRailResult:
+      properties:
+        rail:
+          $ref: '#/components/schemas/BankRail'
+        ok:
+          type: boolean
+          title: Ok
+        bank:
+          anyOf:
+          - $ref: '#/components/schemas/BankResponse'
+          - type: 'null'
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/BankActivateRailError'
+          - type: 'null'
+      type: object
+      required:
+      - rail
+      - ok
+      title: BankActivateRailResult
+      description: Per-rail bulk activation result.
+    BanksListResponse:
+      properties:
+        banks:
+          items:
+            $ref: '#/components/schemas/BankResponse'
+          type: array
+          title: Banks
+        allOptions:
+          items:
+            $ref: '#/components/schemas/BankResponse'
+          type: array
+          title: Alloptions
+        rails:
+          $ref: '#/components/schemas/BankRequestedRails'
+      type: object
+      required:
+      - banks
+      - rails
+      title: BanksListResponse
+      description: List bank rails plus user's requested rail preferences.
+    AlignAccountHolderType:
+      type: string
+      enum:
+      - individual
+      - business
+      title: AlignAccountHolderType
+      description: Account holder type.
+    BankPayinQuoteCancelResponse:
+      properties:
+        transferId:
+          type: string
+          format: uuid
+          title: Transferid
         quoteId:
           type: string
           title: Quoteid
-        provider:
-          $ref: '#/components/schemas/FiatProvider'
-          default: swipelux
-        bankAccountId:
+        status:
           type: string
-          format: uuid
-          title: Bankaccountid
-        rail:
-          $ref: '#/components/schemas/BankRail'
-        paymentRail:
-          type: string
-          title: Paymentrail
-        fromAmount:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Fromamount
-        fromCurrency:
-          type: string
-          title: Fromcurrency
-        toAmount:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Toamount
-        toCurrency:
-          type: string
-          title: Tocurrency
-          default: USDC
-        feeAmount:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Feeamount
-        feeCurrency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Feecurrency
-        rate:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Rate
-        expiresAt:
-          type: string
-          format: date-time
-          title: Expiresat
+          title: Status
       type: object
       required:
+      - transferId
       - quoteId
-      - bankAccountId
-      - rail
-      - paymentRail
-      - fromAmount
-      - fromCurrency
-      - toAmount
-      - expiresAt
-      title: BankPayinQuoteResponse
-      description: Swipelux payin quote response normalized for bank payins.
+      - status
+      title: BankPayinQuoteCancelResponse
+      description: Response after canceling a locally tracked bank payin quote.
+    FiatProvider:
+      type: string
+      enum:
+      - swipelux
+      - align
+      - mcp
+      - wirex
+      title: FiatProvider
+      description: Supported fiat payment providers.
+    BankRail:
+      type: string
+      enum:
+      - uaefts_named-zand
+      - ach_pooled-hsbc
+      - ach_named-citi
+      - ach_named-jpmorgan_chase
+      - ach_named-cfsb
+      - fedwire_pooled-hsbc
+      - fedwire_pooled-jpmorgan_chase
+      - fedwire_pooled-cfsb
+      - fedwire_named-hsbc
+      - fedwire_named-citi
+      - fedwire_named-jpmorgan_chase
+      - fedwire_named-cfsb
+      - sepa_pooled-zen
+      - sepa_named-zen
+      - swift_pooled-hsbc
+      - swift_named-hsbc
+      title: BankRail
+      description: 'Bank account route: provider rail + bank id (`{rail}-{bank}`).'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     BankResponse:
       properties:
         rail:
@@ -1426,173 +1514,6 @@ components:
         the user hasn''t activated yet, ``id`` / ``external_account_id`` / ``created_at``
 
         are ``None`` and ``status`` is ``not_started``.'
-    USAccountDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          type: string
-          title: Routingnumber
-      type: object
-      required:
-      - accountNumber
-      - routingNumber
-      title: USAccountDetails
-      description: US domestic account details (ACH).
-    AlignAccountHolderType:
-      type: string
-      enum:
-      - individual
-      - business
-      title: AlignAccountHolderType
-      description: Account holder type.
-    FiatProvider:
-      type: string
-      enum:
-      - swipelux
-      - align
-      - mcp
-      - wirex
-      title: FiatProvider
-      description: Supported fiat payment providers.
-    BankTimeToOpen:
-      type: string
-      enum:
-      - <1 day
-      - 1-2 days
-      - 2-3 days
-      - 5-7 days
-      title: BankTimeToOpen
-      description: Expected wait time before a bank rail becomes usable.
-    IBANStatus:
-      type: string
-      enum:
-      - not_started
-      - requested
-      - document_requested
-      - approved
-      - pending_kyc
-      - pending
-      - active
-      - hidden
-      - frozen
-      - closed
-      - rejected
-      title: IBANStatus
-      description: 'IBAN account status.
-
-
-        State machine:
-
-        ``not_started`` → ``requested`` → ``document_requested`` → ``approved`` → ``pending`` → ``active``
-
-
-        - ``not_started``       — default for every rail until the user opts in.
-
-        - ``requested``         — user asked for this rail via /pre-approve; awaiting KYC.
-
-        - ``document_requested``— admin asked the user for more documents (KYB).
-
-        - ``approved``          — KYB passed, account ready to be created at provider.
-
-        - ``pending_kyc``       — provider rejected creation until KYC is approved.
-
-        - ``pending``           — provider accepted/created the account, waiting.
-
-        - ``active``            — real bank details are attached to the row.
-
-        - ``frozen`` / ``closed``— terminal/blocked states.'
-    BankActivateRailResult:
-      properties:
-        rail:
-          $ref: '#/components/schemas/BankRail'
-        ok:
-          type: boolean
-          title: Ok
-        bank:
-          anyOf:
-          - $ref: '#/components/schemas/BankResponse'
-          - type: 'null'
-        error:
-          anyOf:
-          - $ref: '#/components/schemas/BankActivateRailError'
-          - type: 'null'
-      type: object
-      required:
-      - rail
-      - ok
-      title: BankActivateRailResult
-      description: Per-rail bulk activation result.
-    USExternalAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - ach
-          - fedwire
-          title: Accounttype
-          default: ach
-        us:
-          $ref: '#/components/schemas/USAccountDetails'
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - us
-      - beneficiaryName
-      title: USExternalAccountDetails
-      description: US domestic (ACH) external account.
     ValidationError:
       properties:
         loc:
@@ -1614,6 +1535,85 @@ components:
       - msg
       - type
       title: ValidationError
+    BankActivateRailsRequest:
+      properties:
+        rails:
+          items:
+            $ref: '#/components/schemas/BankRail'
+          type: array
+          title: Rails
+      type: object
+      required:
+      - rails
+      title: BankActivateRailsRequest
+      description: Bulk bank activation request.
+    USAccountDetails:
+      properties:
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          type: string
+          title: Routingnumber
+      type: object
+      required:
+      - accountNumber
+      - routingNumber
+      title: USAccountDetails
+      description: US domestic account details (ACH).
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    app__schemas__base__ContactRelationship:
+      type: string
+      enum:
+      - charity
+      - commercial_investment
+      - corporate_card
+      - credit_card
+      - dividend
+      - family
+      - financial_services
+      - good_sold
+      - goods_bought
+      - government
+      - insurance
+      - intergroup_transfer
+      - intra_group_dividends
+      - information_technology
+      - leasing
+      - loan_charges
+      - merchant_settlement
+      - mobile_wallet
+      - none
+      - non_resident_transfer_between_accounts
+      - pension
+      - personal_expenses
+      - prepaid_cards
+      - professional
+      - rental
+      - resident_transfer_between_accounts
+      - salaries
+      - telecommunications
+      - travel
+      - utility_bill
+      title: ContactRelationship
+      description: 'Unified contact relationship / transfer purpose.
+
+
+        Values match Align AlignTransferPurpose (the more granular set).
+
+        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
   securitySchemes:
     HTTPBearer:
       type: http

@@ -347,6 +347,68 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    XeroStatusResponse:
+      properties:
+        connected:
+          type: boolean
+          title: Connected
+        accountName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountname
+      type: object
+      required:
+      - connected
+      title: XeroStatusResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    XeroExportResult:
+      properties:
+        exported:
+          type: integer
+          title: Exported
+        skipped:
+          type: integer
+          title: Skipped
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+      type: object
+      required:
+      - exported
+      - skipped
+      title: XeroExportResult
     XeroExportRequest:
       properties:
         fromDate:
@@ -378,68 +440,6 @@ components:
           title: Status
       type: object
       title: XeroExportRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    XeroStatusResponse:
-      properties:
-        connected:
-          type: boolean
-          title: Connected
-        accountName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountname
-      type: object
-      required:
-      - connected
-      title: XeroStatusResponse
-    XeroExportResult:
-      properties:
-        exported:
-          type: integer
-          title: Exported
-        skipped:
-          type: integer
-          title: Skipped
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-      type: object
-      required:
-      - exported
-      - skipped
-      title: XeroExportResult
   securitySchemes:
     HTTPBearer:
       type: http

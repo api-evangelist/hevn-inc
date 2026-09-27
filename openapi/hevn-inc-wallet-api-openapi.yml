@@ -576,6 +576,355 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    AccountOwnerResponse:
+      properties:
+        sessionKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sessionkey
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+      type: object
+      title: AccountOwnerResponse
+      description: 'Response for /account_owner.
+
+
+        If session_key is set → OTP required (first step).
+
+        If transaction_hash is set → execution done (second step).'
+    SpendPermissionResponse:
+      properties:
+        permissionHash:
+          type: string
+          title: Permissionhash
+        account:
+          type: string
+          title: Account
+        spender:
+          type: string
+          title: Spender
+        token:
+          type: string
+          title: Token
+        allowance:
+          type: string
+          title: Allowance
+        remaining:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Remaining
+        period:
+          type: integer
+          title: Period
+        start:
+          type: integer
+          title: Start
+        end:
+          type: integer
+          title: End
+        salt:
+          type: string
+          title: Salt
+        extraData:
+          type: string
+          title: Extradata
+          default: 0x
+        status:
+          type: string
+          title: Status
+        txHash:
+          type: string
+          title: Txhash
+        createdAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Createdat
+      type: object
+      required:
+      - permissionHash
+      - account
+      - spender
+      - token
+      - allowance
+      - period
+      - start
+      - end
+      - salt
+      - status
+      - txHash
+      title: SpendPermissionResponse
+      description: Spend permission for a smart wallet.
+    OnchainWalletResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        address:
+          type: string
+          title: Address
+        chains:
+          items:
+            type: integer
+          type: array
+          title: Chains
+        daoMembers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Daomembers
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+        trackTransactions:
+          type: boolean
+          title: Tracktransactions
+        viewOnly:
+          type: boolean
+          title: Viewonly
+        usdBalance:
+          type: number
+          title: Usdbalance
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - address
+      - chains
+      - trackTransactions
+      - viewOnly
+      - usdBalance
+      - createdAt
+      title: OnchainWalletResponse
+      description: Imported onchain wallet.
+    WalletCreateResponse:
+      properties:
+        accountId:
+          type: string
+          title: Accountid
+        nearTrxs:
+          items:
+            type: string
+          type: array
+          title: Neartrxs
+        evmAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Evmaddress
+        privyAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Privyaddress
+      type: object
+      required:
+      - accountId
+      - nearTrxs
+      title: WalletCreateResponse
+      description: Response after creating a wallet.
+    PaymasterRawRequest:
+      properties:
+        userOp:
+          $ref: '#/components/schemas/UserOperationV06'
+      type: object
+      required:
+      - userOp
+      title: PaymasterRawRequest
+      description: 'A fully-built ERC-4337 v0.6 `UserOperation` to push through
+
+        `EntryPoint.handleOps` directly from the backend EOA.
+
+
+        The backend acts as the bundler itself: it ABI-encodes
+
+        `handleOps([userOp], beneficiary)` against the canonical v0.6
+
+        EntryPoint and broadcasts an EIP-1559 tx from the CDP "owner"
+
+        server account, paying gas in ETH. There is no third-party
+
+        paymaster / bundler service involvement.
+
+
+        `userOp` follows the JSON-RPC `eth_sendUserOperation` shape exactly
+
+        — camelCase keys, all numeric fields as `0x`-hex strings, all byte
+
+        fields as `0x`-hex strings, signature already applied. See
+
+        `UserOperationV06` for the full field list.'
+    PermissionsResponse:
+      properties:
+        permissions:
+          items:
+            $ref: '#/components/schemas/SpendPermissionResponse'
+          type: array
+          title: Permissions
+      type: object
+      required:
+      - permissions
+      title: PermissionsResponse
+      description: List of active spend permissions.
+    UserOperationV06:
+      properties:
+        sender:
+          type: string
+          title: Sender
+        nonce:
+          type: string
+          title: Nonce
+        initCode:
+          type: string
+          title: Initcode
+          default: 0x
+        callData:
+          type: string
+          title: Calldata
+        callGasLimit:
+          type: string
+          title: Callgaslimit
+        verificationGasLimit:
+          type: string
+          title: Verificationgaslimit
+        preVerificationGas:
+          type: string
+          title: Preverificationgas
+        maxFeePerGas:
+          type: string
+          title: Maxfeepergas
+        maxPriorityFeePerGas:
+          type: string
+          title: Maxpriorityfeepergas
+        paymasterAndData:
+          type: string
+          title: Paymasteranddata
+          default: 0x
+        signature:
+          type: string
+          title: Signature
+          default: 0x
+      type: object
+      required:
+      - sender
+      - nonce
+      - callData
+      - callGasLimit
+      - verificationGasLimit
+      - preVerificationGas
+      - maxFeePerGas
+      - maxPriorityFeePerGas
+      title: UserOperationV06
+      description: "ERC-4337 v0.6 UserOperation in the JSON-RPC\n`eth_sendUserOperation` shape — camelCase keys (via the `CamelModel`\nalias generator), `0x`-hex string values for every numeric and byte\nfield.\n\nAll 11 v0.6 fields are present:\n\n    sender, nonce, initCode, callData, callGasLimit,\n    verificationGasLimit, preVerificationGas, maxFeePerGas,\n    maxPriorityFeePerGas, paymasterAndData, signature\n\n`signature` defaults to `\"0x\"` because some endpoints\n(e.g. `/wallet/op_cosign`) consume an *unsigned* userOp and\nproduce the signature themselves, while others\n(e.g. `/wallet/paymaster_raw`) consume a fully-signed userOp and\nsubmit it on-chain as-is."
+    PasskeyType:
+      type: string
+      enum:
+      - ble
+      - hybrid
+      - internal
+      - nfc
+      - usb
+      title: PasskeyType
+      description: Passkey authenticator transport type.
+    ImportWalletRequest:
+      properties:
+        address:
+          type: string
+          title: Address
+        chains:
+          items:
+            type: integer
+          type: array
+          title: Chains
+        daoMembers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Daomembers
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+        trackTransactions:
+          type: boolean
+          title: Tracktransactions
+          default: false
+        viewOnly:
+          type: boolean
+          title: Viewonly
+          default: true
+      type: object
+      required:
+      - address
+      title: ImportWalletRequest
+      description: Request to import an external EVM wallet.
+    OneClickChain:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: OneClickChain
+      description: 1click chain codes.
+    SignLoginRequest:
+      properties:
+        signatures:
+          items:
+            type: string
+          type: array
+          title: Signatures
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - signatures
+      - message
+      title: SignLoginRequest
+      description: Request to sign a login message.
     PaymasterRawResponse:
       properties:
         userOpHash:
@@ -653,191 +1002,6 @@ components:
       - proof
       title: AccountOwnerRequest
       description: Request for /account_owner — add_extension with OTP confirmation.
-    SignLoginRequest:
-      properties:
-        signatures:
-          items:
-            type: string
-          type: array
-          title: Signatures
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - signatures
-      - message
-      title: SignLoginRequest
-      description: Request to sign a login message.
-    AccountOwnerResponse:
-      properties:
-        sessionKey:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Sessionkey
-        transactionHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionhash
-      type: object
-      title: AccountOwnerResponse
-      description: 'Response for /account_owner.
-
-
-        If session_key is set → OTP required (first step).
-
-        If transaction_hash is set → execution done (second step).'
-    WalletCreateResponse:
-      properties:
-        accountId:
-          type: string
-          title: Accountid
-        nearTrxs:
-          items:
-            type: string
-          type: array
-          title: Neartrxs
-        evmAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Evmaddress
-        privyAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Privyaddress
-      type: object
-      required:
-      - accountId
-      - nearTrxs
-      title: WalletCreateResponse
-      description: Response after creating a wallet.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SpendPermissionResponse:
-      properties:
-        permissionHash:
-          type: string
-          title: Permissionhash
-        account:
-          type: string
-          title: Account
-        spender:
-          type: string
-          title: Spender
-        token:
-          type: string
-          title: Token
-        allowance:
-          type: string
-          title: Allowance
-        remaining:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Remaining
-        period:
-          type: integer
-          title: Period
-        start:
-          type: integer
-          title: Start
-        end:
-          type: integer
-          title: End
-        salt:
-          type: string
-          title: Salt
-        extraData:
-          type: string
-          title: Extradata
-          default: 0x
-        status:
-          type: string
-          title: Status
-        txHash:
-          type: string
-          title: Txhash
-        createdAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Createdat
-      type: object
-      required:
-      - permissionHash
-      - account
-      - spender
-      - token
-      - allowance
-      - period
-      - start
-      - end
-      - salt
-      - status
-      - txHash
-      title: SpendPermissionResponse
-      description: Spend permission for a smart wallet.
-    PermissionsResponse:
-      properties:
-        permissions:
-          items:
-            $ref: '#/components/schemas/SpendPermissionResponse'
-          type: array
-          title: Permissions
-      type: object
-      required:
-      - permissions
-      title: PermissionsResponse
-      description: List of active spend permissions.
-    TransactionRequest:
-      properties:
-        msg:
-          type: string
-          title: Msg
-        publicKey:
-          type: string
-          title: Publickey
-        proof:
-          type: string
-          title: Proof
-      type: object
-      required:
-      - msg
-      - publicKey
-      - proof
-      title: TransactionRequest
-      description: Request to execute a signed transaction on wallet contract.
-    DeploySafeMsigRequest:
-      properties:
-        x:
-          type: string
-          title: X
-        y:
-          type: string
-          title: Y
-      type: object
-      required:
-      - x
-      - y
-      title: DeploySafeMsigRequest
-      description: 'Request to deploy a 2/2 Safe multisig with passkey + backend EOA owners.
-
-
-        x/y are the P-256 public key coordinates of the passkey. Each may be
-
-        provided as a 0x-prefixed hex string or as a decimal string.'
     DeploySafeMsigResponse:
       properties:
         safeAddress:
@@ -861,279 +1025,6 @@ components:
       - backendOwner
       title: DeploySafeMsigResponse
       description: Response for /wallet/deploy_safe_msig.
-    PaymasterRawRequest:
-      properties:
-        userOp:
-          $ref: '#/components/schemas/UserOperationV06'
-      type: object
-      required:
-      - userOp
-      title: PaymasterRawRequest
-      description: 'A fully-built ERC-4337 v0.6 `UserOperation` to push through
-
-        `EntryPoint.handleOps` directly from the backend EOA.
-
-
-        The backend acts as the bundler itself: it ABI-encodes
-
-        `handleOps([userOp], beneficiary)` against the canonical v0.6
-
-        EntryPoint and broadcasts an EIP-1559 tx from the CDP "owner"
-
-        server account, paying gas in ETH. There is no third-party
-
-        paymaster / bundler service involvement.
-
-
-        `userOp` follows the JSON-RPC `eth_sendUserOperation` shape exactly
-
-        — camelCase keys, all numeric fields as `0x`-hex strings, all byte
-
-        fields as `0x`-hex strings, signature already applied. See
-
-        `UserOperationV06` for the full field list.'
-    UserOperationV06:
-      properties:
-        sender:
-          type: string
-          title: Sender
-        nonce:
-          type: string
-          title: Nonce
-        initCode:
-          type: string
-          title: Initcode
-          default: 0x
-        callData:
-          type: string
-          title: Calldata
-        callGasLimit:
-          type: string
-          title: Callgaslimit
-        verificationGasLimit:
-          type: string
-          title: Verificationgaslimit
-        preVerificationGas:
-          type: string
-          title: Preverificationgas
-        maxFeePerGas:
-          type: string
-          title: Maxfeepergas
-        maxPriorityFeePerGas:
-          type: string
-          title: Maxpriorityfeepergas
-        paymasterAndData:
-          type: string
-          title: Paymasteranddata
-          default: 0x
-        signature:
-          type: string
-          title: Signature
-          default: 0x
-      type: object
-      required:
-      - sender
-      - nonce
-      - callData
-      - callGasLimit
-      - verificationGasLimit
-      - preVerificationGas
-      - maxFeePerGas
-      - maxPriorityFeePerGas
-      title: UserOperationV06
-      description: "ERC-4337 v0.6 UserOperation in the JSON-RPC\n`eth_sendUserOperation` shape — camelCase keys (via the `CamelModel`\nalias generator), `0x`-hex string values for every numeric and byte\nfield.\n\nAll 11 v0.6 fields are present:\n\n    sender, nonce, initCode, callData, callGasLimit,\n    verificationGasLimit, preVerificationGas, maxFeePerGas,\n    maxPriorityFeePerGas, paymasterAndData, signature\n\n`signature` defaults to `\"0x\"` because some endpoints\n(e.g. `/wallet/op_cosign`) consume an *unsigned* userOp and\nproduce the signature themselves, while others\n(e.g. `/wallet/paymaster_raw`) consume a fully-signed userOp and\nsubmit it on-chain as-is."
-    OnchainWalletResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        address:
-          type: string
-          title: Address
-        chains:
-          items:
-            type: integer
-          type: array
-          title: Chains
-        daoMembers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Daomembers
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-        trackTransactions:
-          type: boolean
-          title: Tracktransactions
-        viewOnly:
-          type: boolean
-          title: Viewonly
-        usdBalance:
-          type: number
-          title: Usdbalance
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - address
-      - chains
-      - trackTransactions
-      - viewOnly
-      - usdBalance
-      - createdAt
-      title: OnchainWalletResponse
-      description: Imported onchain wallet.
-    ImportWalletRequest:
-      properties:
-        address:
-          type: string
-          title: Address
-        chains:
-          items:
-            type: integer
-          type: array
-          title: Chains
-        daoMembers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Daomembers
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-        trackTransactions:
-          type: boolean
-          title: Tracktransactions
-          default: false
-        viewOnly:
-          type: boolean
-          title: Viewonly
-          default: true
-      type: object
-      required:
-      - address
-      title: ImportWalletRequest
-      description: Request to import an external EVM wallet.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    OneClickChain:
-      type: string
-      enum:
-      - eth
-      - bsc
-      - avax
-      - op
-      - arb
-      - pol
-      - sol
-      - base
-      - gnosis
-      - tron
-      - xrp
-      - zec
-      - doge
-      - ltc
-      - btc
-      - cardano
-      - bera
-      - sui
-      - near
-      - near_intents
-      - xlayer
-      - plasma
-      - ton
-      - stellar
-      - monad
-      - starknet
-      - aptos
-      - adi
-      - bch
-      title: OneClickChain
-      description: 1click chain codes.
-    PasskeyType:
-      type: string
-      enum:
-      - ble
-      - hybrid
-      - internal
-      - nfc
-      - usb
-      title: PasskeyType
-      description: Passkey authenticator transport type.
-    WalletCreateRequest:
-      properties:
-        teeSignature:
-          type: string
-          title: Teesignature
-        passkeyId:
-          type: string
-          title: Passkeyid
-        teePublicKey:
-          type: string
-          title: Teepublickey
-          default: ed25519:G1c6MTsy2Gh7h77jKRsku9jwfiotTaSHCCz4CAHkZ64t
-        authPayload:
-          type: string
-          title: Authpayload
-      type: object
-      required:
-      - teeSignature
-      - passkeyId
-      - authPayload
-      title: WalletCreateRequest
-      description: Response after creating a wallet.
-    TransactionResponse:
-      properties:
-        transactionHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionhash
-        userOpHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Userophash
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: TransactionResponse
-      description: Response after executing a transaction.
     PasskeyResponse:
       properties:
         id:
@@ -1189,6 +1080,115 @@ components:
       - createdAt
       title: PasskeyResponse
       description: Response for a single passkey.
+    TransactionResponse:
+      properties:
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+        userOpHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Userophash
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: TransactionResponse
+      description: Response after executing a transaction.
+    DeploySafeMsigRequest:
+      properties:
+        x:
+          type: string
+          title: X
+        y:
+          type: string
+          title: Y
+      type: object
+      required:
+      - x
+      - y
+      title: DeploySafeMsigRequest
+      description: 'Request to deploy a 2/2 Safe multisig with passkey + backend EOA owners.
+
+
+        x/y are the P-256 public key coordinates of the passkey. Each may be
+
+        provided as a 0x-prefixed hex string or as a decimal string.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    WalletCreateRequest:
+      properties:
+        teeSignature:
+          type: string
+          title: Teesignature
+        passkeyId:
+          type: string
+          title: Passkeyid
+        teePublicKey:
+          type: string
+          title: Teepublickey
+          default: ed25519:G1c6MTsy2Gh7h77jKRsku9jwfiotTaSHCCz4CAHkZ64t
+        authPayload:
+          type: string
+          title: Authpayload
+      type: object
+      required:
+      - teeSignature
+      - passkeyId
+      - authPayload
+      title: WalletCreateRequest
+      description: Response after creating a wallet.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TransactionRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: TransactionRequest
+      description: Request to execute a signed transaction on wallet contract.
   securitySchemes:
     HTTPBearer:
       type: http

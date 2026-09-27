@@ -288,268 +288,12 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    KybDocumentUpload:
-      properties:
-        base64:
-          type: string
-          title: Base64
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        originName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originname
-        context:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Context
-      type: object
-      required:
-      - base64
-      - type
-      title: KybDocumentUpload
-      description: Document upload for draft.
-    FirmaCreateDocumentResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        firmaId:
-          type: string
-          title: Firmaid
-        documentType:
-          type: string
-          title: Documenttype
-        status:
-          type: string
-          title: Status
-        signerEmail:
-          type: string
-          title: Signeremail
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        signingUrls:
-          items:
-            $ref: '#/components/schemas/FirmaSigningUrlInfo'
-          type: array
-          title: Signingurls
-          default: []
-      type: object
-      required:
-      - id
-      - firmaId
-      - documentType
-      - status
-      - signerEmail
-      title: FirmaCreateDocumentResponse
-      description: Response after creating and sending a signing request.
-    FirmaSignerInfo:
-      properties:
-        firstName:
-          type: string
-          title: Firstname
-        lastName:
-          type: string
-          title: Lastname
-        email:
-          type: string
-          title: Email
-      type: object
-      required:
-      - firstName
-      - lastName
-      - email
-      title: FirmaSignerInfo
-      description: Signer information for a signing request.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FirmaSigningUrlInfo:
-      properties:
-        email:
-          type: string
-          title: Email
-        signingUrl:
-          type: string
-          title: Signingurl
-      type: object
-      required:
-      - email
-      - signingUrl
-      title: FirmaSigningUrlInfo
-      description: Signing URL for embedding in iframe.
-    UploadedDocumentListResponse:
-      properties:
-        documents:
-          items:
-            $ref: '#/components/schemas/DocumentDraftInfo'
-          type: array
-          title: Documents
-      type: object
-      required:
-      - documents
-      title: UploadedDocumentListResponse
-      description: Response for user-uploaded documents list.
     CorpDocumentType:
       type: string
       enum:
       - contractor_agreement
       title: CorpDocumentType
       description: Supported document types for e-signing.
-    FirmaCreateDocumentRequest:
-      properties:
-        documentType:
-          $ref: '#/components/schemas/CorpDocumentType'
-        signer:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        recipient:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        contractorAgreement:
-          anyOf:
-          - $ref: '#/components/schemas/ContractorAgreementData'
-          - type: 'null'
-      type: object
-      required:
-      - documentType
-      - signer
-      - recipient
-      title: FirmaCreateDocumentRequest
-      description: Request to create a document for signing via Firma.
-    SlxDocumentType:
-      type: string
-      enum:
-      - certificate_of_incorporation
-      - formation_document
-      - power_of_attorney
-      - corporate_structure
-      - director_structure
-      - proof_of_address
-      - annual_financial_statements
-      - articles_of_association
-      - audit_report
-      - bank_reference_letter
-      - bank_statement
-      - banking_details
-      - birth_certificate
-      - business_license
-      - business_plan
-      - certificate_of_good_standing
-      - credit_report
-      - criminal_record_check
-      - cv_resume
-      - driving_license
-      - education_certificate
-      - financial_projections
-      - insurance_policy
-      - lease_agreement
-      - list_of_authorized_signatories
-      - marriage_certificate
-      - national_id
-      - operating_agreement
-      - partnership_agreement
-      - professional_license
-      - reference_letter
-      - register_of_members
-      - residence_permit
-      - shareholding_structure
-      - social_security_document
-      - source_of_funds_declaration
-      - tax_identification_document
-      - tax_returns
-      - trade_references
-      - vat_registration
-      - vendor_contracts
-      - visa
-      - wealth_statement
-      - contract
-      - invoice
-      - loan_agreement
-      - passport_front
-      - passport_back
-      - id_card_front
-      - id_card_back
-      - drivers_license_front
-      - drivers_license_back
-      - other
-      title: SlxDocumentType
-      description: Document types for upload.
-    DocumentDraftInfo:
-      properties:
-        id:
-          type: string
-          title: Id
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        originName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originname
-        link:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Link
-        createdAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Createdat
-        content:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Content
-      type: object
-      required:
-      - id
-      - type
-      title: DocumentDraftInfo
-      description: Document info in response.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ContractorAgreementData:
       properties:
         contractorName:
@@ -627,6 +371,262 @@ components:
       - firstPaymentDate
       title: ContractorAgreementData
       description: Data for filling Contractor Agreement template.
+    SlxDocumentType:
+      type: string
+      enum:
+      - certificate_of_incorporation
+      - formation_document
+      - power_of_attorney
+      - corporate_structure
+      - director_structure
+      - proof_of_address
+      - annual_financial_statements
+      - articles_of_association
+      - audit_report
+      - bank_reference_letter
+      - bank_statement
+      - banking_details
+      - birth_certificate
+      - business_license
+      - business_plan
+      - certificate_of_good_standing
+      - credit_report
+      - criminal_record_check
+      - cv_resume
+      - driving_license
+      - education_certificate
+      - financial_projections
+      - insurance_policy
+      - lease_agreement
+      - list_of_authorized_signatories
+      - marriage_certificate
+      - national_id
+      - operating_agreement
+      - partnership_agreement
+      - professional_license
+      - reference_letter
+      - register_of_members
+      - residence_permit
+      - shareholding_structure
+      - social_security_document
+      - source_of_funds_declaration
+      - tax_identification_document
+      - tax_returns
+      - trade_references
+      - vat_registration
+      - vendor_contracts
+      - visa
+      - wealth_statement
+      - contract
+      - invoice
+      - loan_agreement
+      - passport_front
+      - passport_back
+      - id_card_front
+      - id_card_back
+      - drivers_license_front
+      - drivers_license_back
+      - other
+      title: SlxDocumentType
+      description: Document types for upload.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UploadedDocumentListResponse:
+      properties:
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Documents
+      type: object
+      required:
+      - documents
+      title: UploadedDocumentListResponse
+      description: Response for user-uploaded documents list.
+    FirmaCreateDocumentResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        firmaId:
+          type: string
+          title: Firmaid
+        documentType:
+          type: string
+          title: Documenttype
+        status:
+          type: string
+          title: Status
+        signerEmail:
+          type: string
+          title: Signeremail
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        signingUrls:
+          items:
+            $ref: '#/components/schemas/FirmaSigningUrlInfo'
+          type: array
+          title: Signingurls
+          default: []
+      type: object
+      required:
+      - id
+      - firmaId
+      - documentType
+      - status
+      - signerEmail
+      title: FirmaCreateDocumentResponse
+      description: Response after creating and sending a signing request.
+    KybDocumentUpload:
+      properties:
+        base64:
+          type: string
+          title: Base64
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - base64
+      - type
+      title: KybDocumentUpload
+      description: Document upload for draft.
+    FirmaCreateDocumentRequest:
+      properties:
+        documentType:
+          $ref: '#/components/schemas/CorpDocumentType'
+        signer:
+          $ref: '#/components/schemas/FirmaSignerInfo'
+        recipient:
+          $ref: '#/components/schemas/FirmaSignerInfo'
+        contractorAgreement:
+          anyOf:
+          - $ref: '#/components/schemas/ContractorAgreementData'
+          - type: 'null'
+      type: object
+      required:
+      - documentType
+      - signer
+      - recipient
+      title: FirmaCreateDocumentRequest
+      description: Request to create a document for signing via Firma.
+    FirmaSignerInfo:
+      properties:
+        firstName:
+          type: string
+          title: Firstname
+        lastName:
+          type: string
+          title: Lastname
+        email:
+          type: string
+          title: Email
+      type: object
+      required:
+      - firstName
+      - lastName
+      - email
+      title: FirmaSignerInfo
+      description: Signer information for a signing request.
+    FirmaSigningUrlInfo:
+      properties:
+        email:
+          type: string
+          title: Email
+        signingUrl:
+          type: string
+          title: Signingurl
+      type: object
+      required:
+      - email
+      - signingUrl
+      title: FirmaSigningUrlInfo
+      description: Signing URL for embedding in iframe.
+    DocumentDraftInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Link
+        createdAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Createdat
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+      type: object
+      required:
+      - id
+      - type
+      title: DocumentDraftInfo
+      description: Document info in response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

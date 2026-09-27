@@ -307,6 +307,28 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    PrivyLoginRequest:
+      properties:
+        signature:
+          type: string
+          title: Signature
+        email:
+          type: string
+          title: Email
+        address:
+          type: string
+          title: Address
+        nonce:
+          type: integer
+          title: Nonce
+      type: object
+      required:
+      - signature
+      - email
+      - address
+      - nonce
+      title: PrivyLoginRequest
+      description: Request to link a Privy wallet.
     AuthEmailOtpRequest:
       properties:
         sessionKey:
@@ -332,149 +354,26 @@ components:
       - totp
       - signed_jwt
       title: AuthMethod
-    PrivyLoginRequest:
+    SessionTokenResponse:
       properties:
-        signature:
+        accessToken:
           type: string
-          title: Signature
-        email:
-          type: string
-          title: Email
-        address:
-          type: string
-          title: Address
-        nonce:
-          type: integer
-          title: Nonce
-      type: object
-      required:
-      - signature
-      - email
-      - address
-      - nonce
-      title: PrivyLoginRequest
-      description: Request to link a Privy wallet.
-    TotpLoginRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from email OTP step
-        code:
-          type: string
-          maxLength: 8
-          minLength: 6
-          title: Code
-          description: 6-digit TOTP code or 8-char recovery code
-      type: object
-      required:
-      - sessionKey
-      - code
-      title: TotpLoginRequest
-      description: Request to complete login with TOTP code.
-    RefreshRequest:
-      properties:
-        userId:
-          type: string
-          title: Userid
-          description: Target user UUID
-      type: object
-      required:
-      - userId
-      title: RefreshRequest
-      description: Request for refreshing a session token.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SubmitSignedJwtRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-        authPayload:
-          type: string
-          title: Authpayload
-          description: JSON auth_payload from TEE attestation
-        signature:
-          type: string
-          title: Signature
-          description: Base58 Ed25519 signature from TEE
-      type: object
-      required:
-      - sessionKey
-      - authPayload
-      - signature
-      title: SubmitSignedJwtRequest
-      description: Request for submitting TEE-signed Google JWT attestation.
-    AuthStartRequest:
-      properties:
-        email:
-          type: string
-          title: Email
-          description: User email address
-      type: object
-      required:
-      - email
-      title: AuthStartRequest
-      description: Request schema for starting authentication.
-    AuthSessionResponse:
-      properties:
-        refreshToken:
-          type: string
-          title: Refreshtoken
-          description: JWT refresh token (7 days)
+          title: Accesstoken
+          description: JWT access token (10 min)
         tokenType:
           type: string
           title: Tokentype
           default: bearer
-        userId:
-          type: string
-          title: Userid
-          description: User UUID
-        email:
-          type: string
-          title: Email
-          description: User email
-        isNewUser:
-          type: boolean
-          title: Isnewuser
-          default: false
+        expiresIn:
+          type: integer
+          title: Expiresin
+          description: Token TTL in seconds
+          default: 600
       type: object
       required:
-      - refreshToken
-      - userId
-      - email
-      title: AuthSessionResponse
-      description: Response for POST /auth/complete — refresh token.
-    AuthStartResponse:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key for OTP verification
-        status:
-          type: string
-          title: Status
-          description: Auth session status
-          default: pending
-        authMethods:
-          items:
-            $ref: '#/components/schemas/AuthMethod'
-          type: array
-          title: Authmethods
-          description: Required auth methods
-      type: object
-      required:
-      - sessionKey
-      title: AuthStartResponse
-      description: Response schema for auth start.
+      - accessToken
+      title: SessionTokenResponse
+      description: Response with short-lived JWT session token.
     PrivyLoginResponse:
       properties:
         refreshToken:
@@ -506,6 +405,33 @@ components:
       - privyAddress
       title: PrivyLoginResponse
       description: Response after Privy wallet auth.
+    TotpLoginRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from email OTP step
+        code:
+          type: string
+          maxLength: 8
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code or 8-char recovery code
+      type: object
+      required:
+      - sessionKey
+      - code
+      title: TotpLoginRequest
+      description: Request to complete login with TOTP code.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AuthCompleteRequest:
       properties:
         sessionKey:
@@ -517,6 +443,69 @@ components:
       - sessionKey
       title: AuthCompleteRequest
       description: Request for completing authentication.
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: StatusResponse
+      description: Simple status response.
+    AuthStartResponse:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key for OTP verification
+        status:
+          type: string
+          title: Status
+          description: Auth session status
+          default: pending
+        authMethods:
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+          type: array
+          title: Authmethods
+          description: Required auth methods
+      type: object
+      required:
+      - sessionKey
+      title: AuthStartResponse
+      description: Response schema for auth start.
+    SubmitSignedJwtRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        authPayload:
+          type: string
+          title: Authpayload
+          description: JSON auth_payload from TEE attestation
+        signature:
+          type: string
+          title: Signature
+          description: Base58 Ed25519 signature from TEE
+      type: object
+      required:
+      - sessionKey
+      - authPayload
+      - signature
+      title: SubmitSignedJwtRequest
+      description: Request for submitting TEE-signed Google JWT attestation.
+    RefreshRequest:
+      properties:
+        userId:
+          type: string
+          title: Userid
+          description: Target user UUID
+      type: object
+      required:
+      - userId
+      title: RefreshRequest
+      description: Request for refreshing a session token.
     ValidationError:
       properties:
         loc:
@@ -538,35 +527,46 @@ components:
       - msg
       - type
       title: ValidationError
-    SessionTokenResponse:
+    AuthSessionResponse:
       properties:
-        accessToken:
+        refreshToken:
           type: string
-          title: Accesstoken
-          description: JWT access token (10 min)
+          title: Refreshtoken
+          description: JWT refresh token (7 days)
         tokenType:
           type: string
           title: Tokentype
           default: bearer
-        expiresIn:
-          type: integer
-          title: Expiresin
-          description: Token TTL in seconds
-          default: 600
+        userId:
+          type: string
+          title: Userid
+          description: User UUID
+        email:
+          type: string
+          title: Email
+          description: User email
+        isNewUser:
+          type: boolean
+          title: Isnewuser
+          default: false
       type: object
       required:
-      - accessToken
-      title: SessionTokenResponse
-      description: Response with short-lived JWT session token.
-    StatusResponse:
+      - refreshToken
+      - userId
+      - email
+      title: AuthSessionResponse
+      description: Response for POST /auth/complete — refresh token.
+    AuthStartRequest:
       properties:
-        status:
+        email:
           type: string
-          title: Status
-          default: ok
+          title: Email
+          description: User email address
       type: object
-      title: StatusResponse
-      description: Simple status response.
+      required:
+      - email
+      title: AuthStartRequest
+      description: Request schema for starting authentication.
   securitySchemes:
     HTTPBearer:
       type: http

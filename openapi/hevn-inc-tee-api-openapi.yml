@@ -87,15 +87,6 @@ components:
       - signature
       - public_key
       title: GoogleCertsResponse
-    EncryptionKeyResponse:
-      properties:
-        encryption_key:
-          type: string
-          title: Encryption Key
-      type: object
-      required:
-      - encryption_key
-      title: EncryptionKeyResponse
     HTTPValidationError:
       properties:
         detail:
@@ -105,27 +96,28 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
+    EncryptionKeyResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        encryption_key:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Encryption Key
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - encryption_key
+      title: EncryptionKeyResponse
+    app__routers__security__tee__AttestateJwtRequest:
+      properties:
+        encrypted_data:
+          type: string
+          title: Encrypted Data
+        client_pubkey:
+          type: string
+          title: Client Pubkey
+      type: object
+      required:
+      - encrypted_data
+      - client_pubkey
+      title: AttestateJwtRequest
     app__routers__security__tee__AttestateJwtResponse:
       properties:
         hash_email:
@@ -151,19 +143,27 @@ components:
       - public_key
       - timestamp
       title: AttestateJwtResponse
-    app__routers__security__tee__AttestateJwtRequest:
+    ValidationError:
       properties:
-        encrypted_data:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Encrypted Data
-        client_pubkey:
+          title: Message
+        type:
           type: string
-          title: Client Pubkey
+          title: Error Type
       type: object
       required:
-      - encrypted_data
-      - client_pubkey
-      title: AttestateJwtRequest
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

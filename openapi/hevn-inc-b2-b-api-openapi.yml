@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: HEVN B2 B API
+  title: HEVN B2B API
   description: Backend API for HEVN mobile neobank
   version: 0.1.2
 servers:
@@ -441,30 +441,113 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    FiatShareholderAddress:
+    FiatIdentityDocumentType:
+      type: string
+      enum:
+      - passport
+      - id_card
+      - drivers_license
+      - driver_license
+      - residence_permit
+      - government_id
+      - state_or_provincial_id
+      - visa
+      title: FiatIdentityDocumentType
+      description: Identity document type.
+    SlxDocumentType:
+      type: string
+      enum:
+      - certificate_of_incorporation
+      - formation_document
+      - power_of_attorney
+      - corporate_structure
+      - director_structure
+      - proof_of_address
+      - annual_financial_statements
+      - articles_of_association
+      - audit_report
+      - bank_reference_letter
+      - bank_statement
+      - banking_details
+      - birth_certificate
+      - business_license
+      - business_plan
+      - certificate_of_good_standing
+      - credit_report
+      - criminal_record_check
+      - cv_resume
+      - driving_license
+      - education_certificate
+      - financial_projections
+      - insurance_policy
+      - lease_agreement
+      - list_of_authorized_signatories
+      - marriage_certificate
+      - national_id
+      - operating_agreement
+      - partnership_agreement
+      - professional_license
+      - reference_letter
+      - register_of_members
+      - residence_permit
+      - shareholding_structure
+      - social_security_document
+      - source_of_funds_declaration
+      - tax_identification_document
+      - tax_returns
+      - trade_references
+      - vat_registration
+      - vendor_contracts
+      - visa
+      - wealth_statement
+      - contract
+      - invoice
+      - loan_agreement
+      - passport_front
+      - passport_back
+      - id_card_front
+      - id_card_back
+      - drivers_license_front
+      - drivers_license_back
+      - other
+      title: SlxDocumentType
+      description: Document types for upload.
+    UploadedDocumentListResponse:
       properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Documents
       type: object
-      title: FiatShareholderAddress
-      description: Shareholder address.
+      required:
+      - documents
+      title: UploadedDocumentListResponse
+      description: Response for user-uploaded documents list.
+    FiatPurposeOfFunds:
+      type: string
+      enum:
+      - operations
+      - payroll
+      - vendor_payments
+      - investment
+      - treasury_management
+      - international_transfers
+      - other
+      title: FiatPurposeOfFunds
+      description: Purpose of funds.
+    FiatSourceOfFunds:
+      type: string
+      enum:
+      - business_revenue
+      - investment
+      - loan
+      - personal_savings
+      - third_party_funds
+      - grant
+      - other
+      title: FiatSourceOfFunds
+      description: Source of funds.
     BusinessUserCreateRequest-Output:
       properties:
         phone:
@@ -629,6 +712,28 @@ components:
       type: object
       title: BusinessUserCreateRequest
       description: Request schema for creating/updating a business user (all fields optional for partial updates).
+    FiatBusinessType:
+      type: string
+      enum:
+      - technology
+      - finance
+      - healthcare
+      - retail
+      - e_commerce
+      - manufacturing
+      - real_estate
+      - consulting
+      - hospitality
+      - education
+      - transportation
+      - entertainment
+      - agriculture
+      - construction
+      - professional_services
+      - crypto_web3
+      - other
+      title: FiatBusinessType
+      description: Business industry type.
     CountryCode:
       type: string
       enum:
@@ -883,345 +988,6 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    UploadedDocumentListResponse:
-      properties:
-        documents:
-          items:
-            $ref: '#/components/schemas/DocumentDraftInfo'
-          type: array
-          title: Documents
-      type: object
-      required:
-      - documents
-      title: UploadedDocumentListResponse
-      description: Response for user-uploaded documents list.
-    FiatPurposeOfFunds:
-      type: string
-      enum:
-      - operations
-      - payroll
-      - vendor_payments
-      - investment
-      - treasury_management
-      - international_transfers
-      - other
-      title: FiatPurposeOfFunds
-      description: Purpose of funds.
-    DocumentDraftInfo:
-      properties:
-        id:
-          type: string
-          title: Id
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        originName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originname
-        link:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Link
-        createdAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Createdat
-        content:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Content
-      type: object
-      required:
-      - id
-      - type
-      title: DocumentDraftInfo
-      description: Document info in response.
-    BankRail:
-      type: string
-      enum:
-      - uaefts_named-zand
-      - ach_pooled-hsbc
-      - ach_named-citi
-      - ach_named-jpmorgan_chase
-      - ach_named-cfsb
-      - fedwire_pooled-hsbc
-      - fedwire_pooled-jpmorgan_chase
-      - fedwire_pooled-cfsb
-      - fedwire_named-hsbc
-      - fedwire_named-citi
-      - fedwire_named-jpmorgan_chase
-      - fedwire_named-cfsb
-      - sepa_pooled-zen
-      - sepa_named-zen
-      - swift_pooled-hsbc
-      - swift_named-hsbc
-      title: BankRail
-      description: 'Bank account route: provider rail + bank id (`{rail}-{bank}`).'
-    KybDocumentUpload:
-      properties:
-        base64:
-          type: string
-          title: Base64
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        originName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originname
-        context:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Context
-      type: object
-      required:
-      - base64
-      - type
-      title: KybDocumentUpload
-      description: Document upload for draft.
-    KycStatus:
-      type: string
-      enum:
-      - not_started
-      - requested
-      - incorporating
-      - pending
-      - under_review
-      - in_review
-      - approved
-      - rejected
-      title: KycStatus
-      description: KYC verification status.
-    FiatVerifierRole:
-      type: string
-      enum:
-      - officer
-      - employer
-      - accountant
-      - agent
-      title: FiatVerifierRole
-      description: KYB verifier role.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FiatShareholder:
-      properties:
-        localId:
-          type: string
-          title: Localid
-        firstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Firstname
-        lastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Lastname
-        birthDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Birthdate
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Phone
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-        taxId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Taxid
-        ownershipPercentage:
-          anyOf:
-          - type: number
-            maximum: 100
-            minimum: 0
-          - type: 'null'
-          title: Ownershippercentage
-        hasControl:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Hascontrol
-        isSigner:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Issigner
-        isDirector:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Isdirector
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/FiatShareholderAddress'
-          - type: 'null'
-        identityDocuments:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FiatIdentityDocument'
-            type: array
-          - type: 'null'
-          title: Identitydocuments
-        documentIds:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Documentids
-        swipeluxId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Swipeluxid
-      type: object
-      required:
-      - localId
-      title: FiatShareholder
-      description: Shareholder data stored in business_data JSONB.
-    FiatBusinessAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: FiatBusinessAddress
-      description: Business address.
-    KybSubmitResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        swipeluxCustomerId:
-          type: string
-          title: Swipeluxcustomerid
-        kybStatus:
-          $ref: '#/components/schemas/KycStatus'
-        message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Message
-      type: object
-      required:
-      - success
-      - swipeluxCustomerId
-      - kybStatus
-      title: KybSubmitResponse
-      description: Submit response.
-    FiatSourceOfFunds:
-      type: string
-      enum:
-      - business_revenue
-      - investment
-      - loan
-      - personal_savings
-      - third_party_funds
-      - grant
-      - other
-      title: FiatSourceOfFunds
-      description: Source of funds.
-    FiatRailResponse:
-      properties:
-        provider:
-          $ref: '#/components/schemas/FiatProvider'
-        externalUserId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Externaluserid
-        kycStatus:
-          type: string
-          title: Kycstatus
-          default: not_started
-        comment:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Comment
-      type: object
-      required:
-      - provider
-      title: FiatRailResponse
-      description: Response schema for a user's fiat rail registration.
-    FiatIdentityDocumentType:
-      type: string
-      enum:
-      - passport
-      - id_card
-      - drivers_license
-      - driver_license
-      - residence_permit
-      - government_id
-      - state_or_provincial_id
-      - visa
-      title: FiatIdentityDocumentType
-      description: Identity document type.
     BusinessUserCreateRequest-Input:
       properties:
         phone:
@@ -1386,12 +1152,138 @@ components:
       type: object
       title: BusinessUserCreateRequest
       description: Request schema for creating/updating a business user (all fields optional for partial updates).
-    KybDraftRequest:
+    DocumentDraftInfo:
       properties:
-        businessData:
+        id:
+          type: string
+          title: Id
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
           anyOf:
-          - $ref: '#/components/schemas/BusinessUserCreateRequest-Input'
+          - type: string
           - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Link
+        createdAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Createdat
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+      type: object
+      required:
+      - id
+      - type
+      title: DocumentDraftInfo
+      description: Document info in response.
+    FiatEntityType:
+      type: string
+      enum:
+      - llc
+      - corporation
+      - s_corporation
+      - c_corporation
+      - partnership
+      - limited_partnership
+      - sole_proprietorship
+      - nonprofit
+      - trust
+      - cooperative
+      - dao
+      - foundation
+      - other
+      title: FiatEntityType
+      description: Business entity type.
+    FiatShareholder:
+      properties:
+        localId:
+          type: string
+          title: Localid
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        birthDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Birthdate
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+        ownershipPercentage:
+          anyOf:
+          - type: number
+            maximum: 100
+            minimum: 0
+          - type: 'null'
+          title: Ownershippercentage
+        hasControl:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hascontrol
+        isSigner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Issigner
+        isDirector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isdirector
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/FiatShareholderAddress'
+          - type: 'null'
+        identityDocuments:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FiatIdentityDocument'
+            type: array
+          - type: 'null'
+          title: Identitydocuments
         documentIds:
           anyOf:
           - items:
@@ -1399,92 +1291,89 @@ components:
             type: array
           - type: 'null'
           title: Documentids
-        shareholders:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FiatShareholder'
-            type: array
-          - type: 'null'
-          title: Shareholders
-      type: object
-      title: KybDraftRequest
-      description: Draft request. Documents are uploaded separately via POST /kyb/draft/documents.
-    SlxDocumentType:
-      type: string
-      enum:
-      - certificate_of_incorporation
-      - formation_document
-      - power_of_attorney
-      - corporate_structure
-      - director_structure
-      - proof_of_address
-      - annual_financial_statements
-      - articles_of_association
-      - audit_report
-      - bank_reference_letter
-      - bank_statement
-      - banking_details
-      - birth_certificate
-      - business_license
-      - business_plan
-      - certificate_of_good_standing
-      - credit_report
-      - criminal_record_check
-      - cv_resume
-      - driving_license
-      - education_certificate
-      - financial_projections
-      - insurance_policy
-      - lease_agreement
-      - list_of_authorized_signatories
-      - marriage_certificate
-      - national_id
-      - operating_agreement
-      - partnership_agreement
-      - professional_license
-      - reference_letter
-      - register_of_members
-      - residence_permit
-      - shareholding_structure
-      - social_security_document
-      - source_of_funds_declaration
-      - tax_identification_document
-      - tax_returns
-      - trade_references
-      - vat_registration
-      - vendor_contracts
-      - visa
-      - wealth_statement
-      - contract
-      - invoice
-      - loan_agreement
-      - passport_front
-      - passport_back
-      - id_card_front
-      - id_card_back
-      - drivers_license_front
-      - drivers_license_back
-      - other
-      title: SlxDocumentType
-      description: Document types for upload.
-    FiatIdentityDocument:
-      properties:
-        type:
-          anyOf:
-          - $ref: '#/components/schemas/FiatIdentityDocumentType'
-          - type: 'null'
-        issuingCountry:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        number:
+        swipeluxId:
           anyOf:
           - type: string
           - type: 'null'
-          title: Number
+          title: Swipeluxid
       type: object
-      title: FiatIdentityDocument
-      description: Identity document for shareholder.
+      required:
+      - localId
+      title: FiatShareholder
+      description: Shareholder data stored in business_data JSONB.
+    FiatRailResponse:
+      properties:
+        provider:
+          $ref: '#/components/schemas/FiatProvider'
+        externalUserId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Externaluserid
+        kycStatus:
+          type: string
+          title: Kycstatus
+          default: not_started
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+      type: object
+      required:
+      - provider
+      title: FiatRailResponse
+      description: Response schema for a user's fiat rail registration.
+    KybDocumentUpload:
+      properties:
+        base64:
+          type: string
+          title: Base64
+        type:
+          $ref: '#/components/schemas/SlxDocumentType'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        originName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originname
+        context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - base64
+      - type
+      title: KybDocumentUpload
+      description: Document upload for draft.
+    KybSubmitResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        swipeluxCustomerId:
+          type: string
+          title: Swipeluxcustomerid
+        kybStatus:
+          $ref: '#/components/schemas/KycStatus'
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+      type: object
+      required:
+      - success
+      - swipeluxCustomerId
+      - kybStatus
+      title: KybSubmitResponse
+      description: Submit response.
     KybDraftResponse:
       properties:
         kybStatusByRails:
@@ -1558,6 +1447,57 @@ components:
       - updatedAt
       title: KybDraftResponse
       description: Full draft response.
+    FiatIdentityDocument:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FiatIdentityDocumentType'
+          - type: 'null'
+        issuingCountry:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Number
+      type: object
+      title: FiatIdentityDocument
+      description: Identity document for shareholder.
+    FiatVerifierRole:
+      type: string
+      enum:
+      - officer
+      - employer
+      - accountant
+      - agent
+      title: FiatVerifierRole
+      description: KYB verifier role.
+    FiatShareholderAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: FiatShareholderAddress
+      description: Shareholder address.
     FiatProvider:
       type: string
       enum:
@@ -1567,46 +1507,91 @@ components:
       - wirex
       title: FiatProvider
       description: Supported fiat payment providers.
-    FiatEntityType:
+    BankRail:
       type: string
       enum:
-      - llc
-      - corporation
-      - s_corporation
-      - c_corporation
-      - partnership
-      - limited_partnership
-      - sole_proprietorship
-      - nonprofit
-      - trust
-      - cooperative
-      - dao
-      - foundation
-      - other
-      title: FiatEntityType
-      description: Business entity type.
-    FiatBusinessType:
-      type: string
-      enum:
-      - technology
-      - finance
-      - healthcare
-      - retail
-      - e_commerce
-      - manufacturing
-      - real_estate
-      - consulting
-      - hospitality
-      - education
-      - transportation
-      - entertainment
-      - agriculture
-      - construction
-      - professional_services
-      - crypto_web3
-      - other
-      title: FiatBusinessType
-      description: Business industry type.
+      - uaefts_named-zand
+      - ach_pooled-hsbc
+      - ach_named-citi
+      - ach_named-jpmorgan_chase
+      - ach_named-cfsb
+      - fedwire_pooled-hsbc
+      - fedwire_pooled-jpmorgan_chase
+      - fedwire_pooled-cfsb
+      - fedwire_named-hsbc
+      - fedwire_named-citi
+      - fedwire_named-jpmorgan_chase
+      - fedwire_named-cfsb
+      - sepa_pooled-zen
+      - sepa_named-zen
+      - swift_pooled-hsbc
+      - swift_named-hsbc
+      title: BankRail
+      description: 'Bank account route: provider rail + bank id (`{rail}-{bank}`).'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FiatBusinessAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: FiatBusinessAddress
+      description: Business address.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ShareholderDraftResponse:
       properties:
         localId:
@@ -1701,27 +1686,42 @@ components:
       - localId
       title: ShareholderDraftResponse
       description: Shareholder in response with resolved documents. All fields optional for partial filling.
-    ValidationError:
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    KybDraftRequest:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+        businessData:
+          anyOf:
+          - $ref: '#/components/schemas/BusinessUserCreateRequest-Input'
+          - type: 'null'
+        documentIds:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Documentids
+        shareholders:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FiatShareholder'
+            type: array
+          - type: 'null'
+          title: Shareholders
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: KybDraftRequest
+      description: Draft request. Documents are uploaded separately via POST /kyb/draft/documents.
   securitySchemes:
     HTTPBearer:
       type: http

@@ -1237,25 +1237,275 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ApproveContractRequest:
+    ContractParty:
       properties:
-        clientAddress:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        email:
           anyOf:
-          - $ref: '#/components/schemas/UserAddress'
+          - type: string
           - type: 'null'
-        contractorAddress:
+          title: Email
+        displayName:
           anyOf:
-          - $ref: '#/components/schemas/UserAddress'
+          - type: string
           - type: 'null'
+          title: Displayname
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        entityName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entityname
+        avatarUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatarurl
+        isBusiness:
+          type: boolean
+          title: Isbusiness
+          default: false
+        address:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Address
+      type: object
+      required:
+      - id
+      title: ContractParty
+      description: Minimal user data embedded in contract responses.
+    UpdateContractLabelRequest:
+      properties:
+        label:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Label
+      type: object
+      title: UpdateContractLabelRequest
+      description: Request to update a contract label.
+    app__schemas__routers__invoices__contract__AttachDocumentRequest:
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          title: Documentid
+      type: object
+      required:
+      - documentId
+      title: AttachDocumentRequest
+      description: Request to attach a document to a contract.
+    TemplateFieldSource:
+      type: string
+      enum:
+      - user
+      - profile
+      - computed
+      - default
+      title: TemplateFieldSource
+      description: "Where a template field's value comes from.\n\n* ``USER`` — must be entered by the user.\n* ``PROFILE`` — taken from a party's profile when available; if the profile is\n  incomplete or the party is not registered yet, it must be collected from the user.\n* ``COMPUTED`` — generated server-side (current date, reference, derived legal terms).\n* ``DEFAULT`` — filled with a boilerplate default; no input required."
+    PrepareContractDocumentRequest:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        text:
+          type: string
+          minLength: 1
+          title: Text
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        fileName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - type
+      - text
+      title: PrepareContractDocumentRequest
+      description: Persist already prepared markdown as a document file.
+    ContractResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        clientId:
+          type: string
+          format: uuid
+          title: Clientid
+        contractorId:
+          type: string
+          format: uuid
+          title: Contractorid
+        client:
+          anyOf:
+          - $ref: '#/components/schemas/ContractParty'
+          - type: 'null'
+        contractor:
+          anyOf:
+          - $ref: '#/components/schemas/ContractParty'
+          - type: 'null'
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+        documentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Documentid
+        documentName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentname
+        documentFileName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentfilename
+        documentDownloadLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentdownloadlink
+        type:
+          $ref: '#/components/schemas/ContractType'
+        status:
+          $ref: '#/components/schemas/ContractStatus'
+        amount:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Amount
+        currency:
+          anyOf:
+          - $ref: '#/components/schemas/Currency'
+          - type: 'null'
+        period:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Period
+        activationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Activationat
+        expirationAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expirationat
+        signatureRequestId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Signaturerequestid
+        signed:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Signed
+        clientAcceptance:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Clientacceptance
+        contractorAcceptance:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Contractoracceptance
+        creatorId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Creatorid
+        fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Fields
+        priorityMethods:
+          items:
+            $ref: '#/components/schemas/TransactionType'
+          type: array
+          title: Prioritymethods
         paymentMethods:
           items:
             additionalProperties: true
             type: object
           type: array
           title: Paymentmethods
+        lastInvoice:
+          anyOf:
+          - $ref: '#/components/schemas/ContractLastInvoice'
+          - type: 'null'
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
       type: object
-      title: ApproveContractRequest
-      description: Optional body for contract approval — each party can provide their own data.
+      required:
+      - id
+      - clientId
+      - contractorId
+      - type
+      - status
+      - createdAt
+      - updatedAt
+      title: ContractResponse
+      description: Contract response.
+    ContractDocumentTemplateType:
+      type: string
+      enum:
+      - employer
+      - employment
+      - service
+      - contractor
+      - default_contractor
+      - custom
+      - nda
+      - vendor
+      - milestone
+      - msa
+      title: ContractDocumentTemplateType
+      description: Markdown contract template type.
     CountryCode:
       type: string
       enum:
@@ -1510,30 +1760,6 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    PrepareContractDocumentRequest:
-      properties:
-        type:
-          $ref: '#/components/schemas/ContractDocumentTemplateType'
-        text:
-          type: string
-          minLength: 1
-          title: Text
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        fileName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Filename
-      type: object
-      required:
-      - type
-      - text
-      title: PrepareContractDocumentRequest
-      description: Persist already prepared markdown as a document file.
     ContractLastInvoice:
       properties:
         id:
@@ -1644,215 +1870,15 @@ components:
       - updatedAt
       title: ContractLastInvoice
       description: Flat last invoice data embedded in contract responses.
-    app__schemas__routers__invoices__contract__AttachDocumentRequest:
+    GenerateScopePrefillResponse:
       properties:
-        documentId:
+        text:
           type: string
-          format: uuid
-          title: Documentid
+          title: Text
       type: object
       required:
-      - documentId
-      title: AttachDocumentRequest
-      description: Request to attach a document to a contract.
-    PrepareContractDocumentResponse:
-      properties:
-        documentId:
-          type: string
-          format: uuid
-          title: Documentid
-        documentType:
-          type: string
-          title: Documenttype
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        fileName:
-          type: string
-          title: Filename
-        downloadLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Downloadlink
-      type: object
-      required:
-      - documentId
-      - documentType
-      - fileName
-      title: PrepareContractDocumentResponse
-    ContractResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        clientId:
-          type: string
-          format: uuid
-          title: Clientid
-        contractorId:
-          type: string
-          format: uuid
-          title: Contractorid
-        client:
-          anyOf:
-          - $ref: '#/components/schemas/ContractParty'
-          - type: 'null'
-        contractor:
-          anyOf:
-          - $ref: '#/components/schemas/ContractParty'
-          - type: 'null'
-        label:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Label
-        documentId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Documentid
-        documentName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentname
-        documentFileName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentfilename
-        documentDownloadLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentdownloadlink
-        type:
-          $ref: '#/components/schemas/ContractType'
-        status:
-          $ref: '#/components/schemas/ContractStatus'
-        amount:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Amount
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/Currency'
-          - type: 'null'
-        period:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Period
-        activationAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Activationat
-        expirationAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expirationat
-        signatureRequestId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Signaturerequestid
-        signed:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Signed
-        clientAcceptance:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Clientacceptance
-        contractorAcceptance:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Contractoracceptance
-        creatorId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Creatorid
-        fields:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Fields
-        priorityMethods:
-          items:
-            $ref: '#/components/schemas/TransactionType'
-          type: array
-          title: Prioritymethods
-        paymentMethods:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Paymentmethods
-        lastInvoice:
-          anyOf:
-          - $ref: '#/components/schemas/ContractLastInvoice'
-          - type: 'null'
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-        updatedAt:
-          type: string
-          format: date-time
-          title: Updatedat
-      type: object
-      required:
-      - id
-      - clientId
-      - contractorId
-      - type
-      - status
-      - createdAt
-      - updatedAt
-      title: ContractResponse
-      description: Contract response.
-    TemplateFieldType:
-      type: string
-      enum:
-      - string
       - text
-      - number
-      - decimal
-      - date
-      - datetime
-      - boolean
-      - enum
-      - object
-      - array
-      title: TemplateFieldType
-      description: 'Structural type of a template field, so clients can render the right input.
-
-
-        Composite types carry their shape: ``OBJECT`` populates :attr:`TemplateField.fields`,
-
-        ``ARRAY`` populates :attr:`TemplateField.item`, and ``ENUM`` populates
-
-        :attr:`TemplateField.options`.'
+      title: GenerateScopePrefillResponse
     CreateContractRequest:
       properties:
         contractorEmail:
@@ -1947,187 +1973,6 @@ components:
         * ``contractor_email`` — the creator is the **client**.
 
         * ``client_email`` — the creator is the **contractor**.'
-    ContractType:
-      type: string
-      enum:
-      - service
-      - employment
-      - nda
-      - contractor
-      - default_contractor
-      - custom
-      - vendor
-      - milestone
-      - msa
-      - other
-      title: ContractType
-      description: Contract type.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    UpdateContractLabelRequest:
-      properties:
-        label:
-          anyOf:
-          - type: string
-            maxLength: 200
-          - type: 'null'
-          title: Label
-      type: object
-      title: UpdateContractLabelRequest
-      description: Request to update a contract label.
-    TemplateDescriptor:
-      properties:
-        type:
-          $ref: '#/components/schemas/ContractDocumentTemplateType'
-        title:
-          type: string
-          title: Title
-        description:
-          type: string
-          title: Description
-        requiresDocument:
-          type: boolean
-          title: Requiresdocument
-          default: false
-        supportsContractGeneration:
-          type: boolean
-          title: Supportscontractgeneration
-          default: false
-        supportsInvoicing:
-          type: boolean
-          title: Supportsinvoicing
-          default: false
-        fields:
-          items:
-            $ref: '#/components/schemas/TemplateField'
-          type: array
-          title: Fields
-      type: object
-      required:
-      - type
-      - title
-      - description
-      title: TemplateDescriptor
-      description: Describes a document template and the fields a client must fill.
-    EmployerContractPreviewFields:
-      properties:
-        effectiveDate:
-          type: string
-          title: Effectivedate
-        employerName:
-          type: string
-          title: Employername
-        employeeName:
-          type: string
-          title: Employeename
-        positionTitle:
-          type: string
-          title: Positiontitle
-        startDate:
-          type: string
-          title: Startdate
-        endDate:
-          type: string
-          title: Enddate
-        scope:
-          type: string
-          title: Scope
-        compensation:
-          type: string
-          title: Compensation
-        paymentTerms:
-          type: string
-          title: Paymentterms
-        invoiceCycle:
-          type: string
-          title: Invoicecycle
-        paymentDue:
-          type: string
-          title: Paymentdue
-        confidentialityTerms:
-          type: string
-          title: Confidentialityterms
-        intellectualPropertyTerms:
-          type: string
-          title: Intellectualpropertyterms
-        complianceTerms:
-          type: string
-          title: Complianceterms
-      type: object
-      required:
-      - effectiveDate
-      - employerName
-      - employeeName
-      - positionTitle
-      - startDate
-      - endDate
-      - scope
-      - compensation
-      - paymentTerms
-      - invoiceCycle
-      - paymentDue
-      - confidentialityTerms
-      - intellectualPropertyTerms
-      - complianceTerms
-      title: EmployerContractPreviewFields
-    ContractParty:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        displayName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Displayname
-        firstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Firstname
-        lastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Lastname
-        entityName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Entityname
-        avatarUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatarurl
-        isBusiness:
-          type: boolean
-          title: Isbusiness
-          default: false
-        address:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Address
-      type: object
-      required:
-      - id
-      title: ContractParty
-      description: Minimal user data embedded in contract responses.
     UpdateContractRequest:
       properties:
         label:
@@ -2168,26 +2013,75 @@ components:
       type: object
       title: UpdateContractRequest
       description: Request to update creator-owned contract terms and schedule.
-    GenerateScopePrefillResponse:
-      properties:
-        text:
-          type: string
-          title: Text
-      type: object
-      required:
-      - text
-      title: GenerateScopePrefillResponse
-    ContractStatus:
+    Currency:
       type: string
       enum:
-      - pending_approval_by_contractor
-      - pending_approval_by_client
-      - active
-      - completed
-      - cancelled
-      - paused
-      title: ContractStatus
-      description: Contract status.
+      - USD
+      - EUR
+      - GBP
+      - JPY
+      - CHF
+      - CAD
+      - AUD
+      - NZD
+      - SEK
+      - NOK
+      - AED
+      - HKD
+      title: Currency
+      description: Supported invoice/contract currencies. G10 majors + AED/HKD.
+    GenerateContractDocumentResponse:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        markdown:
+          type: string
+          title: Markdown
+        html:
+          type: string
+          title: Html
+        htmlPreview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Htmlpreview
+        fields:
+          anyOf:
+          - $ref: '#/components/schemas/EmployerContractPreviewFields'
+          - $ref: '#/components/schemas/ServiceContractPreviewFields'
+          - $ref: '#/components/schemas/ContractorContractPreviewFields'
+          - $ref: '#/components/schemas/CustomContractPreviewFields'
+          - type: 'null'
+          title: Fields
+        missingFields:
+          items:
+            type: string
+          type: array
+          title: Missingfields
+      type: object
+      required:
+      - type
+      - markdown
+      - html
+      title: GenerateContractDocumentResponse
+    GenerateScopePrefillRequest:
+      properties:
+        role:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Role
+        context:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - role
+      title: GenerateScopePrefillRequest
+      description: Generate plain-text scope description from a role.
     UserAddress:
       properties:
         streetAddress:
@@ -2229,26 +2123,100 @@ components:
         Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
 
         for backward compatibility with existing JSONB data.'
-    TemplateFieldSource:
+    PrepareContractDocumentResponse:
+      properties:
+        documentId:
+          type: string
+          format: uuid
+          title: Documentid
+        documentType:
+          type: string
+          title: Documenttype
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        fileName:
+          type: string
+          title: Filename
+        downloadLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Downloadlink
+      type: object
+      required:
+      - documentId
+      - documentType
+      - fileName
+      title: PrepareContractDocumentResponse
+    TemplateDescriptor:
+      properties:
+        type:
+          $ref: '#/components/schemas/ContractDocumentTemplateType'
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        requiresDocument:
+          type: boolean
+          title: Requiresdocument
+          default: false
+        supportsContractGeneration:
+          type: boolean
+          title: Supportscontractgeneration
+          default: false
+        supportsInvoicing:
+          type: boolean
+          title: Supportsinvoicing
+          default: false
+        fields:
+          items:
+            $ref: '#/components/schemas/TemplateField'
+          type: array
+          title: Fields
+      type: object
+      required:
+      - type
+      - title
+      - description
+      title: TemplateDescriptor
+      description: Describes a document template and the fields a client must fill.
+    ContractPeriod:
       type: string
       enum:
-      - user
-      - profile
-      - computed
-      - default
-      title: TemplateFieldSource
-      description: "Where a template field's value comes from.\n\n* ``USER`` — must be entered by the user.\n* ``PROFILE`` — taken from a party's profile when available; if the profile is\n  incomplete or the party is not registered yet, it must be collected from the user.\n* ``COMPUTED`` — generated server-side (current date, reference, derived legal terms).\n* ``DEFAULT`` — filled with a boilerplate default; no input required."
-    UpdateContractPaymentMethodsRequest:
-      properties:
-        paymentMethods:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Paymentmethods
-      type: object
-      title: UpdateContractPaymentMethodsRequest
-      description: Payment methods selected by the contractor for this contract.
+      - weekly
+      - biweekly
+      - monthly
+      - quarterly
+      - yearly
+      title: ContractPeriod
+      description: Recurring billing period of a contract.
+    TemplateFieldType:
+      type: string
+      enum:
+      - string
+      - text
+      - number
+      - decimal
+      - date
+      - datetime
+      - boolean
+      - enum
+      - object
+      - array
+      title: TemplateFieldType
+      description: 'Structural type of a template field, so clients can render the right input.
+
+
+        Composite types carry their shape: ``OBJECT`` populates :attr:`TemplateField.fields`,
+
+        ``ARRAY`` populates :attr:`TemplateField.item`, and ``ENUM`` populates
+
+        :attr:`TemplateField.options`.'
     TemplateField:
       properties:
         key:
@@ -2322,93 +2290,6 @@ components:
         ``TemplateFieldBuilder``; composite fields nest their shape in :attr:`fields`
 
         (objects), :attr:`item` (arrays) or :attr:`options` (enums).'
-    Currency:
-      type: string
-      enum:
-      - USD
-      - EUR
-      - GBP
-      - JPY
-      - CHF
-      - CAD
-      - AUD
-      - NZD
-      - SEK
-      - NOK
-      - AED
-      - HKD
-      title: Currency
-      description: Supported invoice/contract currencies. G10 majors + AED/HKD.
-    GenerateScopePrefillRequest:
-      properties:
-        role:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: Role
-        context:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Context
-      type: object
-      required:
-      - role
-      title: GenerateScopePrefillRequest
-      description: Generate plain-text scope description from a role.
-    ContractListResponse:
-      properties:
-        contracts:
-          items:
-            $ref: '#/components/schemas/ContractResponse'
-          type: array
-          title: Contracts
-      type: object
-      required:
-      - contracts
-      title: ContractListResponse
-      description: List of contracts.
-    ContractDocumentTemplateType:
-      type: string
-      enum:
-      - employer
-      - employment
-      - service
-      - contractor
-      - default_contractor
-      - custom
-      - nda
-      - vendor
-      - milestone
-      - msa
-      title: ContractDocumentTemplateType
-      description: Markdown contract template type.
-    TransactionType:
-      type: string
-      enum:
-      - sepa
-      - swift
-      - ach
-      - uaefts
-      - fedwire
-      - swift-usd
-      - swift-eur
-      - wire
-      - pix
-      - crypto
-      - card
-      - internal
-      - refund
-      title: TransactionType
-      description: 'Transaction type - payment rail.
-
-
-        Includes all ``FiatPaymentType`` values (sepa/swift/ach/uaefts) plus
-
-        extended fiat variants (wire/swift-usd/swift-eur/fedwire/pix) and
-
-        non-fiat rails (crypto/card/internal/refund).'
     ServiceContractPreviewFields:
       properties:
         effectiveDate:
@@ -2450,50 +2331,115 @@ components:
       - confidentialityTerms
       - intellectualPropertyTerms
       title: ServiceContractPreviewFields
-    ContractPeriod:
-      type: string
-      enum:
-      - weekly
-      - biweekly
-      - monthly
-      - quarterly
-      - yearly
-      title: ContractPeriod
-      description: Recurring billing period of a contract.
-    GenerateContractDocumentResponse:
+    EmployerContractPreviewFields:
       properties:
-        type:
-          $ref: '#/components/schemas/ContractDocumentTemplateType'
-        markdown:
+        effectiveDate:
           type: string
-          title: Markdown
-        html:
+          title: Effectivedate
+        employerName:
           type: string
-          title: Html
-        htmlPreview:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Htmlpreview
-        fields:
-          anyOf:
-          - $ref: '#/components/schemas/EmployerContractPreviewFields'
-          - $ref: '#/components/schemas/ServiceContractPreviewFields'
-          - $ref: '#/components/schemas/ContractorContractPreviewFields'
-          - $ref: '#/components/schemas/CustomContractPreviewFields'
-          - type: 'null'
-          title: Fields
-        missingFields:
-          items:
-            type: string
-          type: array
-          title: Missingfields
+          title: Employername
+        employeeName:
+          type: string
+          title: Employeename
+        positionTitle:
+          type: string
+          title: Positiontitle
+        startDate:
+          type: string
+          title: Startdate
+        endDate:
+          type: string
+          title: Enddate
+        scope:
+          type: string
+          title: Scope
+        compensation:
+          type: string
+          title: Compensation
+        paymentTerms:
+          type: string
+          title: Paymentterms
+        invoiceCycle:
+          type: string
+          title: Invoicecycle
+        paymentDue:
+          type: string
+          title: Paymentdue
+        confidentialityTerms:
+          type: string
+          title: Confidentialityterms
+        intellectualPropertyTerms:
+          type: string
+          title: Intellectualpropertyterms
+        complianceTerms:
+          type: string
+          title: Complianceterms
       type: object
       required:
-      - type
-      - markdown
-      - html
-      title: GenerateContractDocumentResponse
+      - effectiveDate
+      - employerName
+      - employeeName
+      - positionTitle
+      - startDate
+      - endDate
+      - scope
+      - compensation
+      - paymentTerms
+      - invoiceCycle
+      - paymentDue
+      - confidentialityTerms
+      - intellectualPropertyTerms
+      - complianceTerms
+      title: EmployerContractPreviewFields
+    TemplateListResponse:
+      properties:
+        templates:
+          items:
+            $ref: '#/components/schemas/TemplateDescriptor'
+          type: array
+          title: Templates
+      type: object
+      required:
+      - templates
+      title: TemplateListResponse
+      description: List of fillable document templates.
+    TransactionType:
+      type: string
+      enum:
+      - sepa
+      - swift
+      - ach
+      - uaefts
+      - fedwire
+      - swift-usd
+      - swift-eur
+      - wire
+      - pix
+      - crypto
+      - card
+      - internal
+      - refund
+      title: TransactionType
+      description: 'Transaction type - payment rail.
+
+
+        Includes all ``FiatPaymentType`` values (sepa/swift/ach/uaefts) plus
+
+        extended fiat variants (wire/swift-usd/swift-eur/fedwire/pix) and
+
+        non-fiat rails (crypto/card/internal/refund).'
+    ContractStatus:
+      type: string
+      enum:
+      - pending_approval_by_contractor
+      - pending_approval_by_client
+      - active
+      - completed
+      - cancelled
+      - paused
+      title: ContractStatus
+      description: Contract status.
     CustomContractPreviewFields:
       properties:
         items:
@@ -2504,6 +2450,42 @@ components:
           title: Items
       type: object
       title: CustomContractPreviewFields
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ContractType:
+      type: string
+      enum:
+      - service
+      - employment
+      - nda
+      - contractor
+      - default_contractor
+      - custom
+      - vendor
+      - milestone
+      - msa
+      - other
+      title: ContractType
+      description: Contract type.
+    ContractListResponse:
+      properties:
+        contracts:
+          items:
+            $ref: '#/components/schemas/ContractResponse'
+          type: array
+          title: Contracts
+      type: object
+      required:
+      - contracts
+      title: ContractListResponse
+      description: List of contracts.
     ValidationError:
       properties:
         loc:
@@ -2525,18 +2507,6 @@ components:
       - msg
       - type
       title: ValidationError
-    TemplateListResponse:
-      properties:
-        templates:
-          items:
-            $ref: '#/components/schemas/TemplateDescriptor'
-          type: array
-          title: Templates
-      type: object
-      required:
-      - templates
-      title: TemplateListResponse
-      description: List of fillable document templates.
     ContractorContractPreviewFields:
       properties:
         effectiveDate:
@@ -2618,6 +2588,36 @@ components:
       - clientSignatureDate
       - contractorSignatureDate
       title: ContractorContractPreviewFields
+    ApproveContractRequest:
+      properties:
+        clientAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        contractorAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+      type: object
+      title: ApproveContractRequest
+      description: Optional body for contract approval — each party can provide their own data.
+    UpdateContractPaymentMethodsRequest:
+      properties:
+        paymentMethods:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Paymentmethods
+      type: object
+      title: UpdateContractPaymentMethodsRequest
+      description: Payment methods selected by the contractor for this contract.
   securitySchemes:
     HTTPBearer:
       type: http

@@ -132,23 +132,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    NearCallRequest:
+    PublicKeyResponse:
       properties:
-        msg:
-          type: string
-          title: Msg
         publicKey:
           type: string
           title: Publickey
-        proof:
-          type: string
-          title: Proof
       type: object
       required:
-      - msg
       - publicKey
-      - proof
-      title: NearCallRequest
+      title: PublicKeyResponse
     NearCallResponse:
       properties:
         transactionHash:
@@ -162,45 +154,6 @@ components:
       - transactionHash
       - success
       title: NearCallResponse
-    PublicKeyResponse:
-      properties:
-        publicKey:
-          type: string
-          title: Publickey
-      type: object
-      required:
-      - publicKey
-      title: PublicKeyResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     app__routers__security__tee_local__AttestateJwtResponse:
       properties:
         hashEmail:
@@ -243,6 +196,53 @@ components:
       - msg
       - receiverId
       title: AttestateJwtRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NearCallRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: NearCallRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

@@ -135,18 +135,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    IncorporationService:
-      type: string
-      enum:
-      - incorporation_fees
-      - office
-      - registrator_fees
-      - us_bank
-      - eu_bank
-      - ae_bank
-      - 1year_maintenance
-      title: IncorporationService
-      description: Services available for incorporation package.
     ApplyIncorporateRequest:
       properties:
         services:
@@ -170,6 +158,27 @@ components:
       - services
       title: ApplyIncorporateRequest
       description: Request body for incorporation application.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    IncorporationService:
+      type: string
+      enum:
+      - incorporation_fees
+      - office
+      - registrator_fees
+      - us_bank
+      - eu_bank
+      - ae_bank
+      - 1year_maintenance
+      title: IncorporationService
+      description: Services available for incorporation package.
     ValidationError:
       properties:
         loc:
@@ -191,15 +200,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

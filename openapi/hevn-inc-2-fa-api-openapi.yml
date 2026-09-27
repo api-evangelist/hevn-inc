@@ -247,19 +247,31 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    TotpDisableRequest:
+    TotpSetupResponse:
       properties:
-        code:
+        secret:
           type: string
-          maxLength: 6
-          minLength: 6
-          title: Code
-          description: Current TOTP code
+          title: Secret
+          description: Base32 TOTP secret for manual entry
+        provisioningUri:
+          type: string
+          title: Provisioninguri
+          description: otpauth:// URI for QR code
       type: object
       required:
-      - code
-      title: TotpDisableRequest
-      description: Request to disable 2FA.
+      - secret
+      - provisioningUri
+      title: TotpSetupResponse
+      description: Response when initiating 2FA setup.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TotpActivateResponse:
       properties:
         enabled:
@@ -277,42 +289,6 @@ components:
       - recoveryCodes
       title: TotpActivateResponse
       description: Response after successfully activating 2FA.
-    TotpVerifyRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Code
-          description: 6-digit TOTP code
-      type: object
-      required:
-      - code
-      title: TotpVerifyRequest
-      description: Request to verify a TOTP code.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TotpStatusResponse:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-        recoveryCodesRemaining:
-          type: integer
-          title: Recoverycodesremaining
-          default: 0
-      type: object
-      required:
-      - enabled
-      title: TotpStatusResponse
-      description: Response for 2FA status check.
     ValidationError:
       properties:
         loc:
@@ -334,22 +310,46 @@ components:
       - msg
       - type
       title: ValidationError
-    TotpSetupResponse:
+    TotpDisableRequest:
       properties:
-        secret:
+        code:
           type: string
-          title: Secret
-          description: Base32 TOTP secret for manual entry
-        provisioningUri:
-          type: string
-          title: Provisioninguri
-          description: otpauth:// URI for QR code
+          maxLength: 6
+          minLength: 6
+          title: Code
+          description: Current TOTP code
       type: object
       required:
-      - secret
-      - provisioningUri
-      title: TotpSetupResponse
-      description: Response when initiating 2FA setup.
+      - code
+      title: TotpDisableRequest
+      description: Request to disable 2FA.
+    TotpStatusResponse:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+        recoveryCodesRemaining:
+          type: integer
+          title: Recoverycodesremaining
+          default: 0
+      type: object
+      required:
+      - enabled
+      title: TotpStatusResponse
+      description: Response for 2FA status check.
+    TotpVerifyRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code
+      type: object
+      required:
+      - code
+      title: TotpVerifyRequest
+      description: Request to verify a TOTP code.
   securitySchemes:
     HTTPBearer:
       type: http

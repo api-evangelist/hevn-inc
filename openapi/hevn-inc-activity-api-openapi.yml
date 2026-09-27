@@ -107,6 +107,60 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NotificationListResponse:
+      properties:
+        notifications:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Notifications
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - notifications
+      - total
+      title: NotificationListResponse
+      description: List of notifications response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NotificationChannel:
+      type: string
+      enum:
+      - email
+      - push
+      - internal
+      title: NotificationChannel
+      description: Notification delivery channel.
     NotificationResponse:
       properties:
         id:
@@ -149,23 +203,6 @@ components:
       - createdAt
       title: NotificationResponse
       description: Single notification response.
-    NotificationChannel:
-      type: string
-      enum:
-      - email
-      - push
-      - internal
-      title: NotificationChannel
-      description: Notification delivery channel.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     NotificationType:
       type: string
       enum:
@@ -207,43 +244,6 @@ components:
       - compliance_reply
       title: NotificationType
       description: Notification type — matches the kind of event being notified.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    NotificationListResponse:
-      properties:
-        notifications:
-          items:
-            $ref: '#/components/schemas/NotificationResponse'
-          type: array
-          title: Notifications
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - notifications
-      - total
-      title: NotificationListResponse
-      description: List of notifications response.
   securitySchemes:
     HTTPBearer:
       type: http
