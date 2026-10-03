@@ -107,15 +107,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     NotificationListResponse:
       properties:
         notifications:
@@ -153,14 +144,47 @@ components:
       - msg
       - type
       title: ValidationError
-    NotificationChannel:
+    NotificationType:
       type: string
       enum:
-      - email
-      - push
-      - internal
-      title: NotificationChannel
-      description: Notification delivery channel.
+      - login
+      - user_created
+      - welcome
+      - payment_received
+      - payment_sent
+      - withdrawal
+      - invoice
+      - invite
+      - account_approved
+      - sign_request
+      - sign_completed
+      - team_access
+      - bank_account_ready
+      - share_kyb
+      - payment_claim
+      - contact_invite
+      - new_device_login
+      - new_passkey
+      - new_api_key
+      - new_team_member
+      - privy_key_exported
+      - privy_wallet_recovered
+      - privy_mfa_disabled
+      - contract_payment_methods_updated
+      - contract_created
+      - contact_added
+      - bank_requested
+      - card_created
+      - card_details_viewed
+      - spending_alert
+      - low_balance
+      - accounting_sync_failed
+      - bill_status
+      - tx_comment
+      - support_reply
+      - compliance_reply
+      title: NotificationType
+      description: Notification type — matches the kind of event being notified.
     NotificationResponse:
       properties:
         id:
@@ -203,47 +227,23 @@ components:
       - createdAt
       title: NotificationResponse
       description: Single notification response.
-    NotificationType:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NotificationChannel:
       type: string
       enum:
-      - login
-      - user_created
-      - welcome
-      - payment_received
-      - payment_sent
-      - withdrawal
-      - invoice
-      - invite
-      - account_approved
-      - sign_request
-      - sign_completed
-      - team_access
-      - bank_account_ready
-      - share_kyb
-      - payment_claim
-      - contact_invite
-      - new_device_login
-      - new_passkey
-      - new_api_key
-      - new_team_member
-      - privy_key_exported
-      - privy_wallet_recovered
-      - privy_mfa_disabled
-      - contract_payment_methods_updated
-      - contract_created
-      - contact_added
-      - bank_requested
-      - card_created
-      - card_details_viewed
-      - spending_alert
-      - low_balance
-      - accounting_sync_failed
-      - bill_status
-      - tx_comment
-      - support_reply
-      - compliance_reply
-      title: NotificationType
-      description: Notification type — matches the kind of event being notified.
+      - email
+      - push
+      - internal
+      title: NotificationChannel
+      description: Notification delivery channel.
   securitySchemes:
     HTTPBearer:
       type: http

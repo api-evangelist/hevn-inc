@@ -491,105 +491,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProductUpdateRequest:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        images:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Images
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-        price:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Price
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        minAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Minamount
-        maxAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Maxamount
-        presetAmount:
-          anyOf:
-          - type: number
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Presetamount
-        maxQuantity:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Maxquantity
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-        webhookUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Webhookurl
-        successUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Successurl
-        cancelUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cancelurl
-        active:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Active
-      type: object
-      title: ProductUpdateRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ProductResponse:
       properties:
         id:
@@ -794,6 +695,105 @@ components:
       - msg
       - type
       title: ValidationError
+    ProductUpdateRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        images:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Images
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        price:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Price
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        minAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Minamount
+        maxAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Maxamount
+        presetAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Presetamount
+        maxQuantity:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Maxquantity
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+        webhookUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Webhookurl
+        successUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Successurl
+        cancelUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cancelurl
+        active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Active
+      type: object
+      title: ProductUpdateRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     PaymentTransactionResponse:
       properties:
         id:

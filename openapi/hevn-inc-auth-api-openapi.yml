@@ -307,46 +307,28 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    PrivyLoginRequest:
+    RefreshRequest:
       properties:
-        signature:
+        userId:
           type: string
-          title: Signature
-        email:
-          type: string
-          title: Email
-        address:
-          type: string
-          title: Address
-        nonce:
-          type: integer
-          title: Nonce
+          title: Userid
+          description: Target user UUID
       type: object
       required:
-      - signature
-      - email
-      - address
-      - nonce
-      title: PrivyLoginRequest
-      description: Request to link a Privy wallet.
-    AuthEmailOtpRequest:
+      - userId
+      title: RefreshRequest
+      description: Request for refreshing a session token.
+    AuthCompleteRequest:
       properties:
         sessionKey:
           type: string
           title: Sessionkey
           description: Session key from auth/start
-        otpCode:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Otpcode
-          description: 6-digit OTP code
       type: object
       required:
       - sessionKey
-      - otpCode
-      title: AuthEmailOtpRequest
-      description: Request schema for email OTP verification.
+      title: AuthCompleteRequest
+      description: Request for completing authentication.
     AuthMethod:
       type: string
       enum:
@@ -374,6 +356,121 @@ components:
       - accessToken
       title: SessionTokenResponse
       description: Response with short-lived JWT session token.
+    AuthStartRequest:
+      properties:
+        email:
+          type: string
+          title: Email
+          description: User email address
+      type: object
+      required:
+      - email
+      title: AuthStartRequest
+      description: Request schema for starting authentication.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SubmitSignedJwtRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        authPayload:
+          type: string
+          title: Authpayload
+          description: JSON auth_payload from TEE attestation
+        signature:
+          type: string
+          title: Signature
+          description: Base58 Ed25519 signature from TEE
+      type: object
+      required:
+      - sessionKey
+      - authPayload
+      - signature
+      title: SubmitSignedJwtRequest
+      description: Request for submitting TEE-signed Google JWT attestation.
+    AuthStartResponse:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key for OTP verification
+        status:
+          type: string
+          title: Status
+          description: Auth session status
+          default: pending
+        authMethods:
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+          type: array
+          title: Authmethods
+          description: Required auth methods
+      type: object
+      required:
+      - sessionKey
+      title: AuthStartResponse
+      description: Response schema for auth start.
+    AuthEmailOtpRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        otpCode:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Otpcode
+          description: 6-digit OTP code
+      type: object
+      required:
+      - sessionKey
+      - otpCode
+      title: AuthEmailOtpRequest
+      description: Request schema for email OTP verification.
+    PrivyLoginRequest:
+      properties:
+        signature:
+          type: string
+          title: Signature
+        email:
+          type: string
+          title: Email
+        address:
+          type: string
+          title: Address
+        nonce:
+          type: integer
+          title: Nonce
+      type: object
+      required:
+      - signature
+      - email
+      - address
+      - nonce
+      title: PrivyLoginRequest
+      description: Request to link a Privy wallet.
     PrivyLoginResponse:
       properties:
         refreshToken:
@@ -405,6 +502,15 @@ components:
       - privyAddress
       title: PrivyLoginResponse
       description: Response after Privy wallet auth.
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: StatusResponse
+      description: Simple status response.
     TotpLoginRequest:
       properties:
         sessionKey:
@@ -432,101 +538,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    AuthCompleteRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-      type: object
-      required:
-      - sessionKey
-      title: AuthCompleteRequest
-      description: Request for completing authentication.
-    StatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-          default: ok
-      type: object
-      title: StatusResponse
-      description: Simple status response.
-    AuthStartResponse:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key for OTP verification
-        status:
-          type: string
-          title: Status
-          description: Auth session status
-          default: pending
-        authMethods:
-          items:
-            $ref: '#/components/schemas/AuthMethod'
-          type: array
-          title: Authmethods
-          description: Required auth methods
-      type: object
-      required:
-      - sessionKey
-      title: AuthStartResponse
-      description: Response schema for auth start.
-    SubmitSignedJwtRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-        authPayload:
-          type: string
-          title: Authpayload
-          description: JSON auth_payload from TEE attestation
-        signature:
-          type: string
-          title: Signature
-          description: Base58 Ed25519 signature from TEE
-      type: object
-      required:
-      - sessionKey
-      - authPayload
-      - signature
-      title: SubmitSignedJwtRequest
-      description: Request for submitting TEE-signed Google JWT attestation.
-    RefreshRequest:
-      properties:
-        userId:
-          type: string
-          title: Userid
-          description: Target user UUID
-      type: object
-      required:
-      - userId
-      title: RefreshRequest
-      description: Request for refreshing a session token.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     AuthSessionResponse:
       properties:
         refreshToken:
@@ -556,17 +567,6 @@ components:
       - email
       title: AuthSessionResponse
       description: Response for POST /auth/complete — refresh token.
-    AuthStartRequest:
-      properties:
-        email:
-          type: string
-          title: Email
-          description: User email address
-      type: object
-      required:
-      - email
-      title: AuthStartRequest
-      description: Request schema for starting authentication.
   securitySchemes:
     HTTPBearer:
       type: http

@@ -132,6 +132,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     PublicKeyResponse:
       properties:
         publicKey:
@@ -179,23 +200,6 @@ components:
       - publicKey
       - timestamp
       title: AttestateJwtResponse
-    app__routers__security__tee_local__AttestateJwtRequest:
-      properties:
-        googleJwt:
-          type: string
-          title: Googlejwt
-        msg:
-          type: string
-          title: Msg
-        receiverId:
-          type: string
-          title: Receiverid
-      type: object
-      required:
-      - googleJwt
-      - msg
-      - receiverId
-      title: AttestateJwtRequest
     HTTPValidationError:
       properties:
         detail:
@@ -222,27 +226,23 @@ components:
       - publicKey
       - proof
       title: NearCallRequest
-    ValidationError:
+    app__routers__security__tee_local__AttestateJwtRequest:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
+        googleJwt:
+          type: string
+          title: Googlejwt
         msg:
           type: string
-          title: Message
-        type:
+          title: Msg
+        receiverId:
           type: string
-          title: Error Type
+          title: Receiverid
       type: object
       required:
-      - loc
+      - googleJwt
       - msg
-      - type
-      title: ValidationError
+      - receiverId
+      title: AttestateJwtRequest
   securitySchemes:
     HTTPBearer:
       type: http

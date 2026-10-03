@@ -288,12 +288,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CorpDocumentType:
-      type: string
-      enum:
-      - contractor_agreement
-      title: CorpDocumentType
-      description: Supported document types for e-signing.
     ContractorAgreementData:
       properties:
         contractorName:
@@ -371,6 +365,109 @@ components:
       - firstPaymentDate
       title: ContractorAgreementData
       description: Data for filling Contractor Agreement template.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FirmaCreateDocumentRequest:
+      properties:
+        documentType:
+          $ref: '#/components/schemas/CorpDocumentType'
+        signer:
+          $ref: '#/components/schemas/FirmaSignerInfo'
+        recipient:
+          $ref: '#/components/schemas/FirmaSignerInfo'
+        contractorAgreement:
+          anyOf:
+          - $ref: '#/components/schemas/ContractorAgreementData'
+          - type: 'null'
+      type: object
+      required:
+      - documentType
+      - signer
+      - recipient
+      title: FirmaCreateDocumentRequest
+      description: Request to create a document for signing via Firma.
+    UploadedDocumentListResponse:
+      properties:
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentDraftInfo'
+          type: array
+          title: Documents
+      type: object
+      required:
+      - documents
+      title: UploadedDocumentListResponse
+      description: Response for user-uploaded documents list.
+    FirmaSigningUrlInfo:
+      properties:
+        email:
+          type: string
+          title: Email
+        signingUrl:
+          type: string
+          title: Signingurl
+      type: object
+      required:
+      - email
+      - signingUrl
+      title: FirmaSigningUrlInfo
+      description: Signing URL for embedding in iframe.
+    FirmaCreateDocumentResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        firmaId:
+          type: string
+          title: Firmaid
+        documentType:
+          type: string
+          title: Documenttype
+        status:
+          type: string
+          title: Status
+        signerEmail:
+          type: string
+          title: Signeremail
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        signingUrls:
+          items:
+            $ref: '#/components/schemas/FirmaSigningUrlInfo'
+          type: array
+          title: Signingurls
+          default: []
+      type: object
+      required:
+      - id
+      - firmaId
+      - documentType
+      - status
+      - signerEmail
+      title: FirmaCreateDocumentResponse
+      description: Response after creating and sending a signing request.
     SlxDocumentType:
       type: string
       enum:
@@ -429,6 +526,24 @@ components:
       - other
       title: SlxDocumentType
       description: Document types for upload.
+    FirmaSignerInfo:
+      properties:
+        firstName:
+          type: string
+          title: Firstname
+        lastName:
+          type: string
+          title: Lastname
+        email:
+          type: string
+          title: Email
+      type: object
+      required:
+      - firstName
+      - lastName
+      - email
+      title: FirmaSignerInfo
+      description: Signer information for a signing request.
     HTTPValidationError:
       properties:
         detail:
@@ -438,55 +553,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    UploadedDocumentListResponse:
-      properties:
-        documents:
-          items:
-            $ref: '#/components/schemas/DocumentDraftInfo'
-          type: array
-          title: Documents
-      type: object
-      required:
-      - documents
-      title: UploadedDocumentListResponse
-      description: Response for user-uploaded documents list.
-    FirmaCreateDocumentResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        firmaId:
-          type: string
-          title: Firmaid
-        documentType:
-          type: string
-          title: Documenttype
-        status:
-          type: string
-          title: Status
-        signerEmail:
-          type: string
-          title: Signeremail
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        signingUrls:
-          items:
-            $ref: '#/components/schemas/FirmaSigningUrlInfo'
-          type: array
-          title: Signingurls
-          default: []
-      type: object
-      required:
-      - id
-      - firmaId
-      - documentType
-      - status
-      - signerEmail
-      title: FirmaCreateDocumentResponse
-      description: Response after creating and sending a signing request.
     KybDocumentUpload:
       properties:
         base64:
@@ -515,57 +581,6 @@ components:
       - type
       title: KybDocumentUpload
       description: Document upload for draft.
-    FirmaCreateDocumentRequest:
-      properties:
-        documentType:
-          $ref: '#/components/schemas/CorpDocumentType'
-        signer:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        recipient:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        contractorAgreement:
-          anyOf:
-          - $ref: '#/components/schemas/ContractorAgreementData'
-          - type: 'null'
-      type: object
-      required:
-      - documentType
-      - signer
-      - recipient
-      title: FirmaCreateDocumentRequest
-      description: Request to create a document for signing via Firma.
-    FirmaSignerInfo:
-      properties:
-        firstName:
-          type: string
-          title: Firstname
-        lastName:
-          type: string
-          title: Lastname
-        email:
-          type: string
-          title: Email
-      type: object
-      required:
-      - firstName
-      - lastName
-      - email
-      title: FirmaSignerInfo
-      description: Signer information for a signing request.
-    FirmaSigningUrlInfo:
-      properties:
-        email:
-          type: string
-          title: Email
-        signingUrl:
-          type: string
-          title: Signingurl
-      type: object
-      required:
-      - email
-      - signingUrl
-      title: FirmaSigningUrlInfo
-      description: Signing URL for embedding in iframe.
     DocumentDraftInfo:
       properties:
         id:
@@ -606,27 +621,12 @@ components:
       - type
       title: DocumentDraftInfo
       description: Document info in response.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+    CorpDocumentType:
+      type: string
+      enum:
+      - contractor_agreement
+      title: CorpDocumentType
+      description: Supported document types for e-signing.
   securitySchemes:
     HTTPBearer:
       type: http

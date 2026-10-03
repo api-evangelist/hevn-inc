@@ -883,75 +883,165 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    USExternalAccountDetails-Output:
+    USAccountDetails:
       properties:
-        bankName:
+        accountNumber:
           type: string
-          title: Bankname
-        bankAddress:
+          title: Accountnumber
+        routingNumber:
+          type: string
+          title: Routingnumber
+      type: object
+      required:
+      - accountNumber
+      - routingNumber
+      title: USAccountDetails
+      description: US domestic account details (ACH).
+    FiatRailResponse:
+      properties:
+        provider:
+          $ref: '#/components/schemas/FiatProvider'
+        externalUserId:
           anyOf:
           - type: string
           - type: 'null'
-          title: Bankaddress
-        currency:
+          title: Externaluserid
+        kycStatus:
+          type: string
+          title: Kycstatus
+          default: not_started
+        comment:
           anyOf:
           - type: string
           - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
+          title: Comment
+      type: object
+      required:
+      - provider
+      title: FiatRailResponse
+      description: Response schema for a user's fiat rail registration.
+    ContactCryptoResponse:
+      properties:
+        chain:
           anyOf:
           - type: string
           - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
+          title: Chain
+        token:
           anyOf:
           - type: string
           - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
+          title: Token
+        address:
+          type: string
+          title: Address
+      type: object
+      required:
+      - address
+      title: ContactCryptoResponse
+      description: Crypto payment details for contact.
+    EmailAccountInput:
+      properties:
+        accountType:
+          type: string
+          const: email
+          title: Accounttype
+          default: email
+        email:
+          type: string
+          title: Email
+      type: object
+      required:
+      - email
+      title: EmailAccountInput
+      description: Email contact input.
+    ContactResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        userId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Userid
+        email:
           anyOf:
           - type: string
           - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
+          title: Email
+        relationship:
+          $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+        address:
           anyOf:
           - $ref: '#/components/schemas/UserAddress'
           - type: 'null'
-        relationship:
+        iban:
           anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - $ref: '#/components/schemas/IBANAccountDetails-Output'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
           - type: 'null'
-        paymentReference:
+          title: Iban
+        crypto:
           anyOf:
-          - type: string
+          - $ref: '#/components/schemas/ContactCryptoResponse'
           - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - ach
-          - fedwire
-          title: Accounttype
-          default: ach
-        us:
-          $ref: '#/components/schemas/USAccountDetails'
-        beneficiaryName:
+        user:
           anyOf:
-          - type: string
+          - $ref: '#/components/schemas/ContactLinkedUserResponse'
           - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
       type: object
       required:
-      - bankName
-      - accountHolderType
-      - us
-      - beneficiaryName
-      title: USExternalAccountDetails
-      description: US domestic (ACH) external account.
+      - id
+      - name
+      - relationship
+      - createdAt
+      title: ContactResponse
+      description: Contact response with full structure for transfer.
+    InviteFlow:
+      type: string
+      enum:
+      - kyb_manager
+      - employer
+      - team_member
+      title: InviteFlow
+      description: Invite flow types.
+    InvitedListResponse:
+      properties:
+        invited:
+          items:
+            $ref: '#/components/schemas/InvitedUserResponse'
+          type: array
+          title: Invited
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - invited
+      - total
+      title: InvitedListResponse
+      description: List of invited users.
+    AvatarUploadResponse:
+      properties:
+        avatarUrl:
+          type: string
+          title: Avatarurl
+      type: object
+      required:
+      - avatarUrl
+      title: AvatarUploadResponse
+      description: Response schema for avatar upload.
     InviteBonuses:
       properties:
         kyb:
@@ -971,344 +1061,34 @@ components:
       type: object
       title: BankRequestedSettings
       description: User bank-rail interest settings.
-    InvitedListResponse:
+    NotificationsSettings:
       properties:
-        invited:
-          items:
-            $ref: '#/components/schemas/InvitedUserResponse'
-          type: array
-          title: Invited
-        total:
-          type: integer
-          title: Total
+        cashFlow:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        suspiciousActivity:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        tasksAndApprovals:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        yourSpending:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        accountBalances:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        accounting:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        billPay:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        invoicing:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
+        collaboration:
+          $ref: '#/components/schemas/NotificationChannelPrefs'
       type: object
-      required:
-      - invited
-      - total
-      title: InvitedListResponse
-      description: List of invited users.
-    ShareKybLinkRequest:
-      properties:
-        email:
-          type: string
-          format: email
-          title: Email
-      type: object
-      required:
-      - email
-      title: ShareKybLinkRequest
-      description: Request schema for sharing a KYB link via email.
-    NotificationChannelPrefs:
-      properties:
-        email:
-          type: boolean
-          title: Email
-          default: true
-        push:
-          type: boolean
-          title: Push
-          default: true
-      type: object
-      title: NotificationChannelPrefs
-      description: Per-channel toggles for a single notification category.
-    KycStatusResponse:
-      properties:
-        provider:
-          $ref: '#/components/schemas/FiatProvider'
-        externalUserId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Externaluserid
-        email:
-          type: string
-          title: Email
-        status:
-          anyOf:
-          - $ref: '#/components/schemas/KycStatus'
-          - type: 'null'
-        kycStatus:
-          $ref: '#/components/schemas/KycStatus'
-        firstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Firstname
-        lastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Lastname
-        entityName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Entityname
-        kycLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Kyclink
-        kycUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Kycurl
-        contactSupportLink:
-          type: string
-          title: Contactsupportlink
-          default: https://app.gethevn.com/chat
-      type: object
-      required:
-      - provider
-      - email
-      - kycStatus
-      title: KycStatusResponse
-      description: Response schema for KYC status check.
-    ContactPreviewResponse:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        icon:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Icon
-        activated:
-          type: boolean
-          title: Activated
-          default: false
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - createdAt
-      title: ContactPreviewResponse
-      description: Lightweight user preview for contact lookup.
-    SwiftDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Routingnumber
-        bic:
-          type: string
-          title: Bic
-      type: object
-      required:
-      - accountNumber
-      - bic
-      title: SwiftDetails
-      description: SWIFT (international wire) account details.
-    ContactLinkedUserResponse:
-      properties:
-        avatar:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-      type: object
-      title: ContactLinkedUserResponse
-      description: Linked HEVN user preview for contact.
-    InviteCodeResponse:
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Code
-        totalInvited:
-          type: integer
-          title: Totalinvited
-          default: 0
-        bonuses:
-          $ref: '#/components/schemas/InviteBonuses'
-      type: object
-      required:
-      - bonuses
-      title: InviteCodeResponse
-      description: Response for invite code.
-    NotificationResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        type:
-          $ref: '#/components/schemas/NotificationType'
-        channel:
-          $ref: '#/components/schemas/NotificationChannel'
-        isOpened:
-          type: boolean
-          title: Isopened
-        content:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Content
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-        deviceName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Devicename
-        ipAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ipaddress
-      type: object
-      required:
-      - id
-      - type
-      - channel
-      - isOpened
-      - createdAt
-      title: NotificationResponse
-      description: Single notification response.
-    AvatarUploadResponse:
-      properties:
-        avatarUrl:
-          type: string
-          title: Avatarurl
-      type: object
-      required:
-      - avatarUrl
-      title: AvatarUploadResponse
-      description: Response schema for avatar upload.
-    NotificationType:
-      type: string
-      enum:
-      - login
-      - user_created
-      - welcome
-      - payment_received
-      - payment_sent
-      - withdrawal
-      - invoice
-      - invite
-      - account_approved
-      - sign_request
-      - sign_completed
-      - team_access
-      - bank_account_ready
-      - share_kyb
-      - payment_claim
-      - contact_invite
-      - new_device_login
-      - new_passkey
-      - new_api_key
-      - new_team_member
-      - privy_key_exported
-      - privy_wallet_recovered
-      - privy_mfa_disabled
-      - contract_payment_methods_updated
-      - contract_created
-      - contact_added
-      - bank_requested
-      - card_created
-      - card_details_viewed
-      - spending_alert
-      - low_balance
-      - accounting_sync_failed
-      - bill_status
-      - tx_comment
-      - support_reply
-      - compliance_reply
-      title: NotificationType
-      description: Notification type — matches the kind of event being notified.
-    UserCreateRequest:
-      properties:
-        firstName:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          title: Firstname
-        lastName:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          title: Lastname
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        jurisdiction:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        birthDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Birthdate
-          description: Birth date in ISO format
-        isBusiness:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Isbusiness
-        entityName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Entityname
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Phone
-        website:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Website
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        avatarUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatarurl
-        contactInfo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Contactinfo
-        inviteCode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Invitecode
-          description: Invite code from referrer
-      type: object
-      title: UserCreateRequest
-      description: Request schema for creating a user.
+      title: NotificationsSettings
+      description: 'User notification preferences grouped by category.
+
+
+        Categories are UI groupings over `NotificationType`. Mapping lives in
+
+        `NOTIFICATION_TYPE_CATEGORY`. Defaults to all channels enabled.'
     IBANAccountDetails-Output:
       properties:
         bankName:
@@ -1384,8 +1164,373 @@ components:
       - beneficiaryName
       title: IBANAccountDetails
       description: IBAN (SEPA) external account.
-    InviteVolumeBonus:
+    OnchainAccountInput:
       properties:
+        accountType:
+          type: string
+          const: onchain
+          title: Accounttype
+          default: onchain
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        walletAddress:
+          type: string
+          title: Walletaddress
+        chainId:
+          $ref: '#/components/schemas/OneClickChain'
+        currency:
+          type: string
+          title: Currency
+      type: object
+      required:
+      - walletAddress
+      - chainId
+      - currency
+      title: OnchainAccountInput
+      description: Onchain wallet contact input.
+    KycStatus:
+      type: string
+      enum:
+      - not_started
+      - requested
+      - incorporating
+      - pending
+      - under_review
+      - in_review
+      - approved
+      - rejected
+      title: KycStatus
+      description: KYC verification status.
+    RewardsListResponse:
+      properties:
+        rewards:
+          items:
+            $ref: '#/components/schemas/RewardItem'
+          type: array
+          title: Rewards
+        totalAmount:
+          type: string
+          title: Totalamount
+        currency:
+          type: string
+          title: Currency
+          default: USD
+      type: object
+      required:
+      - rewards
+      - totalAmount
+      title: RewardsListResponse
+      description: List of referral rewards earned by the current user.
+    TransactionType:
+      type: string
+      enum:
+      - sepa
+      - swift
+      - ach
+      - uaefts
+      - fedwire
+      - swift-usd
+      - swift-eur
+      - wire
+      - pix
+      - crypto
+      - card
+      - internal
+      - refund
+      title: TransactionType
+      description: 'Transaction type - payment rail.
+
+
+        Includes all ``FiatPaymentType`` values (sepa/swift/ach/uaefts) plus
+
+        extended fiat variants (wire/swift-usd/swift-eur/fedwire/pix) and
+
+        non-fiat rails (crypto/card/internal/refund).'
+    IBANAccountDetails-Input:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - sepa
+          - uaefts
+          title: Accounttype
+          default: sepa
+        ibanNumber:
+          type: string
+          title: Ibannumber
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - ibanNumber
+      title: IBANAccountDetails
+      description: IBAN (SEPA) external account.
+    USExternalAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          title: Accounttype
+          default: ach
+        us:
+          $ref: '#/components/schemas/USAccountDetails'
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - us
+      - beneficiaryName
+      title: USExternalAccountDetails
+      description: US domestic (ACH) external account.
+    AchAccountInput:
+      properties:
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountType:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          title: Accounttype
+          default: ach
+        bankName:
+          type: string
+          title: Bankname
+          default: ''
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          type: string
+          title: Routingnumber
+        country:
+          type: string
+          title: Country
+        currency:
+          type: string
+          title: Currency
+          default: USD
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+          default: resident_transfer_between_accounts
+      type: object
+      required:
+      - accountHolderType
+      - accountNumber
+      - routingNumber
+      - country
+      title: AchAccountInput
+      description: ACH bank contact input.
+    app__schemas__base__ContactRelationship:
+      type: string
+      enum:
+      - charity
+      - commercial_investment
+      - corporate_card
+      - credit_card
+      - dividend
+      - family
+      - financial_services
+      - good_sold
+      - goods_bought
+      - government
+      - insurance
+      - intergroup_transfer
+      - intra_group_dividends
+      - information_technology
+      - leasing
+      - loan_charges
+      - merchant_settlement
+      - mobile_wallet
+      - none
+      - non_resident_transfer_between_accounts
+      - pension
+      - personal_expenses
+      - prepaid_cards
+      - professional
+      - rental
+      - resident_transfer_between_accounts
+      - salaries
+      - telecommunications
+      - travel
+      - utility_bill
+      title: ContactRelationship
+      description: 'Unified contact relationship / transfer purpose.
+
+
+        Values match Align AlignTransferPurpose (the more granular set).
+
+        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
+    UserSettings-Input:
+      properties:
+        appearance:
+          $ref: '#/components/schemas/AppearancePreference'
+          default: system
+        devMode:
+          type: boolean
+          title: Devmode
+          default: false
+        emailsTs:
+          additionalProperties:
+            type: string
+          type: object
+          title: Emailsts
+        notifications:
+          $ref: '#/components/schemas/NotificationsSettings'
+        bankRequested:
+          $ref: '#/components/schemas/BankRequestedSettings-Input'
+      type: object
+      title: UserSettings
+      description: User settings.
+    NotificationChannelPrefs:
+      properties:
+        email:
+          type: boolean
+          title: Email
+          default: true
+        push:
+          type: boolean
+          title: Push
+          default: true
+      type: object
+      title: NotificationChannelPrefs
+      description: Per-channel toggles for a single notification category.
+    RewardItem:
+      properties:
+        id:
+          type: string
+          title: Id
+        date:
+          type: string
+          format: date-time
+          title: Date
+        refereeName:
+          type: string
+          title: Refereename
+        refereeId:
+          type: string
+          format: uuid
+          title: Refereeid
         amount:
           type: string
           title: Amount
@@ -1393,15 +1538,535 @@ components:
           type: string
           title: Currency
           default: USD
-        threshold:
-          type: string
-          title: Threshold
+        type:
+          $ref: '#/components/schemas/RewardType'
       type: object
       required:
+      - id
+      - date
+      - refereeName
+      - refereeId
       - amount
-      - threshold
-      title: InviteVolumeBonus
-      description: Volume-based bonus tier with a threshold.
+      - type
+      title: RewardItem
+      description: A single referral reward earned by the current user.
+    InvitedStatus:
+      type: string
+      enum:
+      - invited
+      - kyb_pending
+      - verified
+      title: InvitedStatus
+      description: Status of an invited user along the KYB funnel.
+    KycStatusResponse:
+      properties:
+        provider:
+          $ref: '#/components/schemas/FiatProvider'
+        externalUserId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Externaluserid
+        email:
+          type: string
+          title: Email
+        status:
+          anyOf:
+          - $ref: '#/components/schemas/KycStatus'
+          - type: 'null'
+        kycStatus:
+          $ref: '#/components/schemas/KycStatus'
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        entityName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entityname
+        kycLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kyclink
+        kycUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kycurl
+        contactSupportLink:
+          type: string
+          title: Contactsupportlink
+          default: https://app.gethevn.com/chat
+      type: object
+      required:
+      - provider
+      - email
+      - kycStatus
+      title: KycStatusResponse
+      description: Response schema for KYC status check.
+    ContactLinkedUserResponse:
+      properties:
+        avatar:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      type: object
+      title: ContactLinkedUserResponse
+      description: Linked HEVN user preview for contact.
+    app__schemas__routers__user__contact__ContactRelationship:
+      type: string
+      enum:
+      - self
+      - external
+      title: ContactRelationship
+      description: Relationship between the current user and the contact.
+    SwiftDetails:
+      properties:
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+        bic:
+          type: string
+          title: Bic
+      type: object
+      required:
+      - accountNumber
+      - bic
+      title: SwiftDetails
+      description: SWIFT (international wire) account details.
+    AvatarUploadRequest:
+      properties:
+        base64:
+          type: string
+          title: Base64
+          description: Base64 encoded image file (with or without data URL prefix)
+      type: object
+      required:
+      - base64
+      title: AvatarUploadRequest
+      description: Request schema for uploading user avatar.
+    UserCreateRequest:
+      properties:
+        firstName:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          title: Lastname
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        jurisdiction:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        birthDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Birthdate
+          description: Birth date in ISO format
+        isBusiness:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isbusiness
+        entityName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entityname
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        website:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Website
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        avatarUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatarurl
+        contactInfo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contactinfo
+        inviteCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invitecode
+          description: Invite code from referrer
+      type: object
+      title: UserCreateRequest
+      description: Request schema for creating a user.
+    FiatProvider:
+      type: string
+      enum:
+      - swipelux
+      - align
+      - mcp
+      - wirex
+      title: FiatProvider
+      description: Supported fiat payment providers.
+    BankValidationRequest:
+      properties:
+        bankType:
+          type: string
+          title: Banktype
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        bankName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankname
+        iban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iban
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+      type: object
+      required:
+      - bankType
+      title: BankValidationRequest
+      description: Request to prevalidate bank details before creating a contact.
+    USExternalAccountDetails-Input:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          title: Accounttype
+          default: ach
+        us:
+          $ref: '#/components/schemas/USAccountDetails'
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - us
+      title: USExternalAccountDetails
+      description: US domestic (ACH) external account.
+    ShareKybLinkRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+      type: object
+      required:
+      - email
+      title: ShareKybLinkRequest
+      description: Request schema for sharing a KYB link via email.
+    BankRequestedSettings-Input:
+      properties:
+        rails:
+          $ref: '#/components/schemas/BankRequestedRails'
+      type: object
+      title: BankRequestedSettings
+      description: User bank-rail interest settings.
+    BankValidationResponse:
+      properties:
+        ok:
+          type: boolean
+          title: Ok
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+        lookups:
+          additionalProperties: true
+          type: object
+          title: Lookups
+      type: object
+      required:
+      - ok
+      title: BankValidationResponse
+      description: Result of bank detail validation.
+    AppearancePreference:
+      type: string
+      enum:
+      - system
+      - light
+      - dark
+      title: AppearancePreference
+      description: Appearance theme preference.
+    UaeAccountInput:
+      properties:
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountType:
+          type: string
+          const: uaefts
+          title: Accounttype
+          default: uaefts
+        bankName:
+          type: string
+          title: Bankname
+        currency:
+          type: string
+          title: Currency
+          default: AED
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        ibanNumber:
+          type: string
+          title: Ibannumber
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+      type: object
+      required:
+      - accountHolderType
+      - bankName
+      - ibanNumber
+      title: UaeAccountInput
+      description: UAE FTS bank contact input.
+    SwiftAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          const: swift
+          title: Accounttype
+          default: swift
+        swift:
+          $ref: '#/components/schemas/SwiftDetails'
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - swift
+      - beneficiaryName
+      title: SwiftAccountDetails
+      description: SWIFT (international wire) external account.
+    ContactListResponse:
+      properties:
+        contacts:
+          items:
+            $ref: '#/components/schemas/ContactResponse'
+          type: array
+          title: Contacts
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - contacts
+      - total
+      title: ContactListResponse
+      description: List of contacts response.
+    NotificationListResponse:
+      properties:
+        notifications:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Notifications
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - notifications
+      - total
+      title: NotificationListResponse
+      description: List of notifications response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     CountryCode:
       type: string
       enum:
@@ -1656,109 +2321,386 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    AvatarUploadRequest:
+    UserSettings-Output:
       properties:
-        base64:
+        appearance:
+          $ref: '#/components/schemas/AppearancePreference'
+          default: system
+        devMode:
+          type: boolean
+          title: Devmode
+          default: false
+        emailsTs:
+          additionalProperties:
+            type: string
+          type: object
+          title: Emailsts
+        notifications:
+          $ref: '#/components/schemas/NotificationsSettings'
+        bankRequested:
+          $ref: '#/components/schemas/BankRequestedSettings-Output'
+      type: object
+      title: UserSettings
+      description: User settings.
+    UserEventRequest:
+      properties:
+        event:
           type: string
-          title: Base64
-          description: Base64 encoded image file (with or without data URL prefix)
+          maxLength: 200
+          minLength: 1
+          title: Event
+          description: Event name
+        properties:
+          additionalProperties: true
+          type: object
+          title: Properties
+          description: Event properties
       type: object
       required:
-      - base64
-      title: AvatarUploadRequest
-      description: Request schema for uploading user avatar.
-    KycStatus:
-      type: string
-      enum:
-      - not_started
-      - requested
-      - incorporating
-      - pending
-      - under_review
-      - in_review
-      - approved
-      - rejected
-      title: KycStatus
-      description: KYC verification status.
-    InvitedStatus:
-      type: string
-      enum:
-      - invited
-      - kyb_pending
-      - verified
-      title: InvitedStatus
-      description: Status of an invited user along the KYB funnel.
-    OnchainAccountInput:
+      - event
+      title: UserEventRequest
+      description: Request schema for tracking user events.
+    ContactCreateRequest:
       properties:
-        accountType:
+        name:
           type: string
-          const: onchain
-          title: Accounttype
-          default: onchain
+          maxLength: 200
+          minLength: 1
+          title: Name
+          default: ''
+        currency:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 3
+          - type: 'null'
+          title: Currency
+          description: Currency override
         email:
           anyOf:
           - type: string
           - type: 'null'
           title: Email
-        walletAddress:
+        crypto:
+          anyOf:
+          - $ref: '#/components/schemas/ContactCryptoInput'
+          - type: 'null'
+        account:
+          anyOf:
+          - oneOf:
+            - $ref: '#/components/schemas/OnchainAccountInput'
+            - $ref: '#/components/schemas/EmailAccountInput'
+            - $ref: '#/components/schemas/SepaAccountInput'
+            - $ref: '#/components/schemas/SwiftAccountInput'
+            - $ref: '#/components/schemas/AchAccountInput'
+            - $ref: '#/components/schemas/UaeAccountInput'
+          - type: 'null'
+          title: Account
+          description: Account details
+        iban:
+          anyOf:
+          - $ref: '#/components/schemas/IBANAccountDetails-Input'
+          - $ref: '#/components/schemas/USExternalAccountDetails-Input'
+          - $ref: '#/components/schemas/SwiftAccountDetails-Input'
+          - type: 'null'
+          title: Iban
+          description: Bank account details in the same format as /banks ibanData
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
+          default: external
+      type: object
+      title: ContactCreateRequest
+      description: Request to create a contact.
+    NotificationType:
+      type: string
+      enum:
+      - login
+      - user_created
+      - welcome
+      - payment_received
+      - payment_sent
+      - withdrawal
+      - invoice
+      - invite
+      - account_approved
+      - sign_request
+      - sign_completed
+      - team_access
+      - bank_account_ready
+      - share_kyb
+      - payment_claim
+      - contact_invite
+      - new_device_login
+      - new_passkey
+      - new_api_key
+      - new_team_member
+      - privy_key_exported
+      - privy_wallet_recovered
+      - privy_mfa_disabled
+      - contract_payment_methods_updated
+      - contract_created
+      - contact_added
+      - bank_requested
+      - card_created
+      - card_details_viewed
+      - spending_alert
+      - low_balance
+      - accounting_sync_failed
+      - bill_status
+      - tx_comment
+      - support_reply
+      - compliance_reply
+      title: NotificationType
+      description: Notification type — matches the kind of event being notified.
+    InviteVolumeBonus:
+      properties:
+        amount:
           type: string
-          title: Walletaddress
-        chainId:
-          $ref: '#/components/schemas/OneClickChain'
+          title: Amount
         currency:
           type: string
           title: Currency
+          default: USD
+        threshold:
+          type: string
+          title: Threshold
       type: object
       required:
-      - walletAddress
-      - chainId
-      - currency
-      title: OnchainAccountInput
-      description: Onchain wallet contact input.
-    AppearancePreference:
+      - amount
+      - threshold
+      title: InviteVolumeBonus
+      description: Volume-based bonus tier with a threshold.
+    ContactPreviewResponse:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        icon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon
+        activated:
+          type: boolean
+          title: Activated
+          default: false
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - createdAt
+      title: ContactPreviewResponse
+      description: Lightweight user preview for contact lookup.
+    AlignAccountHolderType:
       type: string
       enum:
-      - system
-      - light
-      - dark
-      title: AppearancePreference
-      description: Appearance theme preference.
-    RewardsListResponse:
+      - individual
+      - business
+      title: AlignAccountHolderType
+      description: Account holder type.
+    BankRequestedRailSettings:
       properties:
-        rewards:
-          items:
-            $ref: '#/components/schemas/RewardItem'
-          type: array
-          title: Rewards
-        totalAmount:
+        pooled:
+          type: boolean
+          title: Pooled
+          default: false
+        named:
+          type: boolean
+          title: Named
+          default: false
+      type: object
+      title: BankRequestedRailSettings
+      description: User interest in a bank rail group.
+    OneClickChain:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: OneClickChain
+      description: 1click chain codes.
+    NotificationChannel:
+      type: string
+      enum:
+      - email
+      - push
+      - internal
+      title: NotificationChannel
+      description: Notification delivery channel.
+    SwiftAccountDetails-Input:
+      properties:
+        bankName:
           type: string
-          title: Totalamount
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          const: swift
+          title: Accounttype
+          default: swift
+        swift:
+          $ref: '#/components/schemas/SwiftDetails'
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - swift
+      title: SwiftAccountDetails
+      description: SWIFT (international wire) external account.
+    RewardType:
+      type: string
+      enum:
+      - kyb
+      - volume
+      title: RewardType
+      description: Referral reward type.
+    ContactUpdateRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Name
+        userId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Userid
+        walletAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Walletaddress
+        chainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainid
+        currency:
+          anyOf:
+          - type: string
+            maxLength: 3
+            minLength: 3
+          - type: 'null'
+          title: Currency
+        priorityMethod:
+          anyOf:
+          - $ref: '#/components/schemas/TransactionType'
+          - type: 'null'
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
+          - type: 'null'
+      type: object
+      title: ContactUpdateRequest
+      description: Request to update a contact.
+    InviteBonus:
+      properties:
+        amount:
+          type: string
+          title: Amount
         currency:
           type: string
           title: Currency
           default: USD
       type: object
       required:
-      - rewards
-      - totalAmount
-      title: RewardsListResponse
-      description: List of referral rewards earned by the current user.
-    NotificationListResponse:
+      - amount
+      title: InviteBonus
+      description: A single referral bonus tier.
+    BankRequestedRails:
       properties:
-        notifications:
-          items:
-            $ref: '#/components/schemas/NotificationResponse'
-          type: array
-          title: Notifications
-        total:
-          type: integer
-          title: Total
+        us:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        swift:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        eu:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
+        uae:
+          $ref: '#/components/schemas/BankRequestedRailSettings'
       type: object
-      required:
-      - notifications
-      - total
-      title: NotificationListResponse
-      description: List of notifications response.
+      title: BankRequestedRails
+      description: Rails the user is interested in opening.
     SwiftAccountInput:
       properties:
         accountHolderType:
@@ -1822,762 +2764,6 @@ components:
       - country
       title: SwiftAccountInput
       description: SWIFT bank contact input.
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    IBANAccountDetails-Input:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - sepa
-          - uaefts
-          title: Accounttype
-          default: sepa
-        ibanNumber:
-          type: string
-          title: Ibannumber
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - ibanNumber
-      title: IBANAccountDetails
-      description: IBAN (SEPA) external account.
-    SepaAccountInput:
-      properties:
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountType:
-          type: string
-          const: sepa
-          title: Accounttype
-          default: sepa
-        iban:
-          type: string
-          title: Iban
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-        country:
-          type: string
-          title: Country
-        currency:
-          type: string
-          title: Currency
-          default: EUR
-        bankName:
-          type: string
-          title: Bankname
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-      type: object
-      required:
-      - accountHolderType
-      - iban
-      - country
-      - bankName
-      title: SepaAccountInput
-      description: SEPA bank contact input.
-    SwiftAccountDetails-Input:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          const: swift
-          title: Accounttype
-          default: swift
-        swift:
-          $ref: '#/components/schemas/SwiftDetails'
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - swift
-      title: SwiftAccountDetails
-      description: SWIFT (international wire) external account.
-    InvitedUserResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        email:
-          type: string
-          title: Email
-        firstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Firstname
-        lastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Lastname
-        avatarUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatarurl
-        isBusiness:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Isbusiness
-        status:
-          $ref: '#/components/schemas/InvitedStatus'
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - email
-      - status
-      - createdAt
-      title: InvitedUserResponse
-      description: A single invited user.
-    BankValidationResponse:
-      properties:
-        ok:
-          type: boolean
-          title: Ok
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-        warnings:
-          items:
-            type: string
-          type: array
-          title: Warnings
-        lookups:
-          additionalProperties: true
-          type: object
-          title: Lookups
-      type: object
-      required:
-      - ok
-      title: BankValidationResponse
-      description: Result of bank detail validation.
-    NotificationsSettings:
-      properties:
-        cashFlow:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        suspiciousActivity:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        tasksAndApprovals:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        yourSpending:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        accountBalances:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        accounting:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        billPay:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        invoicing:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-        collaboration:
-          $ref: '#/components/schemas/NotificationChannelPrefs'
-      type: object
-      title: NotificationsSettings
-      description: 'User notification preferences grouped by category.
-
-
-        Categories are UI groupings over `NotificationType`. Mapping lives in
-
-        `NOTIFICATION_TYPE_CATEGORY`. Defaults to all channels enabled.'
-    ContactCryptoInput:
-      properties:
-        chain:
-          $ref: '#/components/schemas/OneClickChain'
-        token:
-          type: string
-          title: Token
-        address:
-          type: string
-          title: Address
-      type: object
-      required:
-      - chain
-      - token
-      - address
-      title: ContactCryptoInput
-      description: Crypto contact input.
-    ReferrerInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        email:
-          type: string
-          title: Email
-        avatarUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatarurl
-      type: object
-      required:
-      - name
-      - email
-      title: ReferrerInfo
-      description: Lightweight info about the user who referred this user.
-    InviteBonus:
-      properties:
-        amount:
-          type: string
-          title: Amount
-        currency:
-          type: string
-          title: Currency
-          default: USD
-      type: object
-      required:
-      - amount
-      title: InviteBonus
-      description: A single referral bonus tier.
-    SwiftAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          const: swift
-          title: Accounttype
-          default: swift
-        swift:
-          $ref: '#/components/schemas/SwiftDetails'
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - swift
-      - beneficiaryName
-      title: SwiftAccountDetails
-      description: SWIFT (international wire) external account.
-    NotificationChannel:
-      type: string
-      enum:
-      - email
-      - push
-      - internal
-      title: NotificationChannel
-      description: Notification delivery channel.
-    app__schemas__routers__user__contact__ContactRelationship:
-      type: string
-      enum:
-      - self
-      - external
-      title: ContactRelationship
-      description: Relationship between the current user and the contact.
-    ContactUpdateRequest:
-      properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 200
-            minLength: 1
-          - type: 'null'
-          title: Name
-        userId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Userid
-        walletAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Walletaddress
-        chainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chainid
-        currency:
-          anyOf:
-          - type: string
-            maxLength: 3
-            minLength: 3
-          - type: 'null'
-          title: Currency
-        priorityMethod:
-          anyOf:
-          - $ref: '#/components/schemas/TransactionType'
-          - type: 'null'
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
-          - type: 'null'
-      type: object
-      title: ContactUpdateRequest
-      description: Request to update a contact.
-    InviteFlow:
-      type: string
-      enum:
-      - kyb_manager
-      - employer
-      - team_member
-      title: InviteFlow
-      description: Invite flow types.
-    OneClickChain:
-      type: string
-      enum:
-      - eth
-      - bsc
-      - avax
-      - op
-      - arb
-      - pol
-      - sol
-      - base
-      - gnosis
-      - tron
-      - xrp
-      - zec
-      - doge
-      - ltc
-      - btc
-      - cardano
-      - bera
-      - sui
-      - near
-      - near_intents
-      - xlayer
-      - plasma
-      - ton
-      - stellar
-      - monad
-      - starknet
-      - aptos
-      - adi
-      - bch
-      title: OneClickChain
-      description: 1click chain codes.
-    UaeAccountInput:
-      properties:
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountType:
-          type: string
-          const: uaefts
-          title: Accounttype
-          default: uaefts
-        bankName:
-          type: string
-          title: Bankname
-        currency:
-          type: string
-          title: Currency
-          default: AED
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        ibanNumber:
-          type: string
-          title: Ibannumber
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-      type: object
-      required:
-      - accountHolderType
-      - bankName
-      - ibanNumber
-      title: UaeAccountInput
-      description: UAE FTS bank contact input.
-    USExternalAccountDetails-Input:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
-          type: string
-          enum:
-          - ach
-          - fedwire
-          title: Accounttype
-          default: ach
-        us:
-          $ref: '#/components/schemas/USAccountDetails'
-      type: object
-      required:
-      - bankName
-      - accountHolderType
-      - us
-      title: USExternalAccountDetails
-      description: US domestic (ACH) external account.
-    FiatRailResponse:
-      properties:
-        provider:
-          $ref: '#/components/schemas/FiatProvider'
-        externalUserId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Externaluserid
-        kycStatus:
-          type: string
-          title: Kycstatus
-          default: not_started
-        comment:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Comment
-      type: object
-      required:
-      - provider
-      title: FiatRailResponse
-      description: Response schema for a user's fiat rail registration.
-    EmailAccountInput:
-      properties:
-        accountType:
-          type: string
-          const: email
-          title: Accounttype
-          default: email
-        email:
-          type: string
-          title: Email
-      type: object
-      required:
-      - email
-      title: EmailAccountInput
-      description: Email contact input.
-    BankValidationRequest:
-      properties:
-        bankType:
-          type: string
-          title: Banktype
-        country:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Country
-        bankName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankname
-        iban:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Iban
-        bic:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bic
-        routingNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Routingnumber
-      type: object
-      required:
-      - bankType
-      title: BankValidationRequest
-      description: Request to prevalidate bank details before creating a contact.
-    UserEventRequest:
-      properties:
-        event:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: Event
-          description: Event name
-        properties:
-          additionalProperties: true
-          type: object
-          title: Properties
-          description: Event properties
-      type: object
-      required:
-      - event
-      title: UserEventRequest
-      description: Request schema for tracking user events.
-    BankRequestedRailSettings:
-      properties:
-        pooled:
-          type: boolean
-          title: Pooled
-          default: false
-        named:
-          type: boolean
-          title: Named
-          default: false
-      type: object
-      title: BankRequestedRailSettings
-      description: User interest in a bank rail group.
     UserResponse:
       properties:
         id:
@@ -2691,257 +2877,196 @@ components:
       - updatedAt
       title: UserResponse
       description: Schema for user response.
-    RewardType:
-      type: string
-      enum:
-      - kyb
-      - volume
-      title: RewardType
-      description: Referral reward type.
-    BankRequestedRails:
-      properties:
-        us:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        swift:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        eu:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-        uae:
-          $ref: '#/components/schemas/BankRequestedRailSettings'
-      type: object
-      title: BankRequestedRails
-      description: Rails the user is interested in opening.
-    TransactionType:
-      type: string
-      enum:
-      - sepa
-      - swift
-      - ach
-      - uaefts
-      - fedwire
-      - swift-usd
-      - swift-eur
-      - wire
-      - pix
-      - crypto
-      - card
-      - internal
-      - refund
-      title: TransactionType
-      description: 'Transaction type - payment rail.
-
-
-        Includes all ``FiatPaymentType`` values (sepa/swift/ach/uaefts) plus
-
-        extended fiat variants (wire/swift-usd/swift-eur/fedwire/pix) and
-
-        non-fiat rails (crypto/card/internal/refund).'
-    UserSettings-Output:
-      properties:
-        appearance:
-          $ref: '#/components/schemas/AppearancePreference'
-          default: system
-        devMode:
-          type: boolean
-          title: Devmode
-          default: false
-        emailsTs:
-          additionalProperties:
-            type: string
-          type: object
-          title: Emailsts
-        notifications:
-          $ref: '#/components/schemas/NotificationsSettings'
-        bankRequested:
-          $ref: '#/components/schemas/BankRequestedSettings-Output'
-      type: object
-      title: UserSettings
-      description: User settings.
-    ContactCreateRequest:
-      properties:
-        name:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: Name
-          default: ''
-        currency:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 3
-          - type: 'null'
-          title: Currency
-          description: Currency override
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        crypto:
-          anyOf:
-          - $ref: '#/components/schemas/ContactCryptoInput'
-          - type: 'null'
-        account:
-          anyOf:
-          - oneOf:
-            - $ref: '#/components/schemas/OnchainAccountInput'
-            - $ref: '#/components/schemas/EmailAccountInput'
-            - $ref: '#/components/schemas/SepaAccountInput'
-            - $ref: '#/components/schemas/SwiftAccountInput'
-            - $ref: '#/components/schemas/AchAccountInput'
-            - $ref: '#/components/schemas/UaeAccountInput'
-          - type: 'null'
-          title: Account
-          description: Account details
-        iban:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Input'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Input'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Input'
-          - type: 'null'
-          title: Iban
-          description: Bank account details in the same format as /banks ibanData
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
-          default: external
-      type: object
-      title: ContactCreateRequest
-      description: Request to create a contact.
-    ContactCryptoResponse:
+    ContactCryptoInput:
       properties:
         chain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chain
+          $ref: '#/components/schemas/OneClickChain'
         token:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Token
         address:
           type: string
           title: Address
       type: object
       required:
+      - chain
+      - token
       - address
-      title: ContactCryptoResponse
-      description: Crypto payment details for contact.
-    AlignAccountHolderType:
-      type: string
-      enum:
-      - individual
-      - business
-      title: AlignAccountHolderType
-      description: Account holder type.
-    ContactResponse:
+      title: ContactCryptoInput
+      description: Crypto contact input.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    InvitedUserResponse:
       properties:
         id:
           type: string
           format: uuid
           title: Id
-        name:
-          type: string
-          title: Name
-        userId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Userid
         email:
+          type: string
+          title: Email
+        firstName:
           anyOf:
           - type: string
           - type: 'null'
-          title: Email
-        relationship:
-          $ref: '#/components/schemas/app__schemas__routers__user__contact__ContactRelationship'
+          title: Firstname
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+        avatarUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatarurl
+        isBusiness:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isbusiness
+        status:
+          $ref: '#/components/schemas/InvitedStatus'
         createdAt:
           type: string
           format: date-time
           title: Createdat
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        iban:
-          anyOf:
-          - $ref: '#/components/schemas/IBANAccountDetails-Output'
-          - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-          - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-          - type: 'null'
-          title: Iban
-        crypto:
-          anyOf:
-          - $ref: '#/components/schemas/ContactCryptoResponse'
-          - type: 'null'
-        user:
-          anyOf:
-          - $ref: '#/components/schemas/ContactLinkedUserResponse'
-          - type: 'null'
       type: object
       required:
       - id
-      - name
-      - relationship
+      - email
+      - status
       - createdAt
-      title: ContactResponse
-      description: Contact response with full structure for transfer.
-    InviteRequest:
+      title: InvitedUserResponse
+      description: A single invited user.
+    ReferrerInfo:
       properties:
+        name:
+          type: string
+          title: Name
         email:
           type: string
-          format: email
           title: Email
-        flow:
-          $ref: '#/components/schemas/InviteFlow'
+        avatarUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatarurl
       type: object
       required:
+      - name
       - email
-      - flow
-      title: InviteRequest
-      description: Request schema for sending an invite.
-    RewardItem:
+      title: ReferrerInfo
+      description: Lightweight info about the user who referred this user.
+    InviteCodeResponse:
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        totalInvited:
+          type: integer
+          title: Totalinvited
+          default: 0
+        bonuses:
+          $ref: '#/components/schemas/InviteBonuses'
+      type: object
+      required:
+      - bonuses
+      title: InviteCodeResponse
+      description: Response for invite code.
+    NotificationResponse:
       properties:
         id:
           type: string
+          format: uuid
           title: Id
-        date:
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        isOpened:
+          type: boolean
+          title: Isopened
+        content:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Content
+        createdAt:
           type: string
           format: date-time
-          title: Date
-        refereeName:
-          type: string
-          title: Refereename
-        refereeId:
-          type: string
-          format: uuid
-          title: Refereeid
-        amount:
-          type: string
-          title: Amount
-        currency:
-          type: string
-          title: Currency
-          default: USD
-        type:
-          $ref: '#/components/schemas/RewardType'
+          title: Createdat
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+        ipAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ipaddress
       type: object
       required:
       - id
-      - date
-      - refereeName
-      - refereeId
-      - amount
       - type
-      title: RewardItem
-      description: A single referral reward earned by the current user.
-    AchAccountInput:
+      - channel
+      - isOpened
+      - createdAt
+      title: NotificationResponse
+      description: Single notification response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SepaAccountInput:
       properties:
         accountHolderType:
           $ref: '#/components/schemas/AlignAccountHolderType'
@@ -2962,178 +3087,53 @@ components:
           title: Accountholderbusinessname
         accountType:
           type: string
-          enum:
-          - ach
-          - fedwire
+          const: sepa
           title: Accounttype
-          default: ach
-        bankName:
+          default: sepa
+        iban:
           type: string
-          title: Bankname
-          default: ''
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          type: string
-          title: Routingnumber
+          title: Iban
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
         country:
           type: string
           title: Country
         currency:
           type: string
           title: Currency
-          default: USD
+          default: EUR
+        bankName:
+          type: string
+          title: Bankname
         relationship:
           anyOf:
           - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
           - type: 'null'
-          default: resident_transfer_between_accounts
       type: object
       required:
       - accountHolderType
-      - accountNumber
-      - routingNumber
+      - iban
       - country
-      title: AchAccountInput
-      description: ACH bank contact input.
-    FiatProvider:
-      type: string
-      enum:
-      - swipelux
-      - align
-      - mcp
-      - wirex
-      title: FiatProvider
-      description: Supported fiat payment providers.
-    UserSettings-Input:
+      - bankName
+      title: SepaAccountInput
+      description: SEPA bank contact input.
+    InviteRequest:
       properties:
-        appearance:
-          $ref: '#/components/schemas/AppearancePreference'
-          default: system
-        devMode:
-          type: boolean
-          title: Devmode
-          default: false
-        emailsTs:
-          additionalProperties:
-            type: string
-          type: object
-          title: Emailsts
-        notifications:
-          $ref: '#/components/schemas/NotificationsSettings'
-        bankRequested:
-          $ref: '#/components/schemas/BankRequestedSettings-Input'
-      type: object
-      title: UserSettings
-      description: User settings.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        email:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          format: email
+          title: Email
+        flow:
+          $ref: '#/components/schemas/InviteFlow'
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ContactListResponse:
-      properties:
-        contacts:
-          items:
-            $ref: '#/components/schemas/ContactResponse'
-          type: array
-          title: Contacts
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - contacts
-      - total
-      title: ContactListResponse
-      description: List of contacts response.
-    USAccountDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          type: string
-          title: Routingnumber
-      type: object
-      required:
-      - accountNumber
-      - routingNumber
-      title: USAccountDetails
-      description: US domestic account details (ACH).
-    BankRequestedSettings-Input:
-      properties:
-        rails:
-          $ref: '#/components/schemas/BankRequestedRails'
-      type: object
-      title: BankRequestedSettings
-      description: User bank-rail interest settings.
-    app__schemas__base__ContactRelationship:
-      type: string
-      enum:
-      - charity
-      - commercial_investment
-      - corporate_card
-      - credit_card
-      - dividend
-      - family
-      - financial_services
-      - good_sold
-      - goods_bought
-      - government
-      - insurance
-      - intergroup_transfer
-      - intra_group_dividends
-      - information_technology
-      - leasing
-      - loan_charges
-      - merchant_settlement
-      - mobile_wallet
-      - none
-      - non_resident_transfer_between_accounts
-      - pension
-      - personal_expenses
-      - prepaid_cards
-      - professional
-      - rental
-      - resident_transfer_between_accounts
-      - salaries
-      - telecommunications
-      - travel
-      - utility_bill
-      title: ContactRelationship
-      description: 'Unified contact relationship / transfer purpose.
-
-
-        Values match Align AlignTransferPurpose (the more granular set).
-
-        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
+      - email
+      - flow
+      title: InviteRequest
+      description: Request schema for sending an invite.
   securitySchemes:
     HTTPBearer:
       type: http

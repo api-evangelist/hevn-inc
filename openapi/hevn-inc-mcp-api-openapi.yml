@@ -689,74 +689,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TransferRequest:
-      properties:
-        amount:
-          type: number
-          title: Amount
-        email:
-          type: string
-          title: Email
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      required:
-      - amount
-      - email
-      title: TransferRequest
-    BalanceResponse:
-      properties:
-        email:
-          type: string
-          title: Email
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-        balance:
-          type: number
-          title: Balance
-          default: 0
-        remaining:
-          type: number
-          title: Remaining
-          default: 0
-      type: object
-      required:
-      - email
-      title: BalanceResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    app__schemas__routers__security__mcp__ApiKeyCreateRequest:
-      properties:
-        name:
-          type: string
-          title: Name
-        ipRestriction:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Iprestriction
-        maxSpend:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Maxspend
-      type: object
-      required:
-      - name
-      title: ApiKeyCreateRequest
     TransferResponse:
       properties:
         txHash:
@@ -826,37 +758,6 @@ components:
       - totalSpend
       - createdAt
       title: ApiKeyListResponse
-    McpTransferContext:
-      properties:
-        contactId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Contactid
-        quoteId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Quoteid
-        invoiceId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Invoiceid
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      title: McpTransferContext
     ValidationError:
       properties:
         loc:
@@ -878,40 +779,46 @@ components:
       - msg
       - type
       title: ValidationError
-    McpTransactionResponse:
+    BalanceResponse:
       properties:
-        txHash:
+        email:
           type: string
-          title: Txhash
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        receiverEmail:
+          title: Email
+        address:
           anyOf:
           - type: string
           - type: 'null'
-          title: Receiveremail
-        receiverAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Receiveraddress
-        transactionLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Transactionlink
-        time:
-          type: string
-          format: date-time
-          title: Time
+          title: Address
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        remaining:
+          type: number
+          title: Remaining
+          default: 0
       type: object
       required:
-      - txHash
-      - time
-      title: McpTransactionResponse
+      - email
+      title: BalanceResponse
+    TransferRequest:
+      properties:
+        amount:
+          type: number
+          title: Amount
+        email:
+          type: string
+          title: Email
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      required:
+      - amount
+      - email
+      title: TransferRequest
     app__schemas__routers__security__mcp__ApiKeyResponse:
       properties:
         id:
@@ -964,6 +871,99 @@ components:
       - totalSpend
       - createdAt
       title: ApiKeyResponse
+    McpTransactionResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        receiverEmail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveremail
+        receiverAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiveraddress
+        transactionLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionlink
+        time:
+          type: string
+          format: date-time
+          title: Time
+      type: object
+      required:
+      - txHash
+      - time
+      title: McpTransactionResponse
+    app__schemas__routers__security__mcp__ApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+        ipRestriction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iprestriction
+        maxSpend:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maxspend
+      type: object
+      required:
+      - name
+      title: ApiKeyCreateRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    McpTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: McpTransferContext
   securitySchemes:
     HTTPBearer:
       type: http

@@ -411,15 +411,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ChatMessageRequest:
       properties:
         text:
@@ -436,50 +427,6 @@ components:
       - text
       title: ChatMessageRequest
       description: Send a message in the chat.
-    app__schemas__routers__user__user__ChatResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        lastMessageAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastmessageat
-        updatedAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updatedat
-        lastReadByUserAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastreadbyuserat
-        lastReadByAdminAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Lastreadbyadminat
-        unreadCount:
-          type: integer
-          title: Unreadcount
-          default: 0
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - createdAt
-      title: ChatResponse
-      description: User-facing chat.
     ChatMessageResponse:
       properties:
         id:
@@ -540,13 +487,50 @@ components:
       - msg
       - type
       title: ValidationError
-    UserChatType:
-      type: string
-      enum:
-      - support
-      - compliance
-      title: UserChatType
-      description: Chat types exposed to end users (subset of db.ChatType).
+    app__schemas__routers__user__user__ChatResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        lastMessageAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastmessageat
+        updatedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updatedat
+        lastReadByUserAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastreadbyuserat
+        lastReadByAdminAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Lastreadbyadminat
+        unreadCount:
+          type: integer
+          title: Unreadcount
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - createdAt
+      title: ChatResponse
+      description: User-facing chat.
     ChatCreateRequest:
       properties:
         text:
@@ -557,6 +541,22 @@ components:
       type: object
       title: ChatCreateRequest
       description: Create (or get) the user's internal chat.
+    UserChatType:
+      type: string
+      enum:
+      - support
+      - compliance
+      title: UserChatType
+      description: Chat types exposed to end users (subset of db.ChatType).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

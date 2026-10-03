@@ -301,19 +301,93 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    FincodesCountry:
+    RtnLiteInfoResponse:
       properties:
         id:
           type: string
           title: Id
-        name:
-          type: string
-          title: Name
+        bank:
+          anyOf:
+          - $ref: '#/components/schemas/FincodesBank'
+          - type: 'null'
+        parsed_address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
       type: object
       required:
       - id
-      - name
-      title: FincodesCountry
+      title: RtnLiteInfoResponse
+      description: Simplified RTN response with only bank and address.
+    RateResponse:
+      properties:
+        bankTransfer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Banktransfer
+        card:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Card
+        usdRate:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Usdrate
+      type: object
+      title: RateResponse
+      description: Combined FX rate response.
+    BicInfoResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+        postcode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Postcode
+        branch_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branch Name
+        branch_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branch Code
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/FincodesCountry'
+          - type: 'null'
+        city:
+          anyOf:
+          - $ref: '#/components/schemas/FincodesCity'
+          - type: 'null'
+        bank:
+          anyOf:
+          - $ref: '#/components/schemas/FincodesBank'
+          - type: 'null'
+        parsed_address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+          description: Parse address fields into UserAddress format.
+          readOnly: true
+      type: object
+      required:
+      - id
+      - parsed_address
+      title: BicInfoResponse
+      description: BIC lookup response from Fincodes API.
     ParseIbanTextRequest:
       properties:
         text:
@@ -326,57 +400,27 @@ components:
       - text
       title: ParseIbanTextRequest
       description: Request to parse plain text and extract IBAN data.
-    SlxAccountHolderRelationship:
-      type: string
-      enum:
-      - self
-      - employee
-      - independent_contractor
-      - vendor
-      - supplier
-      - subsidiary
-      - affiliate
-      - merchant
-      - partner
-      - customer
-      - landlord
-      - family
-      - other
-      title: SlxAccountHolderRelationship
-      description: Relationship of the account holder to the customer.
-    IbanInfoResponse:
+    ValidationError:
       properties:
-        id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Id
-        account_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Account Number
-        national_bank_code:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: National Bank Code
-        national_branch_code:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: National Branch Code
-        bic:
-          anyOf:
-          - $ref: '#/components/schemas/BicInfoResponse'
-          - type: 'null'
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/FincodesCountry'
-          - type: 'null'
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - id
-      title: IbanInfoResponse
-      description: IBAN validation response from Fincodes API.
+      - loc
+      - msg
+      - type
+      title: ValidationError
     CountryCode:
       type: string
       enum:
@@ -631,6 +675,119 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
+    FincodesBank:
+      properties:
+        id:
+          type: string
+          title: Id
+        country_id:
+          type: string
+          title: Country Id
+        code:
+          type: string
+          title: Code
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - id
+      - country_id
+      - code
+      - name
+      title: FincodesBank
+    IbanInfoResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        account_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Number
+        national_bank_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: National Bank Code
+        national_branch_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: National Branch Code
+        bic:
+          anyOf:
+          - $ref: '#/components/schemas/BicInfoResponse'
+          - type: 'null'
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/FincodesCountry'
+          - type: 'null'
+      type: object
+      required:
+      - id
+      title: IbanInfoResponse
+      description: IBAN validation response from Fincodes API.
+    SlxAccountHolderRelationship:
+      type: string
+      enum:
+      - self
+      - employee
+      - independent_contractor
+      - vendor
+      - supplier
+      - subsidiary
+      - affiliate
+      - merchant
+      - partner
+      - customer
+      - landlord
+      - family
+      - other
+      title: SlxAccountHolderRelationship
+      description: Relationship of the account holder to the customer.
     FincodesCity:
       properties:
         id:
@@ -715,176 +872,19 @@ components:
       - accountHolderName
       title: ImportIbanSepaData
       description: SEPA account data parsed from free-form text.
-    FincodesBank:
+    FincodesCountry:
       properties:
         id:
           type: string
           title: Id
-        country_id:
-          type: string
-          title: Country Id
-        code:
-          type: string
-          title: Code
         name:
           type: string
           title: Name
       type: object
       required:
       - id
-      - country_id
-      - code
       - name
-      title: FincodesBank
-    BicInfoResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-        postcode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Postcode
-        branch_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Branch Name
-        branch_code:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Branch Code
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/FincodesCountry'
-          - type: 'null'
-        city:
-          anyOf:
-          - $ref: '#/components/schemas/FincodesCity'
-          - type: 'null'
-        bank:
-          anyOf:
-          - $ref: '#/components/schemas/FincodesBank'
-          - type: 'null'
-        parsed_address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-          description: Parse address fields into UserAddress format.
-          readOnly: true
-      type: object
-      required:
-      - id
-      - parsed_address
-      title: BicInfoResponse
-      description: BIC lookup response from Fincodes API.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    RtnLiteInfoResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        bank:
-          anyOf:
-          - $ref: '#/components/schemas/FincodesBank'
-          - type: 'null'
-        parsed_address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-      type: object
-      required:
-      - id
-      title: RtnLiteInfoResponse
-      description: Simplified RTN response with only bank and address.
-    RateResponse:
-      properties:
-        bankTransfer:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Banktransfer
-        card:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Card
-        usdRate:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Usdrate
-      type: object
-      title: RateResponse
-      description: Combined FX rate response.
+      title: FincodesCountry
   securitySchemes:
     HTTPBearer:
       type: http

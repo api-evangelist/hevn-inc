@@ -247,6 +247,19 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
+    TotpDisableRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Code
+          description: Current TOTP code
+      type: object
+      required:
+      - code
+      title: TotpDisableRequest
+      description: Request to disable 2FA.
     TotpSetupResponse:
       properties:
         secret:
@@ -263,15 +276,20 @@ components:
       - provisioningUri
       title: TotpSetupResponse
       description: Response when initiating 2FA setup.
-    HTTPValidationError:
+    TotpStatusResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        enabled:
+          type: boolean
+          title: Enabled
+        recoveryCodesRemaining:
+          type: integer
+          title: Recoverycodesremaining
+          default: 0
       type: object
-      title: HTTPValidationError
+      required:
+      - enabled
+      title: TotpStatusResponse
+      description: Response for 2FA status check.
     TotpActivateResponse:
       properties:
         enabled:
@@ -310,33 +328,15 @@ components:
       - msg
       - type
       title: ValidationError
-    TotpDisableRequest:
+    HTTPValidationError:
       properties:
-        code:
-          type: string
-          maxLength: 6
-          minLength: 6
-          title: Code
-          description: Current TOTP code
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - code
-      title: TotpDisableRequest
-      description: Request to disable 2FA.
-    TotpStatusResponse:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-        recoveryCodesRemaining:
-          type: integer
-          title: Recoverycodesremaining
-          default: 0
-      type: object
-      required:
-      - enabled
-      title: TotpStatusResponse
-      description: Response for 2FA status check.
+      title: HTTPValidationError
     TotpVerifyRequest:
       properties:
         code:
