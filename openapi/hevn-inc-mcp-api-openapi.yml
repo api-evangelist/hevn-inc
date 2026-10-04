@@ -689,23 +689,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TransferResponse:
-      properties:
-        txHash:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Txhash
-        userCreated:
-          type: boolean
-          title: Usercreated
-          default: false
-        emailSent:
-          type: boolean
-          title: Emailsent
-          default: false
-      type: object
-      title: TransferResponse
     ApiKeyListResponse:
       properties:
         id:
@@ -758,6 +741,54 @@ components:
       - totalSpend
       - createdAt
       title: ApiKeyListResponse
+    TransferResponse:
+      properties:
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+        userCreated:
+          type: boolean
+          title: Usercreated
+          default: false
+        emailSent:
+          type: boolean
+          title: Emailsent
+          default: false
+      type: object
+      title: TransferResponse
+    McpTransferContext:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Contactid
+        quoteId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quoteid
+        invoiceId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invoiceid
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Amount
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      title: McpTransferContext
     ValidationError:
       properties:
         loc:
@@ -779,46 +810,6 @@ components:
       - msg
       - type
       title: ValidationError
-    BalanceResponse:
-      properties:
-        email:
-          type: string
-          title: Email
-        address:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Address
-        balance:
-          type: number
-          title: Balance
-          default: 0
-        remaining:
-          type: number
-          title: Remaining
-          default: 0
-      type: object
-      required:
-      - email
-      title: BalanceResponse
-    TransferRequest:
-      properties:
-        amount:
-          type: number
-          title: Amount
-        email:
-          type: string
-          title: Email
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      required:
-      - amount
-      - email
-      title: TransferRequest
     app__schemas__routers__security__mcp__ApiKeyResponse:
       properties:
         id:
@@ -905,6 +896,33 @@ components:
       - txHash
       - time
       title: McpTransactionResponse
+    TransferRequest:
+      properties:
+        amount:
+          type: number
+          title: Amount
+        email:
+          type: string
+          title: Email
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+      type: object
+      required:
+      - amount
+      - email
+      title: TransferRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     app__schemas__routers__security__mcp__ApiKeyCreateRequest:
       properties:
         name:
@@ -924,46 +942,28 @@ components:
       required:
       - name
       title: ApiKeyCreateRequest
-    HTTPValidationError:
+    BalanceResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        email:
+          type: string
+          title: Email
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+        balance:
+          type: number
+          title: Balance
+          default: 0
+        remaining:
+          type: number
+          title: Remaining
+          default: 0
       type: object
-      title: HTTPValidationError
-    McpTransferContext:
-      properties:
-        contactId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Contactid
-        quoteId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Quoteid
-        invoiceId:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Invoiceid
-        amount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Amount
-        memo:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Memo
-      type: object
-      title: McpTransferContext
+      required:
+      - email
+      title: BalanceResponse
   securitySchemes:
     HTTPBearer:
       type: http

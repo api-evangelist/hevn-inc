@@ -206,27 +206,23 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
+    PushTokenRequest:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        pushToken:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Pushtoken
+          description: Push notification token (FCM/APNs)
+        deviceName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Devicename
+          description: Human-readable device name
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - pushToken
+      title: PushTokenRequest
+      description: Schema for setting push notification token. Device is identified by header.
     DeviceResponse:
       properties:
         id:
@@ -272,23 +268,27 @@ components:
       - createdAt
       title: DeviceResponse
       description: Schema for device response.
-    PushTokenRequest:
+    ValidationError:
       properties:
-        pushToken:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Pushtoken
-          description: Push notification token (FCM/APNs)
-        deviceName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Devicename
-          description: Human-readable device name
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - pushToken
-      title: PushTokenRequest
-      description: Schema for setting push notification token. Device is identified by header.
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

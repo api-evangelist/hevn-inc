@@ -347,20 +347,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    XeroStatusResponse:
+    XeroExportResult:
       properties:
-        connected:
-          type: boolean
-          title: Connected
-        accountName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountname
+        exported:
+          type: integer
+          title: Exported
+        skipped:
+          type: integer
+          title: Skipped
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
       type: object
       required:
-      - connected
-      title: XeroStatusResponse
+      - exported
+      - skipped
+      title: XeroExportResult
     ValidationError:
       properties:
         loc:
@@ -382,6 +386,20 @@ components:
       - msg
       - type
       title: ValidationError
+    XeroStatusResponse:
+      properties:
+        connected:
+          type: boolean
+          title: Connected
+        accountName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountname
+      type: object
+      required:
+      - connected
+      title: XeroStatusResponse
     HTTPValidationError:
       properties:
         detail:
@@ -391,24 +409,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    XeroExportResult:
-      properties:
-        exported:
-          type: integer
-          title: Exported
-        skipped:
-          type: integer
-          title: Skipped
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-      type: object
-      required:
-      - exported
-      - skipped
-      title: XeroExportResult
     XeroExportRequest:
       properties:
         fromDate:

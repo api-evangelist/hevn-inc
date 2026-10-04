@@ -199,6 +199,15 @@ components:
       - msg
       - type
       title: ValidationError
+    AppTransferResponse:
+      properties:
+        txHash:
+          type: string
+          title: Txhash
+      type: object
+      required:
+      - txHash
+      title: AppTransferResponse
     AppTransferContext:
       properties:
         contactId:
@@ -283,15 +292,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    AppTransferResponse:
-      properties:
-        txHash:
-          type: string
-          title: Txhash
-      type: object
-      required:
-      - txHash
-      title: AppTransferResponse
   securitySchemes:
     HTTPBearer:
       type: http

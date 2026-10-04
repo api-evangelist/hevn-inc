@@ -240,130 +240,405 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    USAccountDetails:
+    app__schemas__base__ContactRelationship:
+      type: string
+      enum:
+      - charity
+      - commercial_investment
+      - corporate_card
+      - credit_card
+      - dividend
+      - family
+      - financial_services
+      - good_sold
+      - goods_bought
+      - government
+      - insurance
+      - intergroup_transfer
+      - intra_group_dividends
+      - information_technology
+      - leasing
+      - loan_charges
+      - merchant_settlement
+      - mobile_wallet
+      - none
+      - non_resident_transfer_between_accounts
+      - pension
+      - personal_expenses
+      - prepaid_cards
+      - professional
+      - rental
+      - resident_transfer_between_accounts
+      - salaries
+      - telecommunications
+      - travel
+      - utility_bill
+      title: ContactRelationship
+      description: 'Unified contact relationship / transfer purpose.
+
+
+        Values match Align AlignTransferPurpose (the more granular set).
+
+        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
+    PublicInvoiceItem:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        quantity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Quantity
+        price:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Price
+      type: object
+      title: PublicInvoiceItem
+    SwiftDetails:
       properties:
         accountNumber:
           type: string
           title: Accountnumber
         routingNumber:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Routingnumber
+        bic:
+          type: string
+          title: Bic
       type: object
       required:
       - accountNumber
-      - routingNumber
-      title: USAccountDetails
-      description: US domestic account details (ACH).
-    RateResponse:
+      - bic
+      title: SwiftDetails
+      description: SWIFT (international wire) account details.
+    PublicProductResponse:
       properties:
-        bankTransfer:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Banktransfer
-        card:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Card
-        usdRate:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Usdrate
-      type: object
-      title: RateResponse
-      description: Combined FX rate response.
-    EmailAccountInput:
-      properties:
-        accountType:
+        id:
           type: string
-          const: email
-          title: Accounttype
-          default: email
-        email:
+          format: uuid
+          title: Id
+        name:
           type: string
-          title: Email
-      type: object
-      required:
-      - email
-      title: EmailAccountInput
-      description: Email contact input.
-    IBANAccountDetails-Output:
-      properties:
-        bankName:
-          type: string
-          title: Bankname
-        bankAddress:
+          title: Name
+        description:
           anyOf:
           - type: string
           - type: 'null'
-          title: Bankaddress
+          title: Description
+        images:
+          items:
+            type: string
+          type: array
+          title: Images
+          default: []
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        price:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Price
         currency:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
+        minAmount:
           anyOf:
           - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
           - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
+          title: Minamount
+        maxAmount:
           anyOf:
           - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
           - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
+          title: Maxamount
+        presetAmount:
           anyOf:
           - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
           - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
+          title: Presetamount
+        merchantName:
           type: string
-          enum:
-          - sepa
-          - uaefts
-          title: Accounttype
-          default: sepa
-        ibanNumber:
-          type: string
-          title: Ibannumber
-        bic:
+          title: Merchantname
+        available:
+          type: boolean
+          title: Available
+        successUrl:
           anyOf:
           - type: string
           - type: 'null'
-          title: Bic
-        beneficiaryName:
+          title: Successurl
+        cancelUrl:
           anyOf:
           - type: string
           - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
+          title: Cancelurl
       type: object
       required:
-      - bankName
-      - accountHolderType
-      - ibanNumber
-      - beneficiaryName
-      title: IBANAccountDetails
-      description: IBAN (SEPA) external account.
+      - id
+      - name
+      - currency
+      - merchantName
+      - available
+      title: PublicProductResponse
+      description: Product info for anonymous buyers.
+    UniversalQuoteResponse:
+      properties:
+        quoteId:
+          type: string
+          title: Quoteid
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        paymentChannel:
+          type: string
+          title: Paymentchannel
+        fromAmount:
+          type: number
+          title: Fromamount
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+        toAmount:
+          type: number
+          title: Toamount
+        depositMemo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositmemo
+        toCurrency:
+          type: string
+          title: Tocurrency
+        feeAmount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Feeamount
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+        rate:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rate
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+        maskedIban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Maskediban
+        depositAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Depositaddress
+        recipientAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Recipientaddress
+        originChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originchainid
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+        transactionRequest:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Transactionrequest
+      type: object
+      required:
+      - quoteId
+      - paymentChannel
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      title: UniversalQuoteResponse
+      description: Universal quote response.
+    PublicInvoiceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        amount:
+          type: number
+          title: Amount
+        currency:
+          type: string
+          title: Currency
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+        invoiceNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invoicenumber
+        issuedDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Issueddate
+        dueDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Duedate
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        client:
+          anyOf:
+          - $ref: '#/components/schemas/InvoiceParticipant'
+          - type: 'null'
+        contractor:
+          anyOf:
+          - $ref: '#/components/schemas/InvoiceParticipant'
+          - type: 'null'
+        items:
+          items:
+            $ref: '#/components/schemas/PublicInvoiceItem'
+          type: array
+          title: Items
+        paymentMethods:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/IBANAccountDetails-Output'
+            - $ref: '#/components/schemas/USExternalAccountDetails-Output'
+            - $ref: '#/components/schemas/SwiftAccountDetails-Output'
+            - $ref: '#/components/schemas/ContactWalletResponse'
+            - $ref: '#/components/schemas/EmailAccountInput'
+          type: array
+          title: Paymentmethods
+          default: []
+        contract:
+          anyOf:
+          - $ref: '#/components/schemas/PublicInvoiceContractInfo'
+          - type: 'null'
+        invoiceLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invoicelink
+        documents:
+          items:
+            $ref: '#/components/schemas/InvoiceDocumentInfo'
+          type: array
+          title: Documents
+          default: []
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - amount
+      - currency
+      - status
+      - items
+      - createdAt
+      title: PublicInvoiceResponse
+    ContactWalletResponse:
+      properties:
+        address:
+          type: string
+          title: Address
+        chainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainid
+        currency:
+          type: string
+          title: Currency
+          default: EUR
+        internal:
+          type: boolean
+          title: Internal
+          default: false
+      type: object
+      required:
+      - address
+      title: ContactWalletResponse
+      description: Wallet payment method block used by invoice/payment method schemas.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+      type: object
+      title: UserAddress
+      description: 'Address schema for user.
+
+
+        Canonical field names: street_address, address_line_2, city, state, country, zip.
+
+        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
+
+        for backward compatibility with existing JSONB data.'
     USExternalAccountDetails-Output:
       properties:
         bankName:
@@ -433,95 +708,6 @@ components:
       - beneficiaryName
       title: USExternalAccountDetails
       description: US domestic (ACH) external account.
-    app__schemas__base__ContactRelationship:
-      type: string
-      enum:
-      - charity
-      - commercial_investment
-      - corporate_card
-      - credit_card
-      - dividend
-      - family
-      - financial_services
-      - good_sold
-      - goods_bought
-      - government
-      - insurance
-      - intergroup_transfer
-      - intra_group_dividends
-      - information_technology
-      - leasing
-      - loan_charges
-      - merchant_settlement
-      - mobile_wallet
-      - none
-      - non_resident_transfer_between_accounts
-      - pension
-      - personal_expenses
-      - prepaid_cards
-      - professional
-      - rental
-      - resident_transfer_between_accounts
-      - salaries
-      - telecommunications
-      - travel
-      - utility_bill
-      title: ContactRelationship
-      description: 'Unified contact relationship / transfer purpose.
-
-
-        Values match Align AlignTransferPurpose (the more granular set).
-
-        Mapped to Swipelux AccountHolderRelationship via ``swipelux_relationship``.'
-    InvoiceParticipant:
-      properties:
-        email:
-          type: string
-          title: Email
-        displayName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Displayname
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-      type: object
-      required:
-      - email
-      title: InvoiceParticipant
-      description: Minimal participant info for invoice response.
-    SwiftDetails:
-      properties:
-        accountNumber:
-          type: string
-          title: Accountnumber
-        routingNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Routingnumber
-        bic:
-          type: string
-          title: Bic
-      type: object
-      required:
-      - accountNumber
-      - bic
-      title: SwiftDetails
-      description: SWIFT (international wire) account details.
-    InvoiceStatus:
-      type: string
-      enum:
-      - draft
-      - sent
-      - paid
-      - cancelled
-      - client_paid
-      - client_declined
-      title: InvoiceStatus
-      description: Invoice status.
     SubmitDepositRequest:
       properties:
         txHash:
@@ -605,73 +791,54 @@ components:
       - status
       - createdAt
       title: PaymentTransactionResponse
-    SwiftAccountDetails-Output:
+    WaitlistRequest:
       properties:
-        bankName:
+        email:
           type: string
-          title: Bankname
-        bankAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bankaddress
-        currency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Currency
-        accountHolderType:
-          $ref: '#/components/schemas/AlignAccountHolderType'
-        accountHolderFirstName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderfirstname
-        accountHolderLastName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderlastname
-        accountHolderBusinessName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Accountholderbusinessname
-        accountHolderAddress:
-          anyOf:
-          - $ref: '#/components/schemas/UserAddress'
-          - type: 'null'
-        relationship:
-          anyOf:
-          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
-          - type: 'null'
-        paymentReference:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Paymentreference
-        accountType:
+          format: email
+          title: Email
+        website:
           type: string
-          const: swift
-          title: Accounttype
-          default: swift
-        swift:
-          $ref: '#/components/schemas/SwiftDetails'
-        beneficiaryName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Beneficiaryname
-          description: Frontend-only alias derived from account holder fields.
-          readOnly: true
+          title: Website
       type: object
       required:
-      - bankName
-      - accountHolderType
-      - swift
-      - beneficiaryName
-      title: SwiftAccountDetails
-      description: SWIFT (international wire) external account.
+      - email
+      - website
+      title: WaitlistRequest
+    USAccountDetails:
+      properties:
+        accountNumber:
+          type: string
+          title: Accountnumber
+        routingNumber:
+          type: string
+          title: Routingnumber
+      type: object
+      required:
+      - accountNumber
+      - routingNumber
+      title: USAccountDetails
+      description: US domestic account details (ACH).
+    PublicInvoiceContractInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        documentName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentname
+        documentLink:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentlink
+      type: object
+      required:
+      - id
+      title: PublicInvoiceContractInfo
     ValidationError:
       properties:
         loc:
@@ -693,6 +860,30 @@ components:
       - msg
       - type
       title: ValidationError
+    InvoiceDocumentInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        key:
+          type: string
+          title: Key
+      type: object
+      required:
+      - id
+      - name
+      - key
+      title: InvoiceDocumentInfo
+      description: 'Document attached to an invoice.
+
+
+        `key` is a short-lived signed token. To download call
+
+        GET /documents/download/{id}?key={key}.'
     CountryCode:
       type: string
       enum:
@@ -947,160 +1138,37 @@ components:
       - ZW
       title: CountryCode
       description: ISO 3166-1 alpha-2 country codes.
-    PublicInvoiceContractInfo:
+    InvoiceStatus:
+      type: string
+      enum:
+      - draft
+      - sent
+      - paid
+      - cancelled
+      - client_paid
+      - client_declined
+      title: InvoiceStatus
+      description: Invoice status.
+    RateResponse:
       properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        documentName:
+        bankTransfer:
           anyOf:
           - type: string
           - type: 'null'
-          title: Documentname
-        documentLink:
+          title: Banktransfer
+        card:
           anyOf:
           - type: string
           - type: 'null'
-          title: Documentlink
+          title: Card
+        usdRate:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Usdrate
       type: object
-      required:
-      - id
-      title: PublicInvoiceContractInfo
-    PublicProductResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        images:
-          items:
-            type: string
-          type: array
-          title: Images
-          default: []
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-        price:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Price
-        currency:
-          type: string
-          title: Currency
-        minAmount:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Minamount
-        maxAmount:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Maxamount
-        presetAmount:
-          anyOf:
-          - type: string
-            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          - type: 'null'
-          title: Presetamount
-        merchantName:
-          type: string
-          title: Merchantname
-        available:
-          type: boolean
-          title: Available
-        successUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Successurl
-        cancelUrl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cancelurl
-      type: object
-      required:
-      - id
-      - name
-      - currency
-      - merchantName
-      - available
-      title: PublicProductResponse
-      description: Product info for anonymous buyers.
-    InvoiceUserDetailsResponse:
-      properties:
-        client:
-          $ref: '#/components/schemas/InvoiceParticipant'
-        clientId:
-          type: string
-          format: uuid
-          title: Clientid
-      type: object
-      required:
-      - client
-      - clientId
-      title: InvoiceUserDetailsResponse
-      description: Contractor details returned by a share link.
-    PublicInvoiceItem:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        quantity:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Quantity
-        price:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Price
-      type: object
-      title: PublicInvoiceItem
-    InvoiceDocumentInfo:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        key:
-          type: string
-          title: Key
-      type: object
-      required:
-      - id
-      - name
-      - key
-      title: InvoiceDocumentInfo
-      description: 'Document attached to an invoice.
-
-
-        `key` is a short-lived signed token. To download call
-
-        GET /documents/download/{id}?key={key}.'
+      title: RateResponse
+      description: Combined FX rate response.
     AlignAccountHolderType:
       type: string
       enum:
@@ -1108,98 +1176,25 @@ components:
       - business
       title: AlignAccountHolderType
       description: Account holder type.
-    UniversalQuoteResponse:
+    InvoiceParticipant:
       properties:
-        quoteId:
+        email:
           type: string
-          title: Quoteid
-        provider:
+          title: Email
+        displayName:
           anyOf:
           - type: string
           - type: 'null'
-          title: Provider
-        paymentChannel:
-          type: string
-          title: Paymentchannel
-        fromAmount:
-          type: number
-          title: Fromamount
-        fromCurrency:
-          type: string
-          title: Fromcurrency
-        toAmount:
-          type: number
-          title: Toamount
-        depositMemo:
+          title: Displayname
+        address:
           anyOf:
-          - type: string
+          - $ref: '#/components/schemas/UserAddress'
           - type: 'null'
-          title: Depositmemo
-        toCurrency:
-          type: string
-          title: Tocurrency
-        feeAmount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Feeamount
-        feeCurrency:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Feecurrency
-        rate:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Rate
-        expiresAt:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expiresat
-        maskedIban:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Maskediban
-        depositAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Depositaddress
-        recipientAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Recipientaddress
-        originChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originchainid
-        destinationChainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Destinationchainid
-        transactionRequest:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Transactionrequest
       type: object
       required:
-      - quoteId
-      - paymentChannel
-      - fromAmount
-      - fromCurrency
-      - toAmount
-      - toCurrency
-      title: UniversalQuoteResponse
-      description: Universal quote response.
+      - email
+      title: InvoiceParticipant
+      description: Minimal participant info for invoice response.
     PayProductRequest:
       properties:
         originChain:
@@ -1246,158 +1241,21 @@ components:
       - originChain
       - originToken
       title: PayProductRequest
-    ContactWalletResponse:
+    EmailAccountInput:
       properties:
-        address:
+        accountType:
           type: string
-          title: Address
-        chainId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Chainid
-        currency:
+          const: email
+          title: Accounttype
+          default: email
+        email:
           type: string
-          title: Currency
-          default: EUR
-        internal:
-          type: boolean
-          title: Internal
-          default: false
+          title: Email
       type: object
       required:
-      - address
-      title: ContactWalletResponse
-      description: Wallet payment method block used by invoice/payment method schemas.
-    UserAddress:
-      properties:
-        streetAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Streetaddress
-        addressLine2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Addressline2
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/CountryCode'
-          - type: 'null'
-        zip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zip
-      type: object
-      title: UserAddress
-      description: 'Address schema for user.
-
-
-        Canonical field names: street_address, address_line_2, city, state, country, zip.
-
-        Accepts legacy Align/IBAN field names (street_line_1, street_line_2, postal_code)
-
-        for backward compatibility with existing JSONB data.'
-    PublicInvoiceResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        amount:
-          type: number
-          title: Amount
-        currency:
-          type: string
-          title: Currency
-        comment:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Comment
-        invoiceNumber:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Invoicenumber
-        issuedDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Issueddate
-        dueDate:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Duedate
-        status:
-          $ref: '#/components/schemas/InvoiceStatus'
-        client:
-          anyOf:
-          - $ref: '#/components/schemas/InvoiceParticipant'
-          - type: 'null'
-        contractor:
-          anyOf:
-          - $ref: '#/components/schemas/InvoiceParticipant'
-          - type: 'null'
-        items:
-          items:
-            $ref: '#/components/schemas/PublicInvoiceItem'
-          type: array
-          title: Items
-        paymentMethods:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/IBANAccountDetails-Output'
-            - $ref: '#/components/schemas/USExternalAccountDetails-Output'
-            - $ref: '#/components/schemas/SwiftAccountDetails-Output'
-            - $ref: '#/components/schemas/ContactWalletResponse'
-            - $ref: '#/components/schemas/EmailAccountInput'
-          type: array
-          title: Paymentmethods
-          default: []
-        contract:
-          anyOf:
-          - $ref: '#/components/schemas/PublicInvoiceContractInfo'
-          - type: 'null'
-        invoiceLink:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Invoicelink
-        documents:
-          items:
-            $ref: '#/components/schemas/InvoiceDocumentInfo'
-          type: array
-          title: Documents
-          default: []
-        createdAt:
-          type: string
-          format: date-time
-          title: Createdat
-      type: object
-      required:
-      - id
-      - amount
-      - currency
-      - status
-      - items
-      - createdAt
-      title: PublicInvoiceResponse
+      - email
+      title: EmailAccountInput
+      description: Email contact input.
     HTTPValidationError:
       properties:
         detail:
@@ -1407,20 +1265,162 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    WaitlistRequest:
+    InvoiceUserDetailsResponse:
       properties:
-        email:
+        client:
+          $ref: '#/components/schemas/InvoiceParticipant'
+        clientId:
           type: string
-          format: email
-          title: Email
-        website:
-          type: string
-          title: Website
+          format: uuid
+          title: Clientid
       type: object
       required:
-      - email
-      - website
-      title: WaitlistRequest
+      - client
+      - clientId
+      title: InvoiceUserDetailsResponse
+      description: Contractor details returned by a share link.
+    SwiftAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          const: swift
+          title: Accounttype
+          default: swift
+        swift:
+          $ref: '#/components/schemas/SwiftDetails'
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - swift
+      - beneficiaryName
+      title: SwiftAccountDetails
+      description: SWIFT (international wire) external account.
+    IBANAccountDetails-Output:
+      properties:
+        bankName:
+          type: string
+          title: Bankname
+        bankAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankaddress
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Currency
+        accountHolderType:
+          $ref: '#/components/schemas/AlignAccountHolderType'
+        accountHolderFirstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderfirstname
+        accountHolderLastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderlastname
+        accountHolderBusinessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountholderbusinessname
+        accountHolderAddress:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/app__schemas__base__ContactRelationship'
+          - type: 'null'
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+        accountType:
+          type: string
+          enum:
+          - sepa
+          - uaefts
+          title: Accounttype
+          default: sepa
+        ibanNumber:
+          type: string
+          title: Ibannumber
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+        beneficiaryName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Beneficiaryname
+          description: Frontend-only alias derived from account holder fields.
+          readOnly: true
+      type: object
+      required:
+      - bankName
+      - accountHolderType
+      - ibanNumber
+      - beneficiaryName
+      title: IBANAccountDetails
+      description: IBAN (SEPA) external account.
   securitySchemes:
     HTTPBearer:
       type: http

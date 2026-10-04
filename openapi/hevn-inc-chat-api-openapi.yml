@@ -411,22 +411,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ChatMessageRequest:
-      properties:
-        text:
-          type: string
-          title: Text
-        documentIds:
-          items:
-            type: string
-            format: uuid
-          type: array
-          title: Documentids
-      type: object
-      required:
-      - text
-      title: ChatMessageRequest
-      description: Send a message in the chat.
     ChatMessageResponse:
       properties:
         id:
@@ -531,6 +515,22 @@ components:
       - createdAt
       title: ChatResponse
       description: User-facing chat.
+    ChatMessageRequest:
+      properties:
+        text:
+          type: string
+          title: Text
+        documentIds:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Documentids
+      type: object
+      required:
+      - text
+      title: ChatMessageRequest
+      description: Send a message in the chat.
     ChatCreateRequest:
       properties:
         text:

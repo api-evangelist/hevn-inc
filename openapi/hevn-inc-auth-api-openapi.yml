@@ -307,108 +307,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    RefreshRequest:
-      properties:
-        userId:
-          type: string
-          title: Userid
-          description: Target user UUID
-      type: object
-      required:
-      - userId
-      title: RefreshRequest
-      description: Request for refreshing a session token.
-    AuthCompleteRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-      type: object
-      required:
-      - sessionKey
-      title: AuthCompleteRequest
-      description: Request for completing authentication.
-    AuthMethod:
-      type: string
-      enum:
-      - email_otp
-      - totp
-      - signed_jwt
-      title: AuthMethod
-    SessionTokenResponse:
-      properties:
-        accessToken:
-          type: string
-          title: Accesstoken
-          description: JWT access token (10 min)
-        tokenType:
-          type: string
-          title: Tokentype
-          default: bearer
-        expiresIn:
-          type: integer
-          title: Expiresin
-          description: Token TTL in seconds
-          default: 600
-      type: object
-      required:
-      - accessToken
-      title: SessionTokenResponse
-      description: Response with short-lived JWT session token.
-    AuthStartRequest:
-      properties:
-        email:
-          type: string
-          title: Email
-          description: User email address
-      type: object
-      required:
-      - email
-      title: AuthStartRequest
-      description: Request schema for starting authentication.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    SubmitSignedJwtRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from auth/start
-        authPayload:
-          type: string
-          title: Authpayload
-          description: JSON auth_payload from TEE attestation
-        signature:
-          type: string
-          title: Signature
-          description: Base58 Ed25519 signature from TEE
-      type: object
-      required:
-      - sessionKey
-      - authPayload
-      - signature
-      title: SubmitSignedJwtRequest
-      description: Request for submitting TEE-signed Google JWT attestation.
     AuthStartResponse:
       properties:
         sessionKey:
@@ -431,46 +329,27 @@ components:
       - sessionKey
       title: AuthStartResponse
       description: Response schema for auth start.
-    AuthEmailOtpRequest:
+    SubmitSignedJwtRequest:
       properties:
         sessionKey:
           type: string
           title: Sessionkey
           description: Session key from auth/start
-        otpCode:
+        authPayload:
           type: string
-          maxLength: 6
-          minLength: 6
-          title: Otpcode
-          description: 6-digit OTP code
-      type: object
-      required:
-      - sessionKey
-      - otpCode
-      title: AuthEmailOtpRequest
-      description: Request schema for email OTP verification.
-    PrivyLoginRequest:
-      properties:
+          title: Authpayload
+          description: JSON auth_payload from TEE attestation
         signature:
           type: string
           title: Signature
-        email:
-          type: string
-          title: Email
-        address:
-          type: string
-          title: Address
-        nonce:
-          type: integer
-          title: Nonce
+          description: Base58 Ed25519 signature from TEE
       type: object
       required:
+      - sessionKey
+      - authPayload
       - signature
-      - email
-      - address
-      - nonce
-      title: PrivyLoginRequest
-      description: Request to link a Privy wallet.
+      title: SubmitSignedJwtRequest
+      description: Request for submitting TEE-signed Google JWT attestation.
     PrivyLoginResponse:
       properties:
         refreshToken:
@@ -502,6 +381,38 @@ components:
       - privyAddress
       title: PrivyLoginResponse
       description: Response after Privy wallet auth.
+    AuthCompleteRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+      type: object
+      required:
+      - sessionKey
+      title: AuthCompleteRequest
+      description: Request for completing authentication.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     StatusResponse:
       properties:
         status:
@@ -511,24 +422,6 @@ components:
       type: object
       title: StatusResponse
       description: Simple status response.
-    TotpLoginRequest:
-      properties:
-        sessionKey:
-          type: string
-          title: Sessionkey
-          description: Session key from email OTP step
-        code:
-          type: string
-          maxLength: 8
-          minLength: 6
-          title: Code
-          description: 6-digit TOTP code or 8-char recovery code
-      type: object
-      required:
-      - sessionKey
-      - code
-      title: TotpLoginRequest
-      description: Request to complete login with TOTP code.
     HTTPValidationError:
       properties:
         detail:
@@ -538,6 +431,57 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    AuthStartRequest:
+      properties:
+        email:
+          type: string
+          title: Email
+          description: User email address
+      type: object
+      required:
+      - email
+      title: AuthStartRequest
+      description: Request schema for starting authentication.
+    PrivyLoginRequest:
+      properties:
+        signature:
+          type: string
+          title: Signature
+        email:
+          type: string
+          title: Email
+        address:
+          type: string
+          title: Address
+        nonce:
+          type: integer
+          title: Nonce
+      type: object
+      required:
+      - signature
+      - email
+      - address
+      - nonce
+      title: PrivyLoginRequest
+      description: Request to link a Privy wallet.
+    RefreshRequest:
+      properties:
+        userId:
+          type: string
+          title: Userid
+          description: Target user UUID
+      type: object
+      required:
+      - userId
+      title: RefreshRequest
+      description: Request for refreshing a session token.
+    AuthMethod:
+      type: string
+      enum:
+      - email_otp
+      - totp
+      - signed_jwt
+      title: AuthMethod
     AuthSessionResponse:
       properties:
         refreshToken:
@@ -567,6 +511,62 @@ components:
       - email
       title: AuthSessionResponse
       description: Response for POST /auth/complete — refresh token.
+    SessionTokenResponse:
+      properties:
+        accessToken:
+          type: string
+          title: Accesstoken
+          description: JWT access token (10 min)
+        tokenType:
+          type: string
+          title: Tokentype
+          default: bearer
+        expiresIn:
+          type: integer
+          title: Expiresin
+          description: Token TTL in seconds
+          default: 600
+      type: object
+      required:
+      - accessToken
+      title: SessionTokenResponse
+      description: Response with short-lived JWT session token.
+    TotpLoginRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from email OTP step
+        code:
+          type: string
+          maxLength: 8
+          minLength: 6
+          title: Code
+          description: 6-digit TOTP code or 8-char recovery code
+      type: object
+      required:
+      - sessionKey
+      - code
+      title: TotpLoginRequest
+      description: Request to complete login with TOTP code.
+    AuthEmailOtpRequest:
+      properties:
+        sessionKey:
+          type: string
+          title: Sessionkey
+          description: Session key from auth/start
+        otpCode:
+          type: string
+          maxLength: 6
+          minLength: 6
+          title: Otpcode
+          description: 6-digit OTP code
+      type: object
+      required:
+      - sessionKey
+      - otpCode
+      title: AuthEmailOtpRequest
+      description: Request schema for email OTP verification.
   securitySchemes:
     HTTPBearer:
       type: http

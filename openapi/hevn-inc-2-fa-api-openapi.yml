@@ -260,22 +260,6 @@ components:
       - code
       title: TotpDisableRequest
       description: Request to disable 2FA.
-    TotpSetupResponse:
-      properties:
-        secret:
-          type: string
-          title: Secret
-          description: Base32 TOTP secret for manual entry
-        provisioningUri:
-          type: string
-          title: Provisioninguri
-          description: otpauth:// URI for QR code
-      type: object
-      required:
-      - secret
-      - provisioningUri
-      title: TotpSetupResponse
-      description: Response when initiating 2FA setup.
     TotpStatusResponse:
       properties:
         enabled:
@@ -290,23 +274,6 @@ components:
       - enabled
       title: TotpStatusResponse
       description: Response for 2FA status check.
-    TotpActivateResponse:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          default: true
-        recoveryCodes:
-          items:
-            type: string
-          type: array
-          title: Recoverycodes
-          description: One-time recovery codes. Store these safely.
-      type: object
-      required:
-      - recoveryCodes
-      title: TotpActivateResponse
-      description: Response after successfully activating 2FA.
     ValidationError:
       properties:
         loc:
@@ -328,15 +295,22 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    TotpSetupResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        secret:
+          type: string
+          title: Secret
+          description: Base32 TOTP secret for manual entry
+        provisioningUri:
+          type: string
+          title: Provisioninguri
+          description: otpauth:// URI for QR code
       type: object
-      title: HTTPValidationError
+      required:
+      - secret
+      - provisioningUri
+      title: TotpSetupResponse
+      description: Response when initiating 2FA setup.
     TotpVerifyRequest:
       properties:
         code:
@@ -350,6 +324,32 @@ components:
       - code
       title: TotpVerifyRequest
       description: Request to verify a TOTP code.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TotpActivateResponse:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          default: true
+        recoveryCodes:
+          items:
+            type: string
+          type: array
+          title: Recoverycodes
+          description: One-time recovery codes. Store these safely.
+      type: object
+      required:
+      - recoveryCodes
+      title: TotpActivateResponse
+      description: Response after successfully activating 2FA.
   securitySchemes:
     HTTPBearer:
       type: http

@@ -132,6 +132,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    PublicKeyResponse:
+      properties:
+        publicKey:
+          type: string
+          title: Publickey
+      type: object
+      required:
+      - publicKey
+      title: PublicKeyResponse
     ValidationError:
       properties:
         loc:
@@ -153,15 +162,6 @@ components:
       - msg
       - type
       title: ValidationError
-    PublicKeyResponse:
-      properties:
-        publicKey:
-          type: string
-          title: Publickey
-      type: object
-      required:
-      - publicKey
-      title: PublicKeyResponse
     NearCallResponse:
       properties:
         transactionHash:
@@ -200,32 +200,6 @@ components:
       - publicKey
       - timestamp
       title: AttestateJwtResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    NearCallRequest:
-      properties:
-        msg:
-          type: string
-          title: Msg
-        publicKey:
-          type: string
-          title: Publickey
-        proof:
-          type: string
-          title: Proof
-      type: object
-      required:
-      - msg
-      - publicKey
-      - proof
-      title: NearCallRequest
     app__routers__security__tee_local__AttestateJwtRequest:
       properties:
         googleJwt:
@@ -243,6 +217,32 @@ components:
       - msg
       - receiverId
       title: AttestateJwtRequest
+    NearCallRequest:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        publicKey:
+          type: string
+          title: Publickey
+        proof:
+          type: string
+          title: Proof
+      type: object
+      required:
+      - msg
+      - publicKey
+      - proof
+      title: NearCallRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     HTTPBearer:
       type: http

@@ -95,6 +95,23 @@ components:
       - public_key
       - timestamp
       title: AttestateJwtResponse
+    GoogleCertsResponse:
+      properties:
+        msg:
+          type: string
+          title: Msg
+        signature:
+          type: string
+          title: Signature
+        public_key:
+          type: string
+          title: Public Key
+      type: object
+      required:
+      - msg
+      - signature
+      - public_key
+      title: GoogleCertsResponse
     ValidationError:
       properties:
         loc:
@@ -116,6 +133,15 @@ components:
       - msg
       - type
       title: ValidationError
+    EncryptionKeyResponse:
+      properties:
+        encryption_key:
+          type: string
+          title: Encryption Key
+      type: object
+      required:
+      - encryption_key
+      title: EncryptionKeyResponse
     app__routers__security__tee__AttestateJwtRequest:
       properties:
         encrypted_data:
@@ -129,32 +155,6 @@ components:
       - encrypted_data
       - client_pubkey
       title: AttestateJwtRequest
-    EncryptionKeyResponse:
-      properties:
-        encryption_key:
-          type: string
-          title: Encryption Key
-      type: object
-      required:
-      - encryption_key
-      title: EncryptionKeyResponse
-    GoogleCertsResponse:
-      properties:
-        msg:
-          type: string
-          title: Msg
-        signature:
-          type: string
-          title: Signature
-        public_key:
-          type: string
-          title: Public Key
-      type: object
-      required:
-      - msg
-      - signature
-      - public_key
-      title: GoogleCertsResponse
     HTTPValidationError:
       properties:
         detail:
