@@ -45,3 +45,34 @@ plans:
     credit/mo
   overage: SEPA • 0.10–0.20%, ACH, Wire • 0.10–0.20%, SWIFT • 0.10–0.20% + $25, UAE FTS • 0.10–0.20%,
     UK FTS • 0.10–0.20%, Stablecoins • $0
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - metered
+  units: []
+  plans:
+  - name: Basic Plan
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: HEVN Pro
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Enterprise Plan
+    access: other
+    model: metered
+    model_how: derived
+    units: []
+    periods:
+    - none
