@@ -1,0 +1,1213 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform virtual accounts API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: virtual accounts
+  description: Discover payment methods and create persistent receiving account details.
+paths:
+  /banks:
+    get:
+      tags:
+      - virtual accounts
+      summary: List virtual accounts and available payment methods
+      description: List receiving payment methods available to the selected account and identify which virtual accounts have already been opened.
+      operationId: list_rails_banks_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RailListView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+    post:
+      tags:
+      - virtual accounts
+      summary: Request a rail for this client
+      description: 'Answers 201 with the rail record the first time, 200 with `Idempotency-Replayed: true` when the rail was already requested or is already active. A rail is a singleton per client, so the server key is the client and the rail.'
+      operationId: open_rail_banks_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RailOpenRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RailView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /banks/{rail}:
+    get:
+      tags:
+      - virtual accounts
+      summary: Retrieve one virtual account
+      description: Retrieve one payment method and, when opened, its receiving details. The rail id is HEVN's stable public value.
+      operationId: read_rail_banks__rail__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: rail
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Opaque rail id
+          examples:
+          - wire_named
+          title: Rail
+        description: Opaque rail id
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RailView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /banks/{rail}/requirements:
+    get:
+      tags:
+      - virtual accounts
+      summary: What this client still has to provide before the rail can open
+      description: 'A pure read: it opens nothing, writes nothing and calls no provider.'
+      operationId: read_rail_requirements_banks__rail__requirements_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: rail
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Opaque rail id
+          examples:
+          - wire_named
+          title: Rail
+        description: Opaque rail id
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RailRequirementsView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /banks/{rail}/rate:
+    get:
+      tags:
+      - virtual accounts
+      summary: Retrieve the receiving conversion rate
+      description: Return the current conversion rate and fixed fee for this receiving payment method. The result is indicative until an incoming transfer is created.
+      operationId: read_rail_rate_banks__rail__rate_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: rail
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Opaque rail id
+          examples:
+          - wire_named
+          title: Rail
+        description: Opaque rail id
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RailRateView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    RequisitePixKeyType:
+      type: string
+      enum:
+      - phone
+      - email
+      - tax_id
+      - random
+      title: RequisitePixKeyType
+    RailRateView:
+      properties:
+        currency:
+          type: string
+          title: Currency
+          description: ISO 4217 fiat currency code for this conversion.
+        rate:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Rate
+          description: Conversion rate net of markup, when currently available.
+        fixedFee:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Fixedfee
+          description: Fixed fee component, when charged.
+        fixedFeeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fixedfeecurrency
+          description: Currency in which the fixed fee is charged.
+      type: object
+      required:
+      - currency
+      title: RailRateView
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - XK
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+          description: Street name and building number.
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+          description: Optional apartment, suite or unit.
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country code.
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+          description: Postal or ZIP code.
+      type: object
+      title: UserAddress
+      description: Provider-neutral postal address used across domain and API schemas.
+    RailListView:
+      properties:
+        rails:
+          items:
+            $ref: '#/components/schemas/RailView'
+          type: array
+          title: Rails
+          description: Payment methods and virtual-account configurations available to the account.
+      type: object
+      required:
+      - rails
+      title: RailListView
+    PlatformKybStatus:
+      type: string
+      enum:
+      - notStarted
+      - pending
+      - approved
+      - rfi
+      - rejected
+      title: PlatformKybStatus
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    RequisiteIdType:
+      type: string
+      enum:
+      - passport
+      - national_id
+      - foreigner_id
+      - temporary_permit
+      - minor_id
+      - driving_license
+      - resident_card
+      - tax_id
+      - other
+      title: RequisiteIdType
+    RequisiteHolderType:
+      type: string
+      enum:
+      - individual
+      - business
+      title: RequisiteHolderType
+    RailRequiresView:
+      properties:
+        phone:
+          type: boolean
+          title: Phone
+          description: Whether a phone number must be supplied before this payment method can open.
+        address:
+          type: boolean
+          title: Address
+          description: Whether a postal address must be supplied before this payment method can open.
+        kyb:
+          type: boolean
+          title: Kyb
+          description: Whether business verification must be completed before this payment method can open.
+      type: object
+      required:
+      - phone
+      - address
+      - kyb
+      title: RailRequiresView
+    RailRequirementsView:
+      properties:
+        rail:
+          type: string
+          title: Rail
+          description: Stable HEVN identifier for this receiving payment method.
+        currency:
+          type: string
+          title: Currency
+          description: ISO 4217 fiat currency code received through this payment method.
+        method:
+          $ref: '#/components/schemas/FiatPaymentType'
+          description: Payment network or method represented by this rail.
+        available:
+          type: boolean
+          title: Available
+          description: Whether this payment method can currently be requested.
+        blockers:
+          items:
+            $ref: '#/components/schemas/RailBlockerView'
+          type: array
+          title: Blockers
+          description: Reasons this payment method cannot currently be requested.
+        requires:
+          $ref: '#/components/schemas/RailRequiresView'
+          description: Profile and verification work required before opening.
+        kybStatus:
+          $ref: '#/components/schemas/PlatformKybStatus'
+          description: Current business-verification status.
+        kycStatus:
+          $ref: '#/components/schemas/RailKycStatus'
+          description: Current identity-verification status for this payment method.
+      type: object
+      required:
+      - rail
+      - currency
+      - method
+      - available
+      - requires
+      - kybStatus
+      - kycStatus
+      title: RailRequirementsView
+    RequisiteFields:
+      properties:
+        iban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iban
+          description: International account identifier without display separators.
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+          description: BIC or SWIFT identifier of the destination institution.
+        accountNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountnumber
+          description: Domestic account number.
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+          description: Domestic routing or clearing number.
+        pixKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pixkey
+          description: Brazil PIX destination key.
+        pixKeyType:
+          anyOf:
+          - $ref: '#/components/schemas/RequisitePixKeyType'
+          - type: 'null'
+          description: Type of Brazil PIX key.
+        paymentKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentkey
+          description: Local payment key required by the selected method.
+        financialInstitutionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Financialinstitutionid
+          description: Institution identifier from the method directory.
+        branchNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branchnumber
+          description: Destination institution branch identifier.
+        accountKind:
+          anyOf:
+          - $ref: '#/components/schemas/RequisiteAccountKind'
+          - type: 'null'
+          description: Checking, savings or equivalent classification.
+        phoneNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phonenumber
+          description: Phone number required by the selected local method.
+      type: object
+      title: RequisiteFields
+    FiatPaymentType:
+      type: string
+      enum:
+      - sepa
+      - swift
+      - ach
+      - uaefts
+      - fedwire
+      - rtp
+      - fednow
+      - pix
+      - spei
+      - pse
+      - breb
+      - transfers_3_0
+      - ukfps
+      - npp
+      - nip
+      - bdt_local
+      - bdt_ewallet
+      - bob_local
+      - brl_local
+      - cad_eft
+      - clp_local
+      - cny_alipay
+      - cny_wechatpay
+      - cop_local
+      - crc_local
+      - dkk_local
+      - dop_local
+      - dop_ewallet
+      - egp_local
+      - gtq_local
+      - gtq_ewallet
+      - hkd_fps
+      - hnl_local
+      - idr_local
+      - idr_ewallet
+      - ils_local
+      - inr_local
+      - inr_upi
+      - jmd_local
+      - jpy_local
+      - krw_local
+      - myr_local
+      - nok_local
+      - php_local
+      - php_ewallet
+      - pkr_raast
+      - pkr_ewallet
+      - pln_local
+      - sar_local
+      - sle_local
+      - thb_local
+      - try_fast
+      - tzs_local
+      - ugx_local
+      - vnd_local
+      - xof_local
+      - zmw_local
+      title: FiatPaymentType
+    RequisiteState:
+      type: string
+      enum:
+      - active
+      - pending
+      - closed
+      title: RequisiteState
+    RailBlockerView:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Stable machine-readable code for this blocker.
+        field:
+          type: string
+          title: Field
+          description: Profile or verification field associated with this blocker.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+      type: object
+      required:
+      - code
+      - field
+      - message
+      title: RailBlockerView
+    RailStatus:
+      type: string
+      enum:
+      - preparing
+      - active
+      - suspended
+      - closed
+      title: RailStatus
+    RailOpenRequest:
+      properties:
+        rail:
+          type: string
+          title: Rail
+          description: Stable rail identifier returned by the virtual-account list operation.
+      additionalProperties: false
+      type: object
+      required:
+      - rail
+      title: RailOpenRequest
+    RequisiteAccountKind:
+      type: string
+      enum:
+      - checking
+      - savings
+      - deposit
+      - salary
+      - other
+      title: RequisiteAccountKind
+    RailView:
+      properties:
+        rail:
+          type: string
+          title: Rail
+          description: Stable HEVN identifier for this receiving payment method.
+        currency:
+          type: string
+          title: Currency
+          description: ISO 4217 fiat currency code received through this payment method.
+        method:
+          $ref: '#/components/schemas/FiatPaymentType'
+          description: Payment network or method represented by this rail.
+        opened:
+          type: boolean
+          title: Opened
+          description: Whether receiving details have been provisioned for this payment method.
+        status:
+          anyOf:
+          - $ref: '#/components/schemas/RailStatus'
+          - type: 'null'
+          description: Current virtual-account lifecycle status.
+        feeBps:
+          type: integer
+          title: Feebps
+          description: Variable fee in basis points; 100 basis points equals 1 percent.
+        supportedAccounts:
+          items:
+            $ref: '#/components/schemas/AccountKey'
+          type: array
+          title: Supportedaccounts
+          description: Accounts this payment method can settle to.
+        destinationAccount:
+          anyOf:
+          - $ref: '#/components/schemas/AccountKey'
+          - type: 'null'
+          description: Account credited on settlement.
+        minimumDeposit:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Minimumdeposit
+          description: Minimum amount accepted through this method.
+        id:
+          anyOf:
+          - type: string
+            pattern: ^(?:bnk_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - bnk_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Id
+          description: Opened virtual-account identifier.
+        requisites:
+          anyOf:
+          - $ref: '#/components/schemas/RailRequisitesView'
+          - type: 'null'
+          description: Receiving details, present after the virtual account becomes active.
+      type: object
+      required:
+      - rail
+      - currency
+      - method
+      - opened
+      - feeBps
+      - supportedAccounts
+      title: RailView
+    AccountKey:
+      type: string
+      enum:
+      - USDC
+      - EURC
+      - FDIC_USD
+      title: AccountKey
+    RailKycStatus:
+      type: string
+      enum:
+      - notStarted
+      - requested
+      - incorporating
+      - pending
+      - underReview
+      - documentRequested
+      - approved
+      - rejected
+      title: RailKycStatus
+    RequisiteHolder-Output:
+      properties:
+        type:
+          $ref: '#/components/schemas/RequisiteHolderType'
+          description: Whether the account holder is an individual or a business.
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+          description: Legal given name of an individual holder.
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+          description: Legal family name of an individual holder.
+        businessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businessname
+          description: Registered legal name of a business holder.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+          description: Postal address of the account holder.
+        idType:
+          anyOf:
+          - $ref: '#/components/schemas/RequisiteIdType'
+          - type: 'null'
+          description: Government identifier type for the holder.
+        idNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idnumber
+          description: Government identifier number for the holder.
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+          description: Tax identifier of the holder.
+        nationality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nationality
+          description: ISO country code of the holder's nationality.
+      type: object
+      required:
+      - type
+      title: RequisiteHolder
+    RailRequisitesView:
+      properties:
+        fields:
+          $ref: '#/components/schemas/RequisiteFields'
+          description: Structured receiving details for this payment method.
+        holder:
+          $ref: '#/components/schemas/RequisiteHolder-Output'
+          description: Identity and address of the receiving account holder.
+        bankName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankname
+          description: Name of the receiving financial institution.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference or memo that must accompany the account transfer.
+        state:
+          $ref: '#/components/schemas/RequisiteState'
+          description: Current usability state of the receiving details.
+      type: object
+      required:
+      - fields
+      - holder
+      - state
+      title: RailRequisitesView
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

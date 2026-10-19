@@ -1,0 +1,696 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Sandbox API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: Sandbox
+  description: Emulate funding and lifecycle events in the sandbox environment.
+paths:
+  /sandbox/treasury:
+    get:
+      tags:
+      - Sandbox
+      summary: Read the sandbox treasury that funds emulated credits
+      operationId: read_treasury_sandbox_treasury_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxTreasuryResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /sandbox/deposits:
+    post:
+      tags:
+      - Sandbox
+      summary: 'Emulate an incoming deposit: an account transfer with bankId, a token transfer…'
+      operationId: credit_deposit_sandbox_deposits_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SandboxDepositRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxCreditResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxCreditResponse'
+          description: Accepted
+  /sandbox/payins/{payinId}/complete:
+    post:
+      tags:
+      - Sandbox
+      summary: Emulate the arrival of the funds a pay-in is waiting for
+      operationId: complete_payin_sandbox_payins__payinId__complete_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payinId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Payinid
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/SandboxPayinCompletionRequest'
+              - type: 'null'
+              title: Body
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxCreditResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxCreditResponse'
+          description: Accepted
+  /sandbox/payouts/{payoutId}/status:
+    post:
+      tags:
+      - Sandbox
+      summary: Move an emulated outgoing transfer to its next reported status
+      operationId: set_payout_status_sandbox_payouts__payoutId__status_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payoutId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Payoutid
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SandboxPayoutStatusRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxPayoutResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxPayoutResponse'
+          description: Accepted
+components:
+  schemas:
+    SandboxTokenBalanceResponse:
+      properties:
+        token:
+          $ref: '#/components/schemas/BalanceAccount'
+          description: Supported sandbox digital asset.
+        tokenAddress:
+          type: string
+          title: Tokenaddress
+          description: Sandbox token contract address.
+        balance:
+          type: string
+          title: Balance
+          description: Amount available for emulated credits.
+          example: '500.00'
+      type: object
+      required:
+      - token
+      - tokenAddress
+      - balance
+      title: SandboxTokenBalanceResponse
+    SandboxDepositRequest:
+      properties:
+        amount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          type: string
+          title: Amount
+          description: Test amount to credit.
+          example: '500.00'
+        bankId:
+          anyOf:
+          - type: string
+            pattern: ^(?:bnk_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - bnk_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Bankid
+          description: Virtual-account identifier for an emulated account transfer.
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/BalanceAccount'
+          - type: 'null'
+          description: Digital asset for an emulated on-chain transfer.
+        remitter:
+          anyOf:
+          - type: string
+            maxLength: 140
+          - type: 'null'
+          title: Remitter
+          description: Originator name reported with the credit.
+        paymentReference:
+          anyOf:
+          - type: string
+            maxLength: 140
+          - type: 'null'
+          title: Paymentreference
+          description: Reference reported with the credit.
+      additionalProperties: false
+      type: object
+      required:
+      - amount
+      title: SandboxDepositRequest
+    SandboxPayoutResponse:
+      properties:
+        payoutId:
+          type: string
+          pattern: ^(?:po_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Payoutid
+          description: Outgoing-transfer identifier updated by the emulator.
+          examples:
+          - po_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Current public lifecycle status of the outgoing transfer.
+        amount:
+          type: string
+          title: Amount
+          description: Transfer amount.
+          example: '500.00'
+        currency:
+          type: string
+          title: Currency
+          description: Transfer currency or digital asset.
+        idempotencyKey:
+          type: string
+          title: Idempotencykey
+          description: Caller-supplied key that binds retries to this update.
+        transactionId:
+          anyOf:
+          - type: string
+            pattern: ^(?:txn_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - txn_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Transactionid
+          description: Ledger transaction identifier, when created.
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+          description: Settlement transaction hash, when applicable.
+        refundTxHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refundtxhash
+          description: Refund transaction hash, when applicable.
+      type: object
+      required:
+      - payoutId
+      - status
+      - amount
+      - currency
+      - idempotencyKey
+      title: SandboxPayoutResponse
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    SandboxPayoutStatusRequest:
+      properties:
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Next externally reportable lifecycle status for the emulated transfer.
+      additionalProperties: false
+      type: object
+      required:
+      - status
+      title: SandboxPayoutStatusRequest
+    PayoutStatus:
+      type: string
+      enum:
+      - awaitingSignature
+      - submitted
+      - settled
+      - failed
+      - refunded
+      title: PayoutStatus
+    SandboxTreasuryResponse:
+      properties:
+        chainId:
+          type: integer
+          title: Chainid
+          description: Numeric network identifier used by the sandbox treasury.
+        address:
+          type: string
+          title: Address
+          description: Sandbox treasury address.
+        gasBalance:
+          type: string
+          title: Gasbalance
+          description: Native-asset balance available for transaction fees.
+          example: '500.00'
+        maxCredit:
+          type: string
+          title: Maxcredit
+          description: Maximum test amount allowed in one credit.
+          example: '500.00'
+        balances:
+          items:
+            $ref: '#/components/schemas/SandboxTokenBalanceResponse'
+          type: array
+          title: Balances
+          description: Settlement assets available to the emulator.
+      type: object
+      required:
+      - chainId
+      - address
+      - gasBalance
+      - maxCredit
+      - balances
+      title: SandboxTreasuryResponse
+    BalanceAccount:
+      type: string
+      enum:
+      - USDC
+      - EURC
+      title: BalanceAccount
+    SandboxCreditResponse:
+      properties:
+        depositId:
+          type: string
+          title: Depositid
+          description: Stable identifier for the emulated credit.
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Current public lifecycle status of the emulated credit.
+        token:
+          $ref: '#/components/schemas/BalanceAccount'
+          description: Digital asset credited after settlement.
+        amount:
+          type: string
+          title: Amount
+          description: Source amount supplied to the emulator.
+          example: '500.00'
+        currency:
+          type: string
+          title: Currency
+          description: Source currency or digital asset.
+        idempotencyKey:
+          type: string
+          title: Idempotencykey
+          description: Caller-supplied key that binds retries to this credit.
+        payinId:
+          anyOf:
+          - type: string
+            pattern: ^(?:pi_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - pi_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Payinid
+          description: Incoming-transfer identifier, when completing a pay-in.
+        transactionId:
+          anyOf:
+          - type: string
+            pattern: ^(?:txn_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - txn_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Transactionid
+          description: Ledger transaction identifier, when created.
+        credited:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Credited
+          description: Amount delivered in the settlement asset.
+        fee:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Fee
+          description: Fee charged by the emulated route.
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+          description: Currency in which the fee is charged.
+        rate:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Rate
+          description: Conversion rate from source to settlement amount.
+        txHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txhash
+          description: On-chain transaction hash, when applicable.
+        pollUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pollurl
+          description: Relative API URL to poll while processing continues.
+      type: object
+      required:
+      - depositId
+      - status
+      - token
+      - amount
+      - currency
+      - idempotencyKey
+      title: SandboxCreditResponse
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    SandboxPayinCompletionRequest:
+      properties:
+        remitter:
+          anyOf:
+          - type: string
+            maxLength: 140
+          - type: 'null'
+          title: Remitter
+          description: Originator name reported with the credit.
+      additionalProperties: false
+      type: object
+      title: SandboxPayinCompletionRequest
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

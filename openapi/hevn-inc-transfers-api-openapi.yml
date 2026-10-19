@@ -1,0 +1,2701 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Transfers API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: Transfers
+  description: Quote, create, authorize and track incoming or outgoing transfers.
+paths:
+  /payouts:
+    post:
+      tags:
+      - Transfers
+      summary: Create an outgoing transfer
+      description: Validate the contact, fix the transfer terms, reserve an idempotent outgoing transfer and return the approval payload to sign. Supplying `amount` fixes the debit side; `amountTo` fixes the contact side.
+      operationId: create_payout_payouts_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /payouts/preview:
+    post:
+      tags:
+      - Transfers
+      summary: Create an outgoing transfer quote
+      description: Estimate rate, fees, limits and contact amount without creating a contact, transfer or external side effect.
+      operationId: preview_payout_payouts_preview_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutPreviewRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutPreviewResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /payouts/{payoutId}/confirm:
+    post:
+      tags:
+      - Transfers
+      summary: Authorize an outgoing transfer
+      description: Verify the developer-key signature against the immutable approval and fund the prepared transfer. A retry cannot change the contact, amount, payment method or quote.
+      operationId: confirm_payout_payouts__payoutId__confirm_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payoutId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Payoutid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutReceiptResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutReceiptResponse'
+          description: Accepted
+  /payouts/{payoutId}:
+    get:
+      tags:
+      - Transfers
+      summary: Retrieve an outgoing transfer
+      description: Retrieve the current transfer lifecycle, including quote, contact, settlement result and any actionable failure.
+      operationId: read_payout_payouts__payoutId__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payoutId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Payoutid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutReadResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /swaps:
+    post:
+      tags:
+      - Transfers
+      summary: Create a transfer between the client's own accounts
+      description: 'Price a move between two accounts the client owns, reserve it idempotently and return the approval to sign. `authorization` says what that approval covers: a `debit` of the client''s wallet that funds the move, or an `intent` its smart wallet signs so the backend can settle it.'
+      operationId: create_swap_swaps_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /swaps/preview:
+    post:
+      tags:
+      - Transfers
+      summary: Price a transfer between the client's own accounts
+      description: Compare every route that can serve this pair of accounts and return the best price. Nothing is booked with a provider and nothing is signed.
+      operationId: preview_swap_swaps_preview_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapPreviewRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapPreviewResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /swaps/{swapId}/confirm:
+    post:
+      tags:
+      - Transfers
+      summary: Authorize a transfer between the client's own accounts
+      description: Verify the developer-key signature against the immutable approval and settle the move. A retry cannot change the accounts, the amount or the quote it was fixed at.
+      operationId: confirm_swap_swaps__swapId__confirm_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: swapId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Swapid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapReceiptResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapReceiptResponse'
+          description: Accepted
+  /swaps/{swapId}:
+    get:
+      tags:
+      - Transfers
+      summary: Retrieve a transfer between the client's own accounts
+      description: Retrieve the current lifecycle of a swap, the quote it was fixed at and any actionable failure.
+      operationId: read_swap_swaps__swapId__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: swapId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Swapid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapReadResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /payins:
+    post:
+      tags:
+      - Transfers
+      summary: Create an incoming transfer quote
+      description: Price money arriving for this account. Set `originChainId` for an on-chain transfer or `rail` for a local payment method; exactly one is required. An unsupported route answers `payin_not_available`.
+      operationId: create_payin_payins_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayinView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /payins/{payinId}/instructions:
+    post:
+      tags:
+      - Transfers
+      summary: Open the incoming transfer and retrieve funding instructions
+      description: 'Idempotent: an already-open transfer returns the same payment-account details or on-chain deposit address. A quote that stopped holding answers `410 payin_expired`.'
+      operationId: open_payin_payins__payinId__instructions_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payinId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Prefixed pay-in id
+          title: Payinid
+        description: Prefixed pay-in id
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayinInstructionsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayinInstructionsView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /payins/{payinId}:
+    get:
+      tags:
+      - Transfers
+      summary: Retrieve an incoming transfer
+      description: Retrieve an incoming-transfer quote and its current funding lifecycle. Use the instructions operation when payment details are still required.
+      operationId: read_payin_payins__payinId__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: payinId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Prefixed pay-in id
+          title: Payinid
+        description: Prefixed pay-in id
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayinView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    PayinCreateRequest:
+      properties:
+        amount:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Exact amount funded in the source currency.
+        amountTo:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amountto
+          description: Exact amount to settle to the account.
+        currency:
+          type: string
+          title: Currency
+          description: ISO 4217 fiat code or supported digital-asset symbol for amount.
+        rail:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPaymentType'
+          - type: 'null'
+          description: Local payment method; provide exactly one of rail or originChainId.
+        originChainId:
+          anyOf:
+          - $ref: '#/components/schemas/ChainCode'
+          - type: 'null'
+          description: Network from which an on-chain incoming transfer is funded.
+        destinationAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account credited after settlement. Incoming transfers settle to a token account.
+          default: USDC
+      additionalProperties: false
+      type: object
+      required:
+      - currency
+      title: PayinCreateRequest
+    RequisitePixKeyType:
+      type: string
+      enum:
+      - phone
+      - email
+      - tax_id
+      - random
+      title: RequisitePixKeyType
+    ContactPaymentAccount:
+      properties:
+        method:
+          $ref: '#/components/schemas/FiatPaymentType'
+          description: Local payment method used to reach this contact.
+        currency:
+          type: string
+          title: Currency
+          description: ISO 4217 currency code accepted by the contact account.
+        fields:
+          $ref: '#/components/schemas/RequisiteFields'
+          description: Structured destination account details.
+        holder:
+          $ref: '#/components/schemas/RequisiteHolder-Input'
+          description: Identity and address of the destination account holder.
+        bankName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankname
+          description: Name of the destination financial institution; required for ACH and Fedwire contacts.
+        bankAddress:
+          anyOf:
+          - $ref: '#/components/schemas/BankAddress'
+          - type: 'null'
+          description: Postal address of the destination institution.
+        intermediaryBank:
+          anyOf:
+          - $ref: '#/components/schemas/IntermediaryBank'
+          - type: 'null'
+          description: Optional intermediary institution used to route an international transfer.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference or memo required by the contact.
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - currency
+      - holder
+      title: ContactPaymentAccount
+      description: Legacy flat payment-account input without internal routing metadata.
+    SwapReadResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:swp_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this swap.
+          examples:
+          - swp_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/SwapState'
+          description: Current public lifecycle status of the swap.
+        sourceAccount:
+          anyOf:
+          - $ref: '#/components/schemas/AccountKey'
+          - type: 'null'
+          description: Account the money leaves.
+        destinationAccount:
+          anyOf:
+          - $ref: '#/components/schemas/AccountKey'
+          - type: 'null'
+          description: Account the money lands on.
+        quote:
+          anyOf:
+          - $ref: '#/components/schemas/SwapQuoteView'
+          - type: 'null'
+          description: Terms fixed when the swap was created.
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+          description: On-chain transaction hash, when broadcast.
+        transactionId:
+          anyOf:
+          - type: string
+            pattern: ^(?:txn_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - txn_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Transactionid
+          description: Ledger transaction identifier, when projected.
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+          description: UTC timestamp when the swap was created.
+        settledAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Settledat
+          description: UTC timestamp when settlement completed.
+        failure:
+          anyOf:
+          - $ref: '#/components/schemas/SwapFailureView'
+          - type: 'null'
+          description: Terminal or actionable failure details.
+      type: object
+      required:
+      - id
+      - status
+      - createdAt
+      title: SwapReadResponse
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - XK
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    PayoutStatus:
+      type: string
+      enum:
+      - awaitingSignature
+      - submitted
+      - settled
+      - failed
+      - refunded
+      title: PayoutStatus
+    UserAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+          description: Street name and building number.
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+          description: Optional apartment, suite or unit.
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country code.
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+          description: Postal or ZIP code.
+      type: object
+      title: UserAddress
+      description: Provider-neutral postal address used across domain and API schemas.
+    PayoutAttentionView:
+      properties:
+        kind:
+          $ref: '#/components/schemas/PayoutAttentionKind'
+          description: Additional action required before processing can continue.
+        url:
+          type: string
+          title: Url
+          description: URL where the required action can be completed.
+      type: object
+      required:
+      - kind
+      - url
+      title: PayoutAttentionView
+    PayoutAttentionKind:
+      type: string
+      enum:
+      - rfi
+      title: PayoutAttentionKind
+    AuthorizationKind:
+      type: string
+      enum:
+      - debit
+      - intent
+      title: AuthorizationKind
+    PayinQuoteView:
+      properties:
+        amount:
+          type: string
+          title: Amount
+          description: Amount funded in the source currency.
+          example: '500.00'
+        currency:
+          type: string
+          title: Currency
+          description: Source currency or digital asset.
+        settlementAmount:
+          type: string
+          title: Settlementamount
+          description: Amount delivered in the settlement asset.
+          example: '500.00'
+        destinationAccount:
+          anyOf:
+          - $ref: '#/components/schemas/AccountKey'
+          - type: 'null'
+          description: Account credited by this incoming transfer.
+        feeAmount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Feeamount
+          description: Fee charged in feeCurrency.
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+          description: Currency in which the fee is charged.
+        rate:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Rate
+          description: Conversion rate from source amount to settlement amount.
+      type: object
+      required:
+      - amount
+      - currency
+      - settlementAmount
+      title: PayinQuoteView
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformPayinPayerAccount:
+      properties:
+        method:
+          $ref: '#/components/schemas/FiatPaymentType'
+          description: Local payment method used by the originator.
+        requisites:
+          $ref: '#/components/schemas/ContactPaymentAccount'
+          description: Originator payment-account identity and account details.
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - requisites
+      title: PlatformPayinPayerAccount
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    RequisiteIdType:
+      type: string
+      enum:
+      - passport
+      - national_id
+      - foreigner_id
+      - temporary_permit
+      - minor_id
+      - driving_license
+      - resident_card
+      - tax_id
+      - other
+      title: RequisiteIdType
+    PayoutPreviewRequest:
+      properties:
+        rail:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Rail
+          description: Stable payment-method identifier to preview.
+        amount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          type: string
+          title: Amount
+          description: Source amount to price.
+          example: '500.00'
+      additionalProperties: false
+      type: object
+      required:
+      - rail
+      - amount
+      title: PayoutPreviewRequest
+    RequisiteHolderType:
+      type: string
+      enum:
+      - individual
+      - business
+      title: RequisiteHolderType
+    ChainCode:
+      type: string
+      enum:
+      - eth
+      - bsc
+      - avax
+      - op
+      - arb
+      - pol
+      - sol
+      - base
+      - gnosis
+      - tron
+      - xrp
+      - zec
+      - doge
+      - ltc
+      - btc
+      - cardano
+      - bera
+      - sui
+      - near
+      - near_intents
+      - xlayer
+      - plasma
+      - ton
+      - stellar
+      - monad
+      - starknet
+      - aptos
+      - adi
+      - bch
+      title: ChainCode
+      description: Supported blockchain network code.
+    PayoutFailureView:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Stable machine-readable code for the transfer failure.
+      type: object
+      required:
+      - code
+      title: PayoutFailureView
+    SwapPreviewResponse:
+      properties:
+        sourceAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money would leave.
+        destinationAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money would land on.
+        quote:
+          $ref: '#/components/schemas/SwapQuoteView'
+          description: Best price available for this move right now.
+      type: object
+      required:
+      - sourceAccount
+      - destinationAccount
+      - quote
+      title: SwapPreviewResponse
+    PayinView:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:pi_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this incoming transfer.
+          examples:
+          - pi_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/PayinState'
+          description: Current public lifecycle status of the incoming transfer.
+        rail:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPaymentType'
+          - type: 'null'
+          description: Local payment method, when account-funded.
+        quote:
+          $ref: '#/components/schemas/PayinQuoteView'
+          description: Price, fee and conversion terms fixed for this incoming transfer.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference that must accompany the account transfer.
+        originChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Originchainid
+          description: Network from which an on-chain transfer is funded.
+        destinationChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Destinationchainid
+          description: Network on which the transfer settles.
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+          description: UTC timestamp after which the quote is no longer valid.
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+          description: UTC timestamp when the incoming transfer was created.
+      type: object
+      required:
+      - id
+      - status
+      - quote
+      - createdAt
+      title: PayinView
+    SwapState:
+      type: string
+      enum:
+      - awaitingSignature
+      - submitted
+      - settled
+      - failed
+      title: SwapState
+    PayoutResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Stable public identifier for this outgoing transfer.
+        kind:
+          $ref: '#/components/schemas/PayoutKind'
+          description: Whether the contact is account-based or on-chain.
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Current public lifecycle status of the transfer.
+        idempotencyKey:
+          type: string
+          title: Idempotencykey
+          description: Caller-supplied key that makes an identical retry return this result.
+        quote:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutQuoteView'
+          - type: 'null'
+          description: Price, fee and conversion terms fixed for this transfer.
+        authorization:
+          $ref: '#/components/schemas/AuthorizationKind'
+          description: Whether the approval authorizes a balance debit or a signature over the transfer's terms.
+          default: debit
+        approval:
+          anyOf:
+          - $ref: '#/components/schemas/ApprovalView'
+          - type: 'null'
+          description: Authorization to sign before execution.
+        debit:
+          anyOf:
+          - $ref: '#/components/schemas/DebitView'
+          - type: 'null'
+          description: Exact on-chain debit used to fund this transfer.
+        intent:
+          anyOf:
+          - $ref: '#/components/schemas/IntentView'
+          - type: 'null'
+          description: Terms authorized by the signature, when this transfer is not funded by a debit.
+        contact:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutContactView'
+          - type: 'null'
+          description: Contact snapshot fixed at creation.
+      type: object
+      required:
+      - id
+      - kind
+      - status
+      - idempotencyKey
+      title: PayoutResponse
+    PayinInstructionKind:
+      type: string
+      enum:
+      - bank_transfer
+      - qr_code
+      - hosted_page
+      - manual
+      title: PayinInstructionKind
+    PayoutReceiptResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Stable public identifier for this outgoing transfer.
+        kind:
+          $ref: '#/components/schemas/PayoutKind'
+          description: Whether the contact is account-based or on-chain.
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Current public lifecycle status of the transfer.
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+          description: On-chain transaction hash, when broadcast.
+        transactionId:
+          anyOf:
+          - type: string
+            pattern: ^(?:txn_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - txn_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Transactionid
+          description: Ledger transaction identifier, when created.
+        pollUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pollurl
+          description: Relative API URL to poll while processing continues.
+        failure:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutFailureView'
+          - type: 'null'
+          description: Terminal or actionable failure details.
+      type: object
+      required:
+      - id
+      - kind
+      - status
+      title: PayoutReceiptResponse
+    PayinInstructionsView:
+      properties:
+        payinId:
+          type: string
+          pattern: ^(?:pi_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Payinid
+          description: Incoming-transfer identifier these instructions fund.
+          examples:
+          - pi_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        kind:
+          anyOf:
+          - $ref: '#/components/schemas/PayinInstructionKind'
+          - type: string
+            const: onchain
+          title: Kind
+          description: Kind of funding instruction returned.
+        amount:
+          type: string
+          title: Amount
+          description: Exact amount to send.
+          example: '500.00'
+        currency:
+          type: string
+          title: Currency
+          description: Currency or digital asset to send.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference that must accompany the account transfer.
+        singleUse:
+          type: boolean
+          title: Singleuse
+          description: Whether these instructions may fund only this incoming transfer once.
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+          description: UTC timestamp after which these instructions expire.
+        requisites:
+          anyOf:
+          - $ref: '#/components/schemas/RailRequisitesView'
+          - type: 'null'
+          description: Receiving payment-account details.
+        qrPayload:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Qrpayload
+          description: Raw payload suitable for rendering as a payment QR code.
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: Hosted URL where the incoming transfer can be funded.
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+          description: On-chain destination address.
+        memo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Memo
+          description: Memo or destination tag required by the on-chain transfer.
+        chainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainid
+          description: Network on which the destination address exists.
+      type: object
+      required:
+      - payinId
+      - kind
+      - amount
+      - currency
+      - singleUse
+      title: PayinInstructionsView
+    RequisiteFields:
+      properties:
+        iban:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Iban
+          description: International account identifier without display separators.
+        bic:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bic
+          description: BIC or SWIFT identifier of the destination institution.
+        accountNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountnumber
+          description: Domestic account number.
+        routingNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Routingnumber
+          description: Domestic routing or clearing number.
+        pixKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pixkey
+          description: Brazil PIX destination key.
+        pixKeyType:
+          anyOf:
+          - $ref: '#/components/schemas/RequisitePixKeyType'
+          - type: 'null'
+          description: Type of Brazil PIX key.
+        paymentKey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentkey
+          description: Local payment key required by the selected method.
+        financialInstitutionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Financialinstitutionid
+          description: Institution identifier from the method directory.
+        branchNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branchnumber
+          description: Destination institution branch identifier.
+        accountKind:
+          anyOf:
+          - $ref: '#/components/schemas/RequisiteAccountKind'
+          - type: 'null'
+          description: Checking, savings or equivalent classification.
+        phoneNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phonenumber
+          description: Phone number required by the selected local method.
+      type: object
+      title: RequisiteFields
+    FiatPaymentType:
+      type: string
+      enum:
+      - sepa
+      - swift
+      - ach
+      - uaefts
+      - fedwire
+      - rtp
+      - fednow
+      - pix
+      - spei
+      - pse
+      - breb
+      - transfers_3_0
+      - ukfps
+      - npp
+      - nip
+      - bdt_local
+      - bdt_ewallet
+      - bob_local
+      - brl_local
+      - cad_eft
+      - clp_local
+      - cny_alipay
+      - cny_wechatpay
+      - cop_local
+      - crc_local
+      - dkk_local
+      - dop_local
+      - dop_ewallet
+      - egp_local
+      - gtq_local
+      - gtq_ewallet
+      - hkd_fps
+      - hnl_local
+      - idr_local
+      - idr_ewallet
+      - ils_local
+      - inr_local
+      - inr_upi
+      - jmd_local
+      - jpy_local
+      - krw_local
+      - myr_local
+      - nok_local
+      - php_local
+      - php_ewallet
+      - pkr_raast
+      - pkr_ewallet
+      - pln_local
+      - sar_local
+      - sle_local
+      - thb_local
+      - try_fast
+      - tzs_local
+      - ugx_local
+      - vnd_local
+      - xof_local
+      - zmw_local
+      title: FiatPaymentType
+    DebitView:
+      properties:
+        address:
+          type: string
+          title: Address
+          description: On-chain address receiving the funding debit.
+        amount:
+          type: string
+          title: Amount
+          description: Human-readable token amount debited.
+          example: '500.00'
+        amountAtomic:
+          type: string
+          title: Amountatomic
+          description: Integer token amount in the asset's smallest unit.
+        token:
+          type: string
+          title: Token
+          description: Digital asset debited to fund the transfer.
+        chainId:
+          type: integer
+          title: Chainid
+          description: Numeric network identifier on which the debit executes.
+      type: object
+      required:
+      - address
+      - amount
+      - amountAtomic
+      - token
+      - chainId
+      title: DebitView
+    ConfirmRequest:
+      properties:
+        signature:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Signature
+          description: Base64 DER ECDSA P-256/SHA-256 signature over base64decode(approval.payload).
+        publicKey:
+          anyOf:
+          - type: string
+            maxLength: 512
+            minLength: 1
+          - type: 'null'
+          title: Publickey
+          description: Registered P-256 public key; omit when the signature uniquely identifies the key.
+      additionalProperties: false
+      type: object
+      required:
+      - signature
+      title: ConfirmRequest
+    SwapCreateRequest:
+      properties:
+        sourceAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money leaves.
+        destinationAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money lands on.
+        amount:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Exact amount to debit from the source account.
+        amountTo:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amountto
+          description: Exact amount the destination account should receive.
+        publicKey:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Publickey
+          description: Base64 DER SubjectPublicKeyInfo for the registered P-256 developer key.
+      additionalProperties: false
+      type: object
+      required:
+      - sourceAccount
+      - destinationAccount
+      - publicKey
+      title: SwapCreateRequest
+    SwapResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:swp_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this swap.
+          examples:
+          - swp_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/SwapState'
+          description: Current public lifecycle status of the swap.
+        idempotencyKey:
+          type: string
+          title: Idempotencykey
+          description: Caller-supplied key that makes an identical retry return this result.
+        sourceAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money leaves.
+        destinationAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money lands on.
+        quote:
+          $ref: '#/components/schemas/SwapQuoteView'
+          description: Price, fee and conversion terms fixed for this swap.
+        authorization:
+          $ref: '#/components/schemas/AuthorizationKind'
+          description: Whether the approval authorizes a balance debit or a signature over the swap's terms.
+        approval:
+          $ref: '#/components/schemas/ApprovalView'
+          description: Authorization to sign with the developer key before settlement.
+        debit:
+          anyOf:
+          - $ref: '#/components/schemas/DebitView'
+          - type: 'null'
+          description: Exact on-chain debit used to fund this swap.
+        intent:
+          anyOf:
+          - $ref: '#/components/schemas/IntentView'
+          - type: 'null'
+          description: Terms authorized by the signature, when this swap is not funded by a debit.
+      type: object
+      required:
+      - id
+      - status
+      - idempotencyKey
+      - sourceAccount
+      - destinationAccount
+      - quote
+      - authorization
+      - approval
+      title: SwapResponse
+    RequisiteState:
+      type: string
+      enum:
+      - active
+      - pending
+      - closed
+      title: RequisiteState
+    PayinInstructionsRequest:
+      properties:
+        payer:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformPayinPayerAccount'
+          - type: 'null'
+          description: Originator information required by payment methods that validate the sending account.
+      additionalProperties: false
+      type: object
+      title: PayinInstructionsRequest
+    PayoutKind:
+      type: string
+      enum:
+      - fiat
+      - onchain
+      title: PayoutKind
+    SwapReceiptResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:swp_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this swap.
+          examples:
+          - swp_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/SwapState'
+          description: Current public lifecycle status of the swap.
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+          description: On-chain transaction hash, when broadcast.
+        pollUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pollurl
+          description: Relative API URL to poll while processing continues.
+        failure:
+          anyOf:
+          - $ref: '#/components/schemas/SwapFailureView'
+          - type: 'null'
+          description: Terminal or actionable failure details.
+      type: object
+      required:
+      - id
+      - status
+      title: SwapReceiptResponse
+    PayoutContactView:
+      properties:
+        contactId:
+          anyOf:
+          - type: string
+            pattern: ^(?:ct_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - ct_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Contactid
+          description: Saved contact associated with the transfer.
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Human-readable contact name.
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+          description: On-chain destination address, when applicable.
+        chainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chainid
+          description: Network on which the contact receives funds.
+        token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token
+          description: Digital asset the contact receives, when applicable.
+      type: object
+      title: PayoutContactView
+    IntentView:
+      properties:
+        digest:
+          type: string
+          title: Digest
+          description: EIP-712 digest of the terms authorized by this approval.
+        settles:
+          type: string
+          title: Settles
+          description: How the backend settles once the intent is authorized.
+      type: object
+      required:
+      - digest
+      - settles
+      title: IntentView
+    IntermediaryBank:
+      properties:
+        bic:
+          type: string
+          title: Bic
+          description: BIC or SWIFT identifier of the intermediary institution.
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Name of the intermediary institution.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/BankAddress'
+          - type: 'null'
+          description: Postal address of the intermediary institution.
+        accountNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accountnumber
+          description: Account number used at the intermediary institution.
+      type: object
+      required:
+      - bic
+      title: IntermediaryBank
+    SwapPreviewRequest:
+      properties:
+        sourceAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money leaves.
+        destinationAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account the money lands on.
+        amount:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Exact amount to debit from the source account.
+        amountTo:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amountto
+          description: Exact amount the destination account should receive.
+      additionalProperties: false
+      type: object
+      required:
+      - sourceAccount
+      - destinationAccount
+      title: SwapPreviewRequest
+    PayoutCreateRequest:
+      properties:
+        contactId:
+          type: string
+          pattern: ^(?:ct_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Contactid
+          description: Saved contact to receive this transfer.
+          examples:
+          - ct_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        amount:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Exact amount to debit in the source currency.
+        amountTo:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amountto
+          description: Exact amount the contact should receive.
+        publicKey:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Publickey
+          description: Base64 DER SubjectPublicKeyInfo for the registered P-256 developer key.
+        paymentReference:
+          anyOf:
+          - type: string
+            maxLength: 140
+          - type: 'null'
+          title: Paymentreference
+          description: Reference or memo delivered with the transfer.
+        purpose:
+          anyOf:
+          - type: string
+            maxLength: 64
+          - type: 'null'
+          title: Purpose
+          description: Business purpose or reason for the transfer.
+        documentIds:
+          items:
+            type: string
+            pattern: ^(?:doc_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - doc_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          type: array
+          maxItems: 10
+          title: Documentids
+          description: Supporting document identifiers returned by POST /dapi/v1/documents.
+        bankId:
+          anyOf:
+          - type: string
+            pattern: ^(?:bnk_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - bnk_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Bankid
+          description: Optional receiving-account identifier used to select a specific funding route.
+        sourceAccount:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account this payout is paid from. `USDC` and `EURC` debit the client's wallet; `FDIC_USD` spends the custodial USD balance and is authorized by an intent signature instead of a debit.
+          default: USDC
+      additionalProperties: false
+      type: object
+      required:
+      - contactId
+      - publicKey
+      title: PayoutCreateRequest
+    PayinState:
+      type: string
+      enum:
+      - pending
+      - awaitingFunds
+      - processing
+      - inReview
+      - completed
+      - failed
+      - refunded
+      - canceled
+      title: PayinState
+    PayoutPreviewResponse:
+      properties:
+        toAmount:
+          type: string
+          title: Toamount
+          description: Estimated amount delivered in the destination currency.
+          example: '500.00'
+        toCurrency:
+          type: string
+          title: Tocurrency
+          description: Currency delivered by the preview.
+        minAmount:
+          type: string
+          title: Minamount
+          description: Minimum supported source amount for this option.
+          example: '500.00'
+        feeAmount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Feeamount
+          description: Estimated variable fee.
+        fixedFee:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Fixedfee
+          description: Estimated fixed fee component.
+      type: object
+      required:
+      - toAmount
+      - toCurrency
+      - minAmount
+      title: PayoutPreviewResponse
+    PayoutQuoteView:
+      properties:
+        fromAmount:
+          type: string
+          title: Fromamount
+          description: Amount debited in the source currency.
+          example: '500.00'
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+          description: Currency debited by the quote.
+        toAmount:
+          type: string
+          title: Toamount
+          description: Amount delivered in the destination currency.
+          example: '500.00'
+        toCurrency:
+          type: string
+          title: Tocurrency
+          description: Currency delivered by the quote.
+        rate:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Rate
+          description: Conversion rate from source to destination amount.
+        feeAmount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Feeamount
+          description: Fee charged in feeCurrency.
+        feeCurrency:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Feecurrency
+          description: Currency in which the fee is charged.
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+          description: UTC timestamp after which the quote is no longer valid.
+        fromChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fromchainid
+          description: Network from which the transfer is funded.
+        toChainId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tochainid
+          description: Network on which the contact receives the transfer.
+      type: object
+      required:
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      title: PayoutQuoteView
+    RequisiteAccountKind:
+      type: string
+      enum:
+      - checking
+      - savings
+      - deposit
+      - salary
+      - other
+      title: RequisiteAccountKind
+    SwapQuoteView:
+      properties:
+        fromAmount:
+          type: string
+          title: Fromamount
+          description: Amount debited from the source account.
+          example: '500.00'
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+          description: Currency or digital asset debited.
+        toAmount:
+          type: string
+          title: Toamount
+          description: Amount credited to the destination account.
+          example: '500.00'
+        toCurrency:
+          type: string
+          title: Tocurrency
+          description: Currency or digital asset credited.
+        rate:
+          type: string
+          title: Rate
+          description: Conversion rate from the source amount to the destination amount.
+          example: '500.00'
+        feeAmount:
+          type: string
+          title: Feeamount
+          description: Total fee charged in feeCurrency.
+          example: '500.00'
+        feeCurrency:
+          type: string
+          title: Feecurrency
+          description: Currency in which the fee is charged.
+        minimumToAmount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Minimumtoamount
+          description: Worst-case amount credited when the route carries slippage.
+        estimated:
+          type: boolean
+          title: Estimated
+          description: Whether the delivered amount is an estimate settled later, rather than a locked price.
+          default: false
+        etaHours:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Etahours
+          description: Expected hours until the destination account is credited.
+        expiresAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expiresat
+          description: UTC timestamp after which this price is no longer honored.
+      type: object
+      required:
+      - fromAmount
+      - fromCurrency
+      - toAmount
+      - toCurrency
+      - rate
+      - feeAmount
+      - feeCurrency
+      title: SwapQuoteView
+    AccountKey:
+      type: string
+      enum:
+      - USDC
+      - EURC
+      - FDIC_USD
+      title: AccountKey
+    BankAddress:
+      properties:
+        addressLine1:
+          type: string
+          title: Addressline1
+          description: Street name and building number.
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        postalCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Postalcode
+          description: Postal or ZIP code.
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+          description: ISO 3166-1 alpha-2 country code.
+      type: object
+      required:
+      - addressLine1
+      title: BankAddress
+    RequisiteHolder-Input:
+      properties:
+        type:
+          $ref: '#/components/schemas/RequisiteHolderType'
+          description: Whether the account holder is an individual or a business.
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+          description: Legal given name of an individual holder.
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+          description: Legal family name of an individual holder.
+        businessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businessname
+          description: Registered legal name of a business holder.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+          description: Postal address of the account holder.
+        idType:
+          anyOf:
+          - $ref: '#/components/schemas/RequisiteIdType'
+          - type: 'null'
+          description: Government identifier type for the holder.
+        idNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idnumber
+          description: Government identifier number for the holder.
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+          description: Tax identifier of the holder.
+        nationality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nationality
+          description: ISO country code of the holder's nationality.
+      type: object
+      required:
+      - type
+      title: RequisiteHolder
+    PayoutReadResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:po_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this outgoing transfer.
+          examples:
+          - po_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        kind:
+          $ref: '#/components/schemas/PayoutKind'
+          description: Whether the contact is account-based or on-chain.
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+          description: Current public lifecycle status of the transfer.
+        quote:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutQuoteView'
+          - type: 'null'
+          description: Price, fee and conversion terms fixed at creation.
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+          description: On-chain transaction hash, when broadcast.
+        transactionId:
+          anyOf:
+          - type: string
+            pattern: ^(?:txn_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - txn_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Transactionid
+          description: Ledger transaction identifier, when created.
+        contact:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutContactView'
+          - type: 'null'
+          description: Contact snapshot fixed at creation.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference or memo delivered with the transfer.
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+          description: UTC timestamp when the transfer was created.
+        settledAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Settledat
+          description: UTC timestamp when settlement completed.
+        attention:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutAttentionView'
+          - type: 'null'
+          description: Additional action required before processing.
+        failure:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutFailureView'
+          - type: 'null'
+          description: Terminal or actionable failure details.
+      type: object
+      required:
+      - id
+      - kind
+      - status
+      - createdAt
+      title: PayoutReadResponse
+    RequisiteHolder-Output:
+      properties:
+        type:
+          $ref: '#/components/schemas/RequisiteHolderType'
+          description: Whether the account holder is an individual or a business.
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+          description: Legal given name of an individual holder.
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+          description: Legal family name of an individual holder.
+        businessName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businessname
+          description: Registered legal name of a business holder.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UserAddress'
+          - type: 'null'
+          description: Postal address of the account holder.
+        idType:
+          anyOf:
+          - $ref: '#/components/schemas/RequisiteIdType'
+          - type: 'null'
+          description: Government identifier type for the holder.
+        idNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idnumber
+          description: Government identifier number for the holder.
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+          description: Tax identifier of the holder.
+        nationality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nationality
+          description: ISO country code of the holder's nationality.
+      type: object
+      required:
+      - type
+      title: RequisiteHolder
+    RailRequisitesView:
+      properties:
+        fields:
+          $ref: '#/components/schemas/RequisiteFields'
+          description: Structured receiving details for this payment method.
+        holder:
+          $ref: '#/components/schemas/RequisiteHolder-Output'
+          description: Identity and address of the receiving account holder.
+        bankName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bankname
+          description: Name of the receiving financial institution.
+        paymentReference:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Paymentreference
+          description: Reference or memo that must accompany the account transfer.
+        state:
+          $ref: '#/components/schemas/RequisiteState'
+          description: Current usability state of the receiving details.
+      type: object
+      required:
+      - fields
+      - holder
+      - state
+      title: RailRequisitesView
+    ApprovalView:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Single-use approval identifier.
+        payload:
+          type: string
+          title: Payload
+          description: Base64 canonical authorization payload to sign with the developer key.
+        expiresAt:
+          type: string
+          format: date-time
+          title: Expiresat
+          description: UTC timestamp after which this approval is refused.
+      type: object
+      required:
+      - id
+      - payload
+      - expiresAt
+      title: ApprovalView
+    SwapFailureView:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Stable machine-readable code for the swap failure.
+      type: object
+      required:
+      - code
+      title: SwapFailureView
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

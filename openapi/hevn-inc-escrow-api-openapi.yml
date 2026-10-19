@@ -1,0 +1,978 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Escrow API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: escrow
+  description: Create, authorize and reconcile on-chain escrow agreements.
+paths:
+  /escrow:
+    post:
+      tags:
+      - escrow
+      summary: Open an escrow and return the approval to sign
+      description: Create an escrow draft and return the exact approval payload that the authorized developer key must sign. No on-chain action is submitted until the signature is confirmed.
+      operationId: create_escrow_escrow_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EscrowCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowView'
+          description: OK
+    get:
+      tags:
+      - escrow
+      summary: List the escrows this account operates
+      description: List escrow agreements operated by the authenticated account, newest first.
+      operationId: list_escrows_escrow_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              $ref: '#/components/schemas/PlatformEscrowStatus'
+          - type: 'null'
+          title: Status
+      - name: senderClientId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Senderclientid
+      - name: receiverClientId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Receiverclientid
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            maxLength: 512
+          - type: 'null'
+          title: Cursor
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_EscrowView_'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /escrow/{escrowId}:
+    get:
+      tags:
+      - escrow
+      summary: Read one escrow
+      description: Retrieve one escrow, its current balances, deadlines, available actions and last reconciled chain state.
+      operationId: read_escrow_escrow__escrowId__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: escrowId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^(?:esc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Escrowid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /escrow/{escrowId}/sync:
+    post:
+      tags:
+      - escrow
+      summary: Reconcile one escrow with the chain
+      description: Reconcile one escrow with current on-chain state. This read-through operation may persist newly observed events but never invents a successful chain action.
+      operationId: sync_escrow_escrow__escrowId__sync_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: escrowId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^(?:esc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Escrowid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /escrow/{escrowId}/actions:
+    post:
+      tags:
+      - escrow
+      summary: Prepare an escrow action and return the payload to sign
+      description: Prepare an escrow action and return the immutable payload to sign. This request does not broadcast the action.
+      operationId: prepare_escrow_action_escrow__escrowId__actions_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: escrowId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^(?:esc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Escrowid
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EscrowActionRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowActionResultView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowActionResultView'
+          description: OK
+  /escrow/{escrowId}/actions/{idempotencyKey}/confirm:
+    post:
+      tags:
+      - escrow
+      summary: Submit the signature for a prepared escrow action
+      description: Submit the signature for the previously prepared escrow action. The path idempotency key must match the prepared action and makes safe retries return the first result.
+      operationId: confirm_escrow_action_escrow__escrowId__actions__idempotencyKey__confirm_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: escrowId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^(?:esc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Escrowid
+      - name: idempotencyKey
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          title: Idempotencykey
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EscrowConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowActionResultView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    EscrowVerb:
+      type: string
+      enum:
+      - authorize
+      - charge
+      - capture
+      - void
+      - refund
+      - reclaim
+      title: EscrowVerb
+    EscrowWindowsView:
+      properties:
+        approveBy:
+          type: string
+          format: date-time
+          title: Approveby
+          description: UTC deadline for escrow approval.
+        holdUntil:
+          type: string
+          format: date-time
+          title: Holduntil
+          description: UTC timestamp until which captured funds remain held.
+        refundableUntil:
+          type: string
+          format: date-time
+          title: Refundableuntil
+          description: UTC deadline for a refund.
+      type: object
+      required:
+      - approveBy
+      - holdUntil
+      - refundableUntil
+      title: EscrowWindowsView
+    PlatformEscrowStatus:
+      type: string
+      enum:
+      - draft
+      - authorized
+      - charged
+      - partiallyCaptured
+      - captured
+      - voided
+      - reclaimed
+      - partiallyRefunded
+      - refunded
+      title: PlatformEscrowStatus
+    EscrowCreateRequest:
+      properties:
+        senderClientId:
+          type: string
+          pattern: ^(?:cl_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Senderclientid
+          description: Account funding the escrow.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        receiverClientId:
+          type: string
+          pattern: ^(?:cl_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Receiverclientid
+          description: Account entitled to receive captured funds.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        token:
+          type: string
+          maxLength: 16
+          minLength: 1
+          title: Token
+          description: Digital asset held in escrow.
+          examples:
+          - USDC
+        maxAmount:
+          anyOf:
+          - type: number
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          type: string
+          title: Maxamount
+          description: Maximum token amount that may be authorized.
+          example: '500.00'
+        approveWithin:
+          type: string
+          pattern: ^\d{1,4}[smhd]$
+          title: Approvewithin
+          description: Time allowed for the sender to approve funding.
+          default: 1h
+          examples:
+          - 14d
+        holdFor:
+          type: string
+          pattern: ^\d{1,4}[smhd]$
+          title: Holdfor
+          description: Time captured funds remain held after approval.
+          default: 14d
+          examples:
+          - 14d
+        refundableFor:
+          type: string
+          pattern: ^\d{1,4}[smhd]$
+          title: Refundablefor
+          description: Time during which a refund remains available.
+          default: 90d
+          examples:
+          - 14d
+        feeBps:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          title: Feebps
+          description: Variable fee in basis points; 100 basis points equals 1 percent.
+          default: 0
+        reference:
+          additionalProperties: true
+          type: object
+          title: Reference
+          description: Caller reference stored with the escrow.
+      additionalProperties: false
+      type: object
+      required:
+      - senderClientId
+      - receiverClientId
+      - token
+      - maxAmount
+      title: EscrowCreateRequest
+    EscrowPartyView:
+      properties:
+        clientId:
+          type: string
+          title: Clientid
+          description: Account represented by this escrow party.
+      type: object
+      required:
+      - clientId
+      title: EscrowPartyView
+    EscrowActionRequest:
+      properties:
+        action:
+          $ref: '#/components/schemas/EscrowVerb'
+          description: Escrow state transition to prepare.
+        amount:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Token amount affected by this action, when required.
+        feeBps:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          title: Feebps
+          description: Variable fee in basis points for charge or capture actions.
+          default: 0
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      title: EscrowActionRequest
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    EscrowActionResultView:
+      properties:
+        deal:
+          $ref: '#/components/schemas/EscrowView'
+          description: Latest escrow state after processing the action.
+        action:
+          $ref: '#/components/schemas/EscrowActionView'
+          description: Prepared or submitted action.
+        events:
+          items:
+            $ref: '#/components/schemas/EscrowEventView'
+          type: array
+          title: Events
+          description: Observed on-chain events for this action.
+        pollUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pollurl
+          description: Relative API URL to poll while processing continues.
+      type: object
+      required:
+      - deal
+      - action
+      title: EscrowActionResultView
+    PlatformEscrowActionStatus:
+      type: string
+      enum:
+      - awaitingSignature
+      - signing
+      - submitted
+      - confirmed
+      - reverted
+      - failed
+      - superseded
+      - dropped
+      title: PlatformEscrowActionStatus
+    EscrowEventView:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Public name of the observed escrow event.
+        transactionHash:
+          type: string
+          title: Transactionhash
+          description: On-chain transaction hash associated with this event.
+        blockNumber:
+          type: integer
+          title: Blocknumber
+          description: Blockchain block number in which this event was observed.
+        amount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Token amount associated with the event.
+      type: object
+      required:
+      - name
+      - transactionHash
+      - blockNumber
+      title: EscrowEventView
+    EscrowView:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Stable public identifier for this escrow.
+        status:
+          $ref: '#/components/schemas/PlatformEscrowStatus'
+          description: Current public lifecycle status of the escrow.
+        availableActions:
+          items:
+            $ref: '#/components/schemas/EscrowAction'
+          type: array
+          title: Availableactions
+          description: Actions permitted by current state and deadlines.
+        sender:
+          $ref: '#/components/schemas/EscrowPartyView'
+          description: Account sending or authorizing escrow funds.
+        receiver:
+          $ref: '#/components/schemas/EscrowPartyView'
+          description: Account entitled to captured escrow funds.
+        token:
+          type: string
+          title: Token
+          description: Digital asset held in escrow.
+        maxAmount:
+          type: string
+          title: Maxamount
+          description: Maximum token amount that may be authorized.
+          example: '500.00'
+        authorizedAmount:
+          type: string
+          title: Authorizedamount
+          description: Token amount currently authorized for capture.
+          example: '500.00'
+        capturableAmount:
+          type: string
+          title: Capturableamount
+          description: Token amount that may currently be captured.
+          example: '500.00'
+        refundableAmount:
+          type: string
+          title: Refundableamount
+          description: Token amount that may currently be refunded.
+          example: '500.00'
+        windows:
+          $ref: '#/components/schemas/EscrowWindowsView'
+          description: Approval, holding and refund deadlines.
+        action:
+          anyOf:
+          - $ref: '#/components/schemas/EscrowActionView'
+          - type: 'null'
+          description: Latest prepared or submitted escrow action.
+        consistent:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Consistent
+          description: Whether persisted state matches the latest chain state.
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+          description: UTC timestamp when the escrow was created.
+        updatedAt:
+          type: string
+          format: date-time
+          title: Updatedat
+          description: UTC timestamp when the escrow was last updated.
+      type: object
+      required:
+      - id
+      - status
+      - availableActions
+      - sender
+      - receiver
+      - token
+      - maxAmount
+      - authorizedAmount
+      - capturableAmount
+      - refundableAmount
+      - windows
+      - createdAt
+      - updatedAt
+      title: EscrowView
+    Page_EscrowView_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/EscrowView'
+          type: array
+          title: Items
+          description: Resources in this page, in stable server-defined order.
+        nextCursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nextcursor
+          description: Opaque cursor for the next page; absent when this is the final page.
+      type: object
+      required:
+      - items
+      title: Page[EscrowView]
+    EscrowConfirmRequest:
+      properties:
+        signature:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Signature
+          description: Base64 DER ECDSA P-256/SHA-256 signature over the decoded approval payload.
+        publicKey:
+          anyOf:
+          - type: string
+            maxLength: 512
+            minLength: 1
+          - type: 'null'
+          title: Publickey
+          description: Registered P-256 public key; omit when the signature uniquely identifies the key.
+      additionalProperties: false
+      type: object
+      required:
+      - signature
+      title: EscrowConfirmRequest
+    EscrowActionView:
+      properties:
+        action:
+          $ref: '#/components/schemas/EscrowAction'
+          description: Escrow action represented by this resource.
+        idempotencyKey:
+          type: string
+          title: Idempotencykey
+          description: Key that binds retries to the prepared action.
+        status:
+          $ref: '#/components/schemas/PlatformEscrowActionStatus'
+          description: Current public lifecycle status of the action.
+        amount:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Amount
+          description: Token amount affected by the action.
+        feeBps:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Feebps
+          description: Variable fee in basis points, when charged.
+        transactionHash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Transactionhash
+          description: On-chain transaction hash, when broadcast.
+        approval:
+          anyOf:
+          - $ref: '#/components/schemas/EscrowApprovalView'
+          - type: 'null'
+          description: Authorization to sign before execution.
+      type: object
+      required:
+      - action
+      - idempotencyKey
+      - status
+      title: EscrowActionView
+    EscrowAction:
+      type: string
+      enum:
+      - approve
+      - authorize
+      - charge
+      - capture
+      - reject
+      - void
+      - reclaim
+      - refund
+      title: EscrowAction
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    EscrowApprovalView:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+          description: Single-use approval identifier.
+        payload:
+          type: string
+          title: Payload
+          description: Base64 canonical authorization payload to sign with the developer key.
+        expiresAt:
+          type: string
+          format: date-time
+          title: Expiresat
+          description: UTC timestamp after which this approval is refused.
+      type: object
+      required:
+      - id
+      - payload
+      - expiresAt
+      title: EscrowApprovalView
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

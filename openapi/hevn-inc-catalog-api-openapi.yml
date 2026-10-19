@@ -1,0 +1,356 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Catalog API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: Catalog
+paths:
+  /chains:
+    get:
+      tags:
+      - Catalog
+      summary: List supported chains and tokens
+      description: Every chain and token this API names, with the contract address and decimals of each token. `settlement` marks the chain accounts hold their balance on and the tokens a payout can be funded with.
+      operationId: list_chains_chains_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChainListView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /rates:
+    get:
+      tags:
+      - Catalog
+      summary: Retrieve a market reference rate
+      description: Convert one currency or token into another at the current market rate, before any transfer exists. Use it to show a price; the rate a transfer settles at comes from its own quote.
+      operationId: read_rate_rates_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 5
+          description: ISO 4217 currency code or a token symbol.
+          examples:
+          - EUR
+          title: From
+        description: ISO 4217 currency code or a token symbol.
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 5
+          description: ISO 4217 currency code or a token symbol.
+          examples:
+          - USDC
+          title: To
+        description: ISO 4217 currency code or a token symbol.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    TokenView:
+      properties:
+        symbol:
+          type: string
+          title: Symbol
+          description: Token symbol, as contacts and payouts name it.
+        decimals:
+          type: integer
+          title: Decimals
+          description: On-chain decimals of the token's smallest unit.
+        address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address
+          description: ERC-20 contract address; absent for a chain's gas coin.
+        native:
+          type: boolean
+          title: Native
+          description: Whether this is the chain's gas coin.
+        account:
+          anyOf:
+          - $ref: '#/components/schemas/AccountKey'
+          - type: 'null'
+          description: The account this token holds, when a client can hold a balance in it.
+      type: object
+      required:
+      - symbol
+      - decimals
+      - native
+      title: TokenView
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    AccountKey:
+      type: string
+      enum:
+      - USDC
+      - EURC
+      - FDIC_USD
+      title: AccountKey
+    ChainListView:
+      properties:
+        chains:
+          items:
+            $ref: '#/components/schemas/ChainView'
+          type: array
+          title: Chains
+          description: Every chain this API names, settlement chain included.
+      type: object
+      required:
+      - chains
+      title: ChainListView
+    RateView:
+      properties:
+        fromCurrency:
+          type: string
+          title: Fromcurrency
+          description: Currency or token the rate converts from.
+        toCurrency:
+          type: string
+          title: Tocurrency
+          description: Currency or token the rate converts to.
+        rate:
+          type: string
+          title: Rate
+          description: How many units of toCurrency one unit of fromCurrency buys.
+          example: '500.00'
+        indicative:
+          type: boolean
+          title: Indicative
+          description: 'Always true: this is a market reference rate. A payout or incoming transfer is priced by its own quote.'
+          default: true
+      type: object
+      required:
+      - fromCurrency
+      - toCurrency
+      - rate
+      title: RateView
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    ChainView:
+      properties:
+        chain:
+          type: string
+          title: Chain
+          description: Chain code used by contacts, payouts and transactions.
+        name:
+          type: string
+          title: Name
+          description: Human-readable chain name.
+        chainId:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Chainid
+          description: EVM chain id; absent for non-EVM chains.
+        settlement:
+          type: boolean
+          title: Settlement
+          description: Whether clients hold their balances on this chain.
+        tokens:
+          items:
+            $ref: '#/components/schemas/TokenView'
+          type: array
+          title: Tokens
+          description: Tokens this API names on the chain.
+      type: object
+      required:
+      - chain
+      - name
+      - settlement
+      - tokens
+      title: ChainView
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

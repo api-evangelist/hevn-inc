@@ -1,0 +1,2199 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Verification API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: Verification
+  description: Collect business-applicant and related-individual information, inspect requirements, and complete a verification submission for review.
+paths:
+  /client/kyb:
+    put:
+      tags:
+      - Verification
+      summary: Provide applicant information
+      description: 'Save information for the business applicant and its related individual applicants in the entity graph. This updates an editable verification submission; it does not send anything for review. People are addressed by a stable `key` chosen by the caller, so retrying the same body updates the same entities. Omitting `people` leaves the roster unchanged; sending `people: []` removes only caller-managed people. `ready: false` is a successful draft write and `missing` names every outstanding field or document.'
+      operationId: write_kyb_client_kyb_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatformKybWriteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformKybWriteResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+    get:
+      tags:
+      - Verification
+      summary: Retrieve the verification submission
+      description: Return the current editable applicant information, related people, filed documents, outstanding requirements and the latest review status. `missing` is authoritative for whether `complete` can succeed. A pending or completed review is read-only as an application snapshot; later draft edits apply to the next submission.
+      operationId: read_kyb_client_kyb_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformKybResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /client/kyb/complete:
+    post:
+      tags:
+      - Verification
+      summary: Complete the verification submission
+      description: Close the editable submission and send its immutable snapshot for compliance review. This is the only operation that starts review. It is refused with `kyb_incomplete` and the same `missing` paths returned by GET when applicant information or documents are outstanding. An identical retry replays the existing application instead of creating a second review.
+      operationId: complete_kyb_client_kyb_complete_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformKybSubmitResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    HighRiskActivity:
+      type: string
+      enum:
+      - MONEY_SERVICES
+      - LENDING_BANKING
+      - OTC_FX_CRYPTO_BROKERAGE
+      - HOLD_CLIENT_FUNDS
+      - INVESTMENT_SERVICES
+      - SAFE_DEPOSIT_BOX
+      - PRECIOUS_METALS_STONES_JEWELRY
+      - NICOTINE_TOBACCO
+      - MARIJUANA
+      - PHARMACEUTICALS
+      - THIRD_PARTY_PAYMENT_PROCESSING
+      - ADULT_ENTERTAINMENT
+      - WEAPONS_FIREARMS_EXPLOSIVES
+      - GAMBLING
+      title: HighRiskActivity
+    PlatformKybPersonView:
+      properties:
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: Caller-chosen stable key for this related applicant.
+        id:
+          type: string
+          format: uuid
+          title: Id
+          description: Entity identifier assigned to the related applicant.
+        firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firstname
+          description: Applicant's legal given name.
+        middleName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Middlename
+          description: Applicant's legal middle name, if any.
+        lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lastname
+          description: Applicant's legal family name.
+        dateOfBirth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Dateofbirth
+          description: Applicant's date of birth.
+        birthCountry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Birthcountry
+          description: ISO country code of birth.
+        nationalities:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Nationalities
+          description: Applicant nationalities as ISO country codes.
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+          description: Office held in the business.
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+          description: ISO country code of residence.
+        linkedinUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedinurl
+          description: Public LinkedIn profile URL.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          description: Applicant email used for verification correspondence.
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+          description: Applicant phone number in E.164 format.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybAddressView'
+          - type: 'null'
+          description: Applicant residential address.
+        taxIdCountry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxidcountry
+          description: ISO country code of tax residence.
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+          description: Personal tax identifier exactly as issued.
+        identityDocuments:
+          items:
+            $ref: '#/components/schemas/PlatformKybIdentityDocumentView'
+          type: array
+          title: Identitydocuments
+          description: Identity-document metadata for this applicant.
+        ownershipPercentage:
+          anyOf:
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Ownershippercentage
+          description: Direct ownership percentage.
+        hasControl:
+          type: boolean
+          title: Hascontrol
+          description: Whether this applicant exercises control.
+          default: false
+        isDirector:
+          type: boolean
+          title: Isdirector
+          description: Whether this applicant is a director.
+          default: false
+        isSigner:
+          type: boolean
+          title: Issigner
+          description: Whether this applicant is authorized to sign.
+          default: false
+        documents:
+          items:
+            $ref: '#/components/schemas/PlatformKybDocumentView'
+          type: array
+          title: Documents
+          description: Files attached to this related applicant.
+      type: object
+      required:
+      - id
+      title: PlatformKybPersonView
+    PlatformKybPerson:
+      properties:
+        key:
+          anyOf:
+          - type: string
+            pattern: ^[A-Za-z0-9._:\-]{1,64}$
+          - type: 'null'
+          title: Key
+          description: Stable caller-chosen key used to address the same child applicant on later writes.
+        id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Id
+          description: Entity id returned by an earlier write; use either id or key.
+        firstName:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Firstname
+          description: Applicant's legal given name.
+        middleName:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Middlename
+          description: Applicant's legal middle name, if any.
+        lastName:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Lastname
+          description: Applicant's legal family name.
+        dateOfBirth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Dateofbirth
+          description: Applicant's date of birth.
+        birthCountry:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country of birth.
+        nationalities:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CountryCode'
+            type: array
+          - type: 'null'
+          title: Nationalities
+          description: Applicant nationalities as ISO 3166-1 alpha-2 country codes.
+        title:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Title
+          description: Office held in the company, for example Director.
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country of residence.
+        linkedinUrl:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 1
+          - type: 'null'
+          title: Linkedinurl
+          description: Public LinkedIn profile URL used to corroborate applicant information.
+        email:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Email
+          description: Applicant email used for verification correspondence.
+        phone:
+          anyOf:
+          - type: string
+            pattern: ^\+[1-9]\d{6,14}$
+          - type: 'null'
+          title: Phone
+          description: Applicant phone number in E.164 format.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybAddress'
+          - type: 'null'
+          description: Applicant residential address.
+        taxIdCountry:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 tax-residence country; it is not inferred from nationality or address.
+        taxId:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Taxid
+          description: Personal tax identifier exactly as issued.
+        identityDocuments:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PlatformKybIdentityDocument'
+            type: array
+          - type: 'null'
+          title: Identitydocuments
+          description: Identity-document metadata. Files are attached through documents.
+        ownershipPercentage:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            exclusiveMinimum: 0.0
+          - type: string
+            pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          - type: 'null'
+          title: Ownershippercentage
+          description: Direct ownership percentage in the parent business.
+        hasControl:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hascontrol
+          description: Whether this applicant exercises control.
+        isDirector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isdirector
+          description: Whether this applicant is a director.
+        isSigner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Issigner
+          description: Whether this applicant is authorized to sign.
+        documents:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PlatformKybDocument'
+            type: array
+          - type: 'null'
+          title: Documents
+          description: Files attached to this child applicant, referenced by uploadId.
+      additionalProperties: false
+      type: object
+      title: PlatformKybPerson
+    CountryCode:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - XK
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      title: CountryCode
+      description: ISO 3166-1 alpha-2 country codes.
+    RevenueCoverage:
+      type: string
+      enum:
+      - all_operating_expenses
+      - most
+      - some
+      - minimal
+      title: RevenueCoverage
+      description: Share of operating expenses covered by current business revenue.
+    PlatformKybIdentityDocumentView:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FiatIdentityDocumentType'
+          - type: 'null'
+          description: Identity document type.
+        issuingCountry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issuingcountry
+          description: ISO country code of the issuing authority.
+        number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Number
+          description: Document number exactly as printed by the issuer.
+      type: object
+      title: PlatformKybIdentityDocumentView
+    FiatPurposeOfFunds:
+      type: string
+      enum:
+      - operations
+      - payroll
+      - vendor_payments
+      - investment
+      - treasury_management
+      - international_transfers
+      - other
+      title: FiatPurposeOfFunds
+      description: Purpose of funds.
+    PlatformKybAddress:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Streetaddress
+          description: Street name and building number.
+        addressLine2:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Addressline2
+          description: Optional apartment, suite or unit.
+        city:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        zip:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Zip
+          description: Postal or ZIP code.
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country code.
+      additionalProperties: false
+      type: object
+      title: PlatformKybAddress
+    PlatformKybCompanyView:
+      properties:
+        legalName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Legalname
+          description: Registered legal name of the business applicant.
+        tradeName:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tradename
+          description: Trading name or DBA, when different from legalName.
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+          description: ISO 3166-1 alpha-2 jurisdiction of incorporation.
+        registrationNumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrationnumber
+          description: Company registry number exactly as issued.
+        linkedinUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedinurl
+          description: Public LinkedIn company URL.
+        taxId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Taxid
+          description: Business tax identifier exactly as issued.
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+          description: Business phone number in E.164 format.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          description: Business contact email used for verification correspondence.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybAddressView'
+          - type: 'null'
+          description: Registered business address.
+        entityType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entitytype
+          description: Legal form of the business applicant.
+        entityTypeDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Entitytypedescription
+          description: Legal-form detail when entityType is other.
+        incorporationDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Incorporationdate
+          description: Date the business was legally registered.
+        industry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Industry
+          description: Free-text description of the business industry.
+        websites:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Websites
+          description: Public business websites, primary site first.
+        operatingCountries:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Operatingcountries
+          description: ISO country codes where the business operates.
+        expectedMonthlyVolumeUsd:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Expectedmonthlyvolumeusd
+          description: Expected total monthly transaction volume in USD.
+        expectedCryptoMonthlyVolumeUsd:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Expectedcryptomonthlyvolumeusd
+          description: Expected monthly digital-asset transaction volume in USD.
+        expectedMonthlyAchUsd:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Expectedmonthlyachusd
+          description: Expected monthly ACH volume in USD.
+        expectedMonthlyWireUsd:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Expectedmonthlywireusd
+          description: Expected monthly international-transfer volume in USD.
+        cryptoIndustrySubtype:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cryptoindustrysubtype
+          description: Digital-asset business subtype.
+        hasIntermediateEntityOwnership:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hasintermediateentityownership
+          description: Whether another legal entity exists between the applicant and an ultimate owner.
+        primaryTargetMarket:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Primarytargetmarket
+          description: Primary customer segment served by the business.
+        estimatedAnnualRevenue:
+          anyOf:
+          - type: string
+            example: '500.00'
+          - type: 'null'
+          title: Estimatedannualrevenue
+          description: Estimated annual revenue in USD.
+        hasUsBank:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hasusbank
+          description: Whether the business holds a US payment account.
+        deniedUsBank:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Deniedusbank
+          description: Whether a US financial institution declined or closed the business account.
+        hasPep:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Haspep
+          description: Whether a politically exposed person is connected.
+        bizAdverse:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Bizadverse
+          description: Declared adverse information about the business.
+        ownersAdverse:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Ownersadverse
+          description: Declared adverse information about owners.
+        publicListed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Publiclisted
+          description: Whether the business is publicly listed.
+        txPerMonth:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Txpermonth
+          description: Expected number of transactions per month.
+        usesBlockchain:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Usesblockchain
+          description: Whether digital assets are used in operations.
+        revenueCovers:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Revenuecovers
+          description: How much of operating expenses current revenue covers.
+        institutionalInvestors:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Institutionalinvestors
+          description: Whether institutional investors fund or own it.
+        isRegulated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isregulated
+          description: Whether the business is regulated or licensed.
+        productsServices:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Productsservices
+          description: Products and services offered by the business.
+        businessDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businessdescription
+          description: Plain-language description of what the business does.
+        businessType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businesstype
+          description: High-level business activity category.
+        businessIndustry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Businessindustry
+          description: Industry classification used for verification.
+        verifierRole:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Verifierrole
+          description: Role of the person providing verification information.
+        sourceOfFunds:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceoffunds
+          description: Primary economic source of incoming funds.
+        sourceOfFundsDetails:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceoffundsdetails
+          description: Additional source-of-funds explanation.
+        purposeOfFunds:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Purposeoffunds
+          description: Primary intended use of funds.
+        purposeOfFundsDetails:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Purposeoffundsdetails
+          description: Additional purpose-of-funds explanation.
+        flowOfFunds:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Flowoffunds
+          description: Expected origin, movement and destination of funds.
+        complianceScreening:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compliancescreening
+          description: How customers and transactions are screened.
+        moneyServicesDescription:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Moneyservicesdescription
+          description: Description of money-services activity.
+        handlesCustomerFunds:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handlescustomerfunds
+          description: Whether customer funds are handled.
+        actingAsIntermediary:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Actingasintermediary
+          description: Whether the business acts as a payment intermediary.
+        sanctionedCountryOperations:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sanctionedcountryoperations
+          description: Whether the business operates in or serves sanctioned jurisdictions.
+        highRiskActivities:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Highriskactivities
+          description: Declared higher-risk business activities.
+        depositMethods:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Depositmethods
+          description: Expected methods or regions used to fund the account.
+        contactInfo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contactinfo
+          description: Additional business contact or operational information.
+        identityDocuments:
+          items:
+            $ref: '#/components/schemas/PlatformKybIdentityDocumentView'
+          type: array
+          title: Identitydocuments
+          description: Structured identity-document metadata for the business.
+      type: object
+      title: PlatformKybCompanyView
+    PlatformKybStatus:
+      type: string
+      enum:
+      - notStarted
+      - pending
+      - approved
+      - rfi
+      - rejected
+      title: PlatformKybStatus
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    PlatformKybDocument:
+      properties:
+        slot:
+          $ref: '#/components/schemas/DocumentType'
+          description: Verification requirement this file satisfies.
+        uploadId:
+          type: string
+          pattern: ^(?:doc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Uploadid
+          description: Document id returned by POST /dapi/v1/documents.
+          examples:
+          - doc_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+      additionalProperties: false
+      type: object
+      required:
+      - slot
+      - uploadId
+      title: PlatformKybDocument
+    FiatSourceOfFunds:
+      type: string
+      enum:
+      - business_revenue
+      - investment
+      - loan
+      - personal_savings
+      - third_party_funds
+      - grant
+      - other
+      title: FiatSourceOfFunds
+      description: Source of funds.
+    PlatformKybResponse:
+      properties:
+        ready:
+          type: boolean
+          title: Ready
+          description: Whether all known requirements are satisfied and completion can be attempted.
+        missing:
+          items:
+            type: string
+          type: array
+          title: Missing
+          description: Outstanding applicant fields or document slots.
+        status:
+          $ref: '#/components/schemas/PlatformKybStatus'
+          description: Current public review status.
+          default: notStarted
+        application:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybApplicationResponse'
+          - type: 'null'
+          description: Latest immutable submission under review.
+        document:
+          $ref: '#/components/schemas/PlatformKybDocumentBody'
+          description: Current editable verification document projected from the entity graph.
+      type: object
+      required:
+      - ready
+      title: PlatformKybResponse
+    PlatformKybDocumentBody:
+      properties:
+        company:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybCompanyView'
+          - type: 'null'
+          description: Business-applicant information.
+        people:
+          items:
+            $ref: '#/components/schemas/PlatformKybPersonView'
+          type: array
+          title: People
+          description: Related individual applicants.
+        documents:
+          items:
+            $ref: '#/components/schemas/PlatformKybDocumentView'
+          type: array
+          title: Documents
+          description: Business-level documents.
+      type: object
+      title: PlatformKybDocumentBody
+    PlatformKybSubmitResponse:
+      properties:
+        applicationId:
+          type: string
+          pattern: ^(?:kyb_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Applicationid
+          description: Immutable verification application identifier.
+          examples:
+          - kyb_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/PlatformKybStatus'
+          description: Current public review status.
+        attemptNo:
+          type: integer
+          title: Attemptno
+          description: One-based submission attempt number for this account.
+        pollUrl:
+          type: string
+          title: Pollurl
+          description: Relative API URL to poll for the latest review state.
+      type: object
+      required:
+      - applicationId
+      - status
+      - attemptNo
+      - pollUrl
+      title: PlatformKybSubmitResponse
+    PlatformKybApplicationResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:kyb_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Immutable verification application identifier.
+          examples:
+          - kyb_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        attemptNo:
+          type: integer
+          title: Attemptno
+          description: One-based submission attempt number for this account.
+        status:
+          $ref: '#/components/schemas/PlatformKybStatus'
+          description: Current public review status.
+        comment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Comment
+          description: Review comment safe to show to the account holder.
+        submittedAt:
+          type: string
+          format: date-time
+          title: Submittedat
+          description: UTC timestamp when the immutable submission entered review.
+        decidedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Decidedat
+          description: UTC timestamp of the latest review decision.
+      type: object
+      required:
+      - id
+      - attemptNo
+      - status
+      - submittedAt
+      title: PlatformKybApplicationResponse
+    FiatBusinessType:
+      type: string
+      enum:
+      - technology
+      - finance
+      - healthcare
+      - retail
+      - e_commerce
+      - manufacturing
+      - real_estate
+      - consulting
+      - hospitality
+      - education
+      - transportation
+      - entertainment
+      - agriculture
+      - construction
+      - professional_services
+      - crypto_web3
+      - other
+      title: FiatBusinessType
+      description: Business industry type.
+    FiatTransactionCount:
+      type: string
+      enum:
+      - <10
+      - 10-50
+      - 50-200
+      - 200-1,000
+      - 1,000+
+      title: FiatTransactionCount
+      description: Expected monthly transaction-count range declared during KYB.
+    PlatformKybPersonRef:
+      properties:
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: Caller-chosen stable key for this related applicant.
+        id:
+          type: string
+          format: uuid
+          title: Id
+          description: Entity identifier assigned to the related applicant.
+      type: object
+      required:
+      - id
+      title: PlatformKybPersonRef
+    FiatIdentityDocumentType:
+      type: string
+      enum:
+      - passport
+      - id_card
+      - drivers_license
+      - driver_license
+      - residence_permit
+      - government_id
+      - state_or_provincial_id
+      - visa
+      title: FiatIdentityDocumentType
+      description: Identity document type.
+    FiatEntityType:
+      type: string
+      enum:
+      - llc
+      - corporation
+      - s_corporation
+      - c_corporation
+      - partnership
+      - limited_partnership
+      - sole_proprietorship
+      - nonprofit
+      - trust
+      - cooperative
+      - dao
+      - foundation
+      - other
+      title: FiatEntityType
+      description: Business entity type.
+    PlatformKybWriteRequest:
+      properties:
+        company:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybCompany'
+          - type: 'null'
+          description: Business-applicant fields to merge into the editable verification submission.
+        people:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PlatformKybPerson'
+            type: array
+          - type: 'null'
+          title: People
+          description: Related individual applicants; omit to retain the current roster.
+        documents:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PlatformKybDocument'
+            type: array
+          - type: 'null'
+          title: Documents
+          description: Business-level documents previously uploaded through POST /dapi/v1/documents.
+      additionalProperties: false
+      type: object
+      title: PlatformKybWriteRequest
+    PlatformKybIdentityDocument:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FiatIdentityDocumentType'
+          - type: 'null'
+          description: Identity document type. Upload the corresponding file separately and reference its uploadId.
+        issuingCountry:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 country that issued the identity document.
+        number:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Number
+          description: Document number exactly as printed by the issuer.
+      additionalProperties: false
+      type: object
+      title: PlatformKybIdentityDocument
+    FiatPrimaryTargetMarket:
+      type: string
+      enum:
+      - retail
+      - commercial
+      - government
+      - other
+      title: FiatPrimaryTargetMarket
+      description: Primary customer market served by the business applicant.
+    DocumentType:
+      type: string
+      enum:
+      - certificate_of_incorporation
+      - formation_document
+      - articles_of_incorporation
+      - power_of_attorney
+      - corporate_structure
+      - company_registry_extract
+      - corporate_registry_extract
+      - shareholder_registry
+      - director_structure
+      - proof_of_address
+      - utility_bill
+      - aml_policy
+      - annual_financial_statements
+      - articles_of_association
+      - audit_report
+      - bank_reference_letter
+      - bank_statement
+      - banking_details
+      - birth_certificate
+      - business_license
+      - business_plan
+      - certificate_of_good_standing
+      - crypto_statement
+      - credit_report
+      - criminal_record_check
+      - cv_resume
+      - driving_license
+      - education_certificate
+      - financial_projections
+      - investment_statement
+      - insurance_policy
+      - lease_agreement
+      - list_of_authorized_signatories
+      - marriage_certificate
+      - national_id
+      - operating_agreement
+      - partnership_agreement
+      - professional_license
+      - regulatory_license
+      - reference_letter
+      - register_of_members
+      - residence_permit
+      - shareholding_structure
+      - shareholders_agreement
+      - social_security_document
+      - source_of_funds_declaration
+      - tax_identification_document
+      - tax_compliance_form
+      - tax_returns
+      - payslip
+      - pitch_deck
+      - savings_statement
+      - trade_references
+      - vat_registration
+      - vendor_contracts
+      - visa
+      - wealth_statement
+      - contract
+      - invoice
+      - loan_agreement
+      - subscription_agreement
+      - safe_agreement
+      - convertible_note
+      - promissory_note
+      - marketing_material
+      - employment_contract
+      - authorization_to_act
+      - authority_to_bind
+      - ubo_declaration
+      - income_verification_letter
+      - source_of_funds
+      - source_of_wealth
+      - supporting_document
+      - memorandum
+      - passport_front
+      - passport_back
+      - id_card_front
+      - id_card_back
+      - drivers_license_front
+      - drivers_license_back
+      - residence_permit_front
+      - residence_permit_back
+      - other
+      title: DocumentType
+    PlatformKybDocumentView:
+      properties:
+        slot:
+          $ref: '#/components/schemas/DocumentType'
+          description: Verification requirement this file satisfies.
+        uploadId:
+          type: string
+          pattern: ^(?:doc_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Uploadid
+          description: Document identifier returned by POST /dapi/v1/documents.
+          examples:
+          - doc_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+      type: object
+      required:
+      - slot
+      - uploadId
+      title: PlatformKybDocumentView
+    PlatformKybAddressView:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Streetaddress
+          description: Street name and building number.
+        addressLine2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Addressline2
+          description: Optional apartment, suite or unit.
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        zip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip
+          description: Postal or ZIP code.
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+          description: ISO 3166-1 alpha-2 country code.
+      type: object
+      title: PlatformKybAddressView
+    PlatformKybCompany:
+      properties:
+        legalName:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Legalname
+          description: Registered legal name of the business applicant.
+        tradeName:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Tradename
+          description: Trading name or DBA, when different from legalName.
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/CountryCode'
+          - type: 'null'
+          description: ISO 3166-1 alpha-2 jurisdiction of incorporation.
+        registrationNumber:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Registrationnumber
+          description: Company registry number exactly as issued.
+        linkedinUrl:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 1
+          - type: 'null'
+          title: Linkedinurl
+          description: Public LinkedIn company URL used to corroborate business information.
+        taxId:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Taxid
+          description: Business tax identifier exactly as issued.
+        phone:
+          anyOf:
+          - type: string
+            pattern: ^\+[1-9]\d{6,14}$
+          - type: 'null'
+          title: Phone
+          description: Business phone number in E.164 format.
+        email:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Email
+          description: Business contact email used for verification correspondence.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformKybAddress'
+          - type: 'null'
+          description: Registered business address.
+        entityType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatEntityType'
+          - type: 'null'
+          description: Legal form of the business applicant.
+        entityTypeDescription:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Entitytypedescription
+          description: Free-text legal-form detail when entityType is other.
+        incorporationDate:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Incorporationdate
+          description: Date the business was legally registered.
+        industry:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Industry
+          description: Free-text description of the business industry.
+        websites:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 200
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Websites
+          description: Public business websites, primary site first.
+        operatingCountries:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CountryCode'
+            type: array
+          - type: 'null'
+          title: Operatingcountries
+          description: Countries where the business operates, as ISO 3166-1 alpha-2 codes.
+        expectedMonthlyVolumeUsd:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+            ge: 0
+          - type: 'null'
+          title: Expectedmonthlyvolumeusd
+          description: Expected total monthly transaction volume in USD.
+        expectedCryptoMonthlyVolumeUsd:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+            ge: 0
+          - type: 'null'
+          title: Expectedcryptomonthlyvolumeusd
+          description: Expected monthly digital-asset transaction volume in USD.
+        expectedMonthlyAchUsd:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+            ge: 0
+          - type: 'null'
+          title: Expectedmonthlyachusd
+          description: Expected monthly ACH volume in USD.
+        expectedMonthlyWireUsd:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+            ge: 0
+          - type: 'null'
+          title: Expectedmonthlywireusd
+          description: Expected monthly wire-transfer volume in USD.
+        cryptoIndustrySubtype:
+          anyOf:
+          - $ref: '#/components/schemas/FiatCryptoIndustrySubtype'
+          - type: 'null'
+          description: Digital-asset business subtype, when applicable.
+        hasIntermediateEntityOwnership:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hasintermediateentityownership
+          description: Whether another legal entity exists between this applicant and an ultimate beneficial owner.
+        primaryTargetMarket:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPrimaryTargetMarket'
+          - type: 'null'
+          description: Primary customer segment served by the business.
+        estimatedAnnualRevenue:
+          anyOf:
+          - anyOf:
+            - type: number
+            - type: string
+              pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+            type: string
+            example: '500.00'
+            ge: 0
+          - type: 'null'
+          title: Estimatedannualrevenue
+          description: Estimated annual business revenue in USD.
+        hasUsBank:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Hasusbank
+          description: Whether the business currently holds a payment account in the United States.
+        deniedUsBank:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Deniedusbank
+          description: Whether a US financial institution has previously declined or closed the business account.
+        hasPep:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Haspep
+          description: Whether the business, an owner or a controller is a politically exposed person.
+        bizAdverse:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 4000
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Bizadverse
+          description: Declared adverse information concerning the business.
+        ownersAdverse:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 4000
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Ownersadverse
+          description: Declared adverse information concerning owners or controllers.
+        publicListed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Publiclisted
+          description: Whether the business is publicly listed.
+        txPerMonth:
+          anyOf:
+          - $ref: '#/components/schemas/FiatTransactionCount'
+          - type: 'null'
+          description: Expected number of transactions per month.
+        usesBlockchain:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Usesblockchain
+          description: Whether the business uses blockchain or digital assets in its operations.
+        revenueCovers:
+          anyOf:
+          - $ref: '#/components/schemas/RevenueCoverage'
+          - type: 'null'
+          description: How much of operating expenses current revenue covers.
+        institutionalInvestors:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Institutionalinvestors
+          description: Whether institutional investors fund or own the business.
+        isRegulated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isregulated
+          description: Whether the business is regulated or licensed.
+        productsServices:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 200
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Productsservices
+          description: Products and services offered by the business.
+        businessDescription:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Businessdescription
+          description: Plain-language description of what the business does.
+        businessType:
+          anyOf:
+          - $ref: '#/components/schemas/FiatBusinessType'
+          - type: 'null'
+          description: High-level business category.
+        businessIndustry:
+          anyOf:
+          - type: string
+            pattern: ^\d{6}$
+          - type: 'null'
+          title: Businessindustry
+          description: Six-digit NAICS-style industry code.
+        verifierRole:
+          anyOf:
+          - $ref: '#/components/schemas/FiatVerifierRole'
+          - type: 'null'
+          description: Role of the person providing the business verification information.
+        sourceOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatSourceOfFunds'
+          - type: 'null'
+          description: Primary economic source of funds entering the account.
+        sourceOfFundsDetails:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Sourceoffundsdetails
+          description: Additional explanation of the declared source of funds.
+        purposeOfFunds:
+          anyOf:
+          - $ref: '#/components/schemas/FiatPurposeOfFunds'
+          - type: 'null'
+          description: Primary intended use of funds in the account.
+        purposeOfFundsDetails:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Purposeoffundsdetails
+          description: Additional explanation of the declared purpose of funds.
+        flowOfFunds:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Flowoffunds
+          description: Expected origin, movement and destination of funds.
+        complianceScreening:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Compliancescreening
+          description: How the business screens customers and transactions for compliance risk.
+        moneyServicesDescription:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Moneyservicesdescription
+          description: Description of money-services activity, when applicable.
+        handlesCustomerFunds:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handlescustomerfunds
+          description: Whether the business receives, holds or transfers funds for customers.
+        actingAsIntermediary:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Actingasintermediary
+          description: Whether the business acts between the payer and ultimate beneficiary.
+        sanctionedCountryOperations:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sanctionedcountryoperations
+          description: Whether the business operates in or serves sanctioned jurisdictions.
+        highRiskActivities:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/HighRiskActivity'
+            type: array
+          - type: 'null'
+          title: Highriskactivities
+          description: Declared higher-risk activities performed by the business.
+        depositMethods:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 200
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Depositmethods
+          description: Expected methods or regions used to fund the account.
+        contactInfo:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+          - type: 'null'
+          title: Contactinfo
+          description: Additional business contact or operational information.
+        identityDocuments:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PlatformKybIdentityDocument'
+            type: array
+          - type: 'null'
+          title: Identitydocuments
+          description: Identification metadata issued to the business, when the jurisdiction provides it.
+      additionalProperties: false
+      type: object
+      title: PlatformKybCompany
+    FiatCryptoIndustrySubtype:
+      type: string
+      enum:
+      - protocol
+      - exchange
+      - investment
+      - lender
+      - market_maker
+      - saas
+      - miner
+      title: FiatCryptoIndustrySubtype
+    PlatformKybWriteResponse:
+      properties:
+        ready:
+          type: boolean
+          title: Ready
+          description: Whether all known requirements are satisfied and completion can be attempted.
+        missing:
+          items:
+            type: string
+          type: array
+          title: Missing
+          description: Outstanding applicant fields or document slots.
+        people:
+          items:
+            $ref: '#/components/schemas/PlatformKybPersonRef'
+          type: array
+          title: People
+          description: Stable references for related applicants.
+      type: object
+      required:
+      - ready
+      title: PlatformKybWriteResponse
+    FiatVerifierRole:
+      type: string
+      enum:
+      - officer
+      - employer
+      - accountant
+      - agent
+      title: FiatVerifierRole
+      description: KYB verifier role.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

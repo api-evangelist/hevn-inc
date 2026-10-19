@@ -1,0 +1,836 @@
+openapi: 3.2.0
+info:
+  title: HEVN Platform Accounts API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
+tags:
+- name: Accounts
+  description: Create and manage business or individual customer accounts.
+paths:
+  /clients:
+    post:
+      tags:
+      - Accounts
+      summary: Create a client
+      description: 'Provision a company account for one of your clients. The id is knowable at once, so poll `pollUrl` with the returned `id` in `X-Hevn-Account` until `status` is `ready` — about 30 seconds. An identical resubmit answers 200 with `Idempotency-Replayed: true` and the same id. Developer-role callers may set `transferPolicy`; otherwise all allow flags default to true and both security-state flags default to false.'
+      operationId: create_client_clients_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+    get:
+      tags:
+      - Accounts
+      summary: List clients
+      description: Every client you have asked for, provisioning and ready, newest first.
+      operationId: list_clients_clients_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: email
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: Exact match, lowercased.
+          title: Email
+        description: Exact match, lowercased.
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/PlatformClientStatus'
+          - type: 'null'
+          title: Status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            maxLength: 512
+          - type: 'null'
+          title: Cursor
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_ClientResponse_'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /client:
+    get:
+      tags:
+      - Accounts
+      summary: Retrieve one account
+      description: Retrieve the client selected by `X-Hevn-Account`, from the moment `POST /clients` returns its id — a client still provisioning answers here too. Unknown, malformed and foreign account ids share the same not-found response.
+      operationId: read_client_client_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+    patch:
+      tags:
+      - Accounts
+      summary: Update a client profile
+      description: Update the phone and postal address for the client selected by `X-Hevn-Account`. Everything else about a client is verification data.
+      operationId: update_client_client_patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientProfileRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /client/balance:
+    get:
+      tags:
+      - Accounts
+      summary: Read a client's balances
+      description: 'One row per account the client holds: the tokens on the Base smart wallet of the client selected by `X-Hevn-Account`, plus any custodial balance. A custodial row is read live from the provider that holds it and is left out when that provider cannot be reached.'
+      operationId: read_balance_client_balance_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: X-Hevn-Account
+        in: header
+        required: true
+        schema:
+          type: string
+          description: The selected client account, as a `cl_…` id.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The selected client account, as a `cl_…` id.
+      - name: x-api-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Api-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientBalanceView'
+        '422':
+          description: Request validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+components:
+  schemas:
+    InitialTransferPolicy:
+      properties:
+        allowFiat:
+          type: boolean
+          title: Allowfiat
+          description: Allow account-initiated fiat payouts, subject to freeze and recovery controls.
+          default: true
+        allowCrypto:
+          type: boolean
+          title: Allowcrypto
+          description: Allow account-initiated on-chain transfers, including transfers to another platform account, subject to freeze and recovery controls.
+          default: true
+        allowThirdParty:
+          type: boolean
+          title: Allowthirdparty
+          description: Allow fiat or on-chain payouts to an external contact. Email and escrow payments within the same platform group use narrower controls.
+          default: true
+        allowEscrowThirdParty:
+          type: boolean
+          title: Allowescrowthirdparty
+          description: Allow escrow to another platform account. This control is independent from allowThirdParty; same-group escrow also requires allowPartnerGroupPayments.
+          default: true
+        allowSwap:
+          type: boolean
+          title: Allowswap
+          description: Allow balance swaps, subject to freeze and recovery controls.
+          default: true
+        allowPartnerGroupPayments:
+          type: boolean
+          title: Allowpartnergrouppayments
+          description: Allow email and escrow payments between accounts in the same platform group. Email payments also require allowCrypto; escrow also requires allowEscrowThirdParty.
+          default: true
+        isFrozen:
+          type: boolean
+          title: Isfrozen
+          description: Block every new account-initiated money movement, overriding every allow flag.
+          default: false
+        recoveryModeActivated:
+          type: boolean
+          title: Recoverymodeactivated
+          description: Restrict money movement to first-party fiat payouts whose Contact belongs to this account and whose account-holder name matches the account name.
+          default: false
+      additionalProperties: false
+      type: object
+      title: InitialTransferPolicy
+      description: 'Initial money-movement controls accepted only from a developer-role client creator.
+
+
+        ``isFrozen`` overrides every permission. When the account is not frozen,
+
+        ``recoveryModeActivated`` restricts it to first-party fiat withdrawals.
+
+        The remaining flags are then evaluated for the requested operation.'
+    PlatformKybStatus:
+      type: string
+      enum:
+      - notStarted
+      - pending
+      - approved
+      - rfi
+      - rejected
+      title: PlatformKybStatus
+    AccountBalanceView:
+      properties:
+        account:
+          $ref: '#/components/schemas/AccountKey'
+          description: Account this balance belongs to.
+        balance:
+          type: string
+          title: Balance
+          description: Available balance on this account.
+          example: '500.00'
+        usdValue:
+          type: string
+          title: Usdvalue
+          description: Indicative USD value of this balance.
+          example: '500.00'
+      type: object
+      required:
+      - account
+      - balance
+      - usdValue
+      title: AccountBalanceView
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    AccountKey:
+      type: string
+      enum:
+      - USDC
+      - EURC
+      - FDIC_USD
+      title: AccountKey
+    TransferPolicyResponse:
+      properties:
+        allowFiat:
+          type: boolean
+          title: Allowfiat
+          description: Allow account-initiated fiat payouts, subject to freeze and recovery controls.
+        allowCrypto:
+          type: boolean
+          title: Allowcrypto
+          description: Allow account-initiated on-chain transfers, including transfers to another platform account, subject to freeze and recovery controls.
+        allowThirdParty:
+          type: boolean
+          title: Allowthirdparty
+          description: Allow fiat or on-chain payouts to an external contact. Email and escrow payments within the same platform group use narrower controls.
+        allowEscrowThirdParty:
+          type: boolean
+          title: Allowescrowthirdparty
+          description: Allow escrow to another platform account. This control is independent from allowThirdParty; same-group escrow also requires allowPartnerGroupPayments.
+        allowSwap:
+          type: boolean
+          title: Allowswap
+          description: Allow balance swaps, subject to freeze and recovery controls.
+        allowPartnerGroupPayments:
+          type: boolean
+          title: Allowpartnergrouppayments
+          description: Allow email and escrow payments between accounts in the same platform group. Email payments also require allowCrypto; escrow also requires allowEscrowThirdParty.
+        isFrozen:
+          type: boolean
+          title: Isfrozen
+          description: Block every new money movement, overriding every allow flag.
+        recoveryModeActivated:
+          type: boolean
+          title: Recoverymodeactivated
+          description: Restrict money movement to first-party fiat payouts whose Contact belongs to this account and whose account-holder name matches the account name.
+      type: object
+      required:
+      - allowFiat
+      - allowCrypto
+      - allowThirdParty
+      - allowEscrowThirdParty
+      - allowSwap
+      - allowPartnerGroupPayments
+      - isFrozen
+      - recoveryModeActivated
+      title: TransferPolicyResponse
+      description: 'Effective account-level money-movement controls.
+
+
+        ``isFrozen`` overrides every permission. When the account is not frozen,
+
+        ``recoveryModeActivated`` restricts it to first-party fiat withdrawals.
+
+        The remaining flags are then evaluated for the requested operation.'
+    PlatformClientFailure:
+      type: string
+      enum:
+      - provisioning_failed
+      - request_rejected
+      - request_canceled
+      title: PlatformClientFailure
+    ClientAddressRequest:
+      properties:
+        streetAddress:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Streetaddress
+          description: Street name and building number.
+        addressLine2:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Addressline2
+          description: Optional apartment, suite or unit.
+        city:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: City
+          description: City or locality.
+        state:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: State
+          description: State, province or administrative area.
+        zip:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          title: Zip
+          description: Postal or ZIP code.
+      additionalProperties: false
+      type: object
+      title: ClientAddressRequest
+    ClientFailureResponse:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformClientFailure'
+          description: Stable machine-readable code for the provisioning failure.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to the account holder.
+        retriable:
+          type: boolean
+          title: Retriable
+          description: Whether retrying later without changing the request may succeed.
+          default: false
+      type: object
+      required:
+      - code
+      - message
+      title: ClientFailureResponse
+    PlatformClientStatus:
+      type: string
+      enum:
+      - provisioning
+      - ready
+      - failed
+      title: PlatformClientStatus
+    Page_ClientResponse_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ClientResponse'
+          type: array
+          title: Items
+          description: Resources in this page, in stable server-defined order.
+        nextCursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nextcursor
+          description: Opaque cursor for the next page; absent when this is the final page.
+      type: object
+      required:
+      - items
+      title: Page[ClientResponse]
+    ClientResponse:
+      properties:
+        id:
+          type: string
+          pattern: ^(?:cl_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Id
+          description: Stable public identifier for this account.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        status:
+          $ref: '#/components/schemas/PlatformClientStatus'
+          description: Current account-provisioning status.
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Legal or trading name of the account.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          description: Email address associated with the account.
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+          description: Phone number in international E.164 format.
+        baseSmartWallet:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Basesmartwallet
+          description: Base smart-wallet address controlled by the account.
+        kybStatus:
+          $ref: '#/components/schemas/PlatformKybStatus'
+          description: Current business-verification status.
+          default: notStarted
+        kybApplicationId:
+          anyOf:
+          - type: string
+            pattern: ^(?:kyb_)?[A-Za-z0-9._:\-]{1,216}$
+            examples:
+            - kyb_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          - type: 'null'
+          title: Kybapplicationid
+          description: Latest immutable business-verification application identifier.
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+          description: UTC timestamp when the account was created.
+        failure:
+          anyOf:
+          - $ref: '#/components/schemas/ClientFailureResponse'
+          - type: 'null'
+          description: Provisioning failure details, when present.
+        pollUrl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pollurl
+          description: Relative API URL to poll with this response's id in `X-Hevn-Account`.
+        transferPolicy:
+          anyOf:
+          - $ref: '#/components/schemas/TransferPolicyResponse'
+          - type: 'null'
+          description: Account-level controls for the ways this client may move money.
+      type: object
+      required:
+      - id
+      - status
+      - createdAt
+      title: ClientResponse
+    ClientProfileRequest:
+      properties:
+        phone:
+          anyOf:
+          - type: string
+            pattern: ^\+[1-9]\d{6,14}$
+          - type: 'null'
+          title: Phone
+          description: Phone number in international E.164 format.
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/ClientAddressRequest'
+          - type: 'null'
+          description: Postal address of the account holder.
+      additionalProperties: false
+      type: object
+      title: ClientProfileRequest
+    ClientCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Name
+          description: Legal or trading name used to identify the account.
+        email:
+          type: string
+          format: email
+          title: Email
+          description: Unique account email used for verification correspondence.
+        phone:
+          anyOf:
+          - type: string
+            pattern: ^\+[1-9]\d{6,14}$
+          - type: 'null'
+          title: Phone
+          description: Phone number in international E.164 format.
+        transferPolicy:
+          anyOf:
+          - $ref: '#/components/schemas/InitialTransferPolicy'
+          - type: 'null'
+          description: Initial account transfer controls, available only to developer-role callers. When omitted, every allow flag is true while isFrozen and recoveryModeActivated are false.
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - email
+      title: ClientCreateRequest
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    PlatformErrorBody:
+      properties:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
+      type: object
+      required:
+      - code
+      - message
+      title: PlatformErrorBody
+    ClientBalanceView:
+      properties:
+        clientId:
+          type: string
+          pattern: ^(?:cl_)?[A-Za-z0-9._:\-]{1,216}$
+          title: Clientid
+          description: Account associated with this balance.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        baseSmartWallet:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Basesmartwallet
+          description: Base smart-wallet address controlled by the account.
+        accounts:
+          items:
+            $ref: '#/components/schemas/AccountBalanceView'
+          type: array
+          title: Accounts
+          description: One entry per account the client holds a balance on.
+        totalUsd:
+          type: string
+          title: Totalusd
+          description: Indicative total balance converted to USD.
+          example: '500.00'
+      type: object
+      required:
+      - clientId
+      - totalUsd
+      title: ClientBalanceView
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

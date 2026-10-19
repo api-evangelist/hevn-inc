@@ -1,98 +1,46 @@
 openapi: 3.2.0
 info:
-  title: HEVN Documents API
-  description: Backend API for HEVN mobile neobank
-  version: 0.1.2
-servers:
-- url: https://api.hevn.finance
-  description: Production
+  title: HEVN Platform Documents API
+  description: 'HEVN''s account, verification and money-movement API. Verification follows a submission workflow: save applicant info and documents, inspect outstanding requirements, then explicitly complete the submission to send an immutable snapshot for review. Completing a submission is separate from editing it.'
+  version: 1.0.0
 tags:
 - name: Documents
+  description: Upload verification and payment evidence for later reference by id.
 paths:
-  /api/v1/b2b/documents:
-    get:
-      tags:
-      - Documents
-      summary: List uploaded documents (deprecated, use GET /documents)
-      description: Backward-compatible proxy to GET /documents.
-      operationId: list_uploaded_documents_legacy_api_v1_b2b_documents_get
-      deprecated: true
-      security:
-      - HTTPBearer: []
-      parameters:
-      - name: doc_type
-        in: query
-        required: false
-        schema:
-          type: string
-          description: Document filter type, e.g. 'uploaded'
-          default: uploaded
-          title: Doc Type
-        description: Document filter type, e.g. 'uploaded'
-      - name: x-api-key
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: X-Api-Key
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadedDocumentListResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/documents/download/{document_id}:
-    get:
-      tags:
-      - Documents
-      summary: Download a document via signed token
-      description: Verify download token, log the event, and redirect to a Supabase signed URL.
-      operationId: download_document_api_v1_documents_download__document_id__get
-      parameters:
-      - name: document_id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-          title: Document Id
-      - name: key
-        in: query
-        required: true
-        schema:
-          type: string
-          title: Key
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/documents/upload:
+  /documents:
     post:
       tags:
       - Documents
       summary: Upload a document
-      description: Upload a document to storage. Returns document_id for referencing.
-      operationId: upload_document_api_v1_documents_upload_post
+      description: Stores a file and answers the `doc_…` id the verification document references as `uploadId`. Uploading the same bytes in the same slot twice answers the first id.
+      operationId: upload_document_documents_post
       security:
       - HTTPBearer: []
       parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
       - name: x-api-key
         in: header
         required: false
@@ -106,80 +54,62 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/KybDocumentUpload'
+              $ref: '#/components/schemas/DocumentUploadRequest'
       responses:
         '201':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DocumentDraftInfo'
+                $ref: '#/components/schemas/DocumentResponse'
         '422':
-          description: Validation Error
+          description: Request validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/documents:
-    get:
-      tags:
-      - Documents
-      summary: List uploaded documents
-      description: List user-uploaded documents by filter type.
-      operationId: list_uploaded_documents_api_v1_documents_get
-      security:
-      - HTTPBearer: []
-      parameters:
-      - name: doc_type
-        in: query
-        required: false
-        schema:
-          type: string
-          description: Document filter type, e.g. 'uploaded'
-          default: uploaded
-          title: Doc Type
-        description: Document filter type, e.g. 'uploaded'
-      - name: x-api-key
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: X-Api-Key
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadedDocumentListResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/documents/{document_id}/content:
+                $ref: '#/components/schemas/PlatformErrorResponse'
+  /documents/{documentId}/content:
     put:
       tags:
       - Documents
-      summary: Update document extracted content
-      description: 'Validate and save extracted content for a document.
-
-
-        Content is validated against the Pydantic model for the document''s type/category.'
-      operationId: update_document_content_api_v1_documents__document_id__content_put
+      summary: Fill the typed fields read off a document
+      description: The verification gate refuses a submission whose documents have no recognised fields. Write them here — the keys are the paths the refusal names in `details.documents`, without the slot prefix.
+      operationId: write_document_content_documents__documentId__content_put
       security:
       - HTTPBearer: []
       parameters:
-      - name: document_id
+      - name: documentId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
-          title: Document Id
+          description: Prefixed document id
+          title: Documentid
+        description: Prefixed document id
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+          examples:
+          - po-inv-2026-114
+          title: Idempotency-Key
+        description: Your own key for this write, `^[A-Za-z0-9._:-]{1,128}$`. A retry with the same key replays the first answer; the same key with a different request is refused.
+      - name: X-Hevn-Account
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
+          examples:
+          - cl_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+          title: X-Hevn-Account
+        description: The client account to act for, as a `cl_…` id. Omit it to act as yourself.
       - name: x-api-key
         in: header
         required: false
@@ -193,328 +123,50 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
-              title: Content
+              $ref: '#/components/schemas/DocumentContentRequest'
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DocumentDraftInfo'
+                $ref: '#/components/schemas/DocumentResponse'
         '422':
-          description: Validation Error
+          description: Request validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/documents/create:
-    post:
-      tags:
-      - Documents
-      summary: Create a document for e-signing via Firma
-      operationId: create_signing_document_api_v1_documents_create_post
-      security:
-      - HTTPBearer: []
-      parameters:
-      - name: x-api-key
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: X-Api-Key
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FirmaCreateDocumentRequest'
-      responses:
-        '201':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FirmaCreateDocumentResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/kyb/b2b/documents:
-    get:
-      tags:
-      - Documents
-      summary: List uploaded documents (deprecated, use GET /documents)
-      description: Backward-compatible proxy to GET /documents.
-      operationId: list_uploaded_documents_legacy_package_alias_api_v1_kyb_b2b_documents_get
-      deprecated: true
-      security:
-      - HTTPBearer: []
-      parameters:
-      - name: doc_type
-        in: query
-        required: false
-        schema:
-          type: string
-          description: Document filter type, e.g. 'uploaded'
-          default: uploaded
-          title: Doc Type
-        description: Document filter type, e.g. 'uploaded'
-      - name: x-api-key
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: X-Api-Key
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadedDocumentListResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/PlatformErrorResponse'
 components:
   schemas:
-    KybDocumentUpload:
+    DocumentContentRequest:
       properties:
-        base64:
-          type: string
-          title: Base64
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        originName:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Originname
-        context:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Context
+        fields:
+          additionalProperties:
+            $ref: '#/components/schemas/JsonValue'
+          type: object
+          title: Fields
+          description: Typed values extracted from or supplied for the document.
+      additionalProperties: false
       type: object
       required:
-      - base64
-      - type
-      title: KybDocumentUpload
-      description: Document upload for draft.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UploadedDocumentListResponse:
-      properties:
-        documents:
-          items:
-            $ref: '#/components/schemas/DocumentDraftInfo'
-          type: array
-          title: Documents
-      type: object
-      required:
-      - documents
-      title: UploadedDocumentListResponse
-      description: Response for user-uploaded documents list.
-    FirmaCreateDocumentResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        firmaId:
-          type: string
-          title: Firmaid
-        documentType:
-          type: string
-          title: Documenttype
-        status:
-          type: string
-          title: Status
-        signerEmail:
-          type: string
-          title: Signeremail
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        signingUrls:
-          items:
-            $ref: '#/components/schemas/FirmaSigningUrlInfo'
-          type: array
-          title: Signingurls
-          default: []
-      type: object
-      required:
-      - id
-      - firmaId
-      - documentType
-      - status
-      - signerEmail
-      title: FirmaCreateDocumentResponse
-      description: Response after creating and sending a signing request.
-    CorpDocumentType:
-      type: string
-      enum:
-      - contractor_agreement
-      title: CorpDocumentType
-      description: Supported document types for e-signing.
-    FirmaSignerInfo:
-      properties:
-        firstName:
-          type: string
-          title: Firstname
-        lastName:
-          type: string
-          title: Lastname
-        email:
-          type: string
-          title: Email
-      type: object
-      required:
-      - firstName
-      - lastName
-      - email
-      title: FirmaSignerInfo
-      description: Signer information for a signing request.
-    ContractorAgreementData:
-      properties:
-        contractorName:
-          type: string
-          title: Contractorname
-        contractorAddress:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Contractoraddress
-        contractorEmail:
-          type: string
-          title: Contractoremail
-        contractorCountry:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Contractorcountry
-        taxId:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Taxid
-        effectiveDate:
-          type: string
-          title: Effectivedate
-        sowEffectiveDate:
-          type: string
-          title: Soweffectivedate
-        contractType:
-          type: string
-          title: Contracttype
-          default: Fixed rate
-        startDate:
-          type: string
-          title: Startdate
-        jobTitle:
-          type: string
-          title: Jobtitle
-        scopeDescription:
-          type: string
-          title: Scopedescription
-        paymentCurrency:
-          type: string
-          title: Paymentcurrency
-          default: USD - US Dollar
-        paymentRate:
-          type: string
-          title: Paymentrate
-        firstPaymentDate:
-          type: string
-          title: Firstpaymentdate
-        firstPaymentAmount:
-          type: string
-          title: Firstpaymentamount
-          default: Full amount
-        invoiceCycle:
-          type: string
-          title: Invoicecycle
-          default: Monthly, ends the last day of the month
-        paymentDue:
-          type: string
-          title: Paymentdue
-          default: Same day
-      type: object
-      required:
-      - contractorName
-      - contractorEmail
-      - effectiveDate
-      - sowEffectiveDate
-      - startDate
-      - jobTitle
-      - scopeDescription
-      - paymentRate
-      - firstPaymentDate
-      title: ContractorAgreementData
-      description: Data for filling Contractor Agreement template.
-    FirmaCreateDocumentRequest:
-      properties:
-        documentType:
-          $ref: '#/components/schemas/CorpDocumentType'
-        signer:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        recipient:
-          $ref: '#/components/schemas/FirmaSignerInfo'
-        contractorAgreement:
-          anyOf:
-          - $ref: '#/components/schemas/ContractorAgreementData'
-          - type: 'null'
-      type: object
-      required:
-      - documentType
-      - signer
-      - recipient
-      title: FirmaCreateDocumentRequest
-      description: Request to create a document for signing via Firma.
-    SlxDocumentType:
+      - fields
+      title: DocumentContentRequest
+    DocumentType:
       type: string
       enum:
       - certificate_of_incorporation
       - formation_document
+      - articles_of_incorporation
       - power_of_attorney
       - corporate_structure
+      - company_registry_extract
+      - corporate_registry_extract
+      - shareholder_registry
       - director_structure
       - proof_of_address
+      - utility_bill
+      - aml_policy
       - annual_financial_statements
       - articles_of_association
       - audit_report
@@ -525,12 +177,14 @@ components:
       - business_license
       - business_plan
       - certificate_of_good_standing
+      - crypto_statement
       - credit_report
       - criminal_record_check
       - cv_resume
       - driving_license
       - education_certificate
       - financial_projections
+      - investment_statement
       - insurance_policy
       - lease_agreement
       - list_of_authorized_signatories
@@ -539,14 +193,20 @@ components:
       - operating_agreement
       - partnership_agreement
       - professional_license
+      - regulatory_license
       - reference_letter
       - register_of_members
       - residence_permit
       - shareholding_structure
+      - shareholders_agreement
       - social_security_document
       - source_of_funds_declaration
       - tax_identification_document
+      - tax_compliance_form
       - tax_returns
+      - payslip
+      - pitch_deck
+      - savings_statement
       - trade_references
       - vat_registration
       - vendor_contracts
@@ -555,85 +215,247 @@ components:
       - contract
       - invoice
       - loan_agreement
+      - subscription_agreement
+      - safe_agreement
+      - convertible_note
+      - promissory_note
+      - marketing_material
+      - employment_contract
+      - authorization_to_act
+      - authority_to_bind
+      - ubo_declaration
+      - income_verification_letter
+      - source_of_funds
+      - source_of_wealth
+      - supporting_document
+      - memorandum
       - passport_front
       - passport_back
       - id_card_front
       - id_card_back
       - drivers_license_front
       - drivers_license_back
+      - residence_permit_front
+      - residence_permit_back
       - other
-      title: SlxDocumentType
-      description: Document types for upload.
-    FirmaSigningUrlInfo:
+      title: DocumentType
+    JsonValue: {}
+    PlatformErrorCode:
+      type: string
+      enum:
+      - invalid_request
+      - validation_failed
+      - invalid_cursor
+      - invalid_id
+      - idempotency_key_invalid
+      - idempotency_key_reused
+      - unauthenticated
+      - token_expired
+      - forbidden
+      - not_found
+      - method_not_allowed
+      - conflict
+      - gone
+      - payload_too_large
+      - rate_limited
+      - provider_unavailable
+      - database_unavailable
+      - internal_error
+      - invalid_credentials
+      - request_expired
+      - challenge_not_found
+      - challenge_consumed
+      - challenge_expired
+      - signature_invalid
+      - key_not_registered
+      - signer_not_attached
+      - wallet_not_linked
+      - approval_consumed
+      - approval_expired
+      - approval_mismatch
+      - signing_policy_refused
+      - login_unavailable
+      - login_mode_unavailable
+      - developer_key_not_found
+      - developer_key_already_exists
+      - account_header_invalid
+      - account_scope_conflict
+      - account_not_found
+      - account_forbidden
+      - account_read_only
+      - account_not_controlled
+      - contact_not_found
+      - quote_not_submitted
+      - quote_not_fundable
+      - funding_mode_unsupported
+      - funding_token_unsupported
+      - insufficient_funds
+      - smart_wallet_not_deployed
+      - wallet_owner_unverified
+      - already_funded
+      - payment_slot_consumed
+      - funding_in_progress
+      - funding_attempt_expired
+      - contact_changed
+      - user_operation_rejected
+      - user_operation_unavailable
+      - transfer_policy_denied
+      - integrator_inactive
+      - client_creation_not_enabled
+      - client_policy_not_enabled
+      - email_in_use
+      - name_in_use
+      - client_request_conflict
+      - client_not_found
+      - profile_locked
+      - contact_not_payable
+      - contact_chain_unsupported
+      - contact_token_unsupported
+      - contact_payment_details_invalid
+      - amount_below_minimum
+      - amount_above_maximum
+      - amount_precision_unsupported
+      - payout_not_found
+      - payout_not_fundable
+      - quote_expired
+      - bundler_rejected
+      - bundler_unavailable
+      - contact_details_invalid
+      - contact_in_use
+      - kyb_incomplete
+      - kyb_roster_conflict
+      - kyb_subject_conflict
+      - document_fields_missing
+      - document_not_found
+      - document_type_unsupported
+      - invalid_enum_value
+      - entity_not_found
+      - escrow_not_found
+      - escrow_action_not_found
+      - escrow_not_operated_by_you
+      - escrow_state_changed
+      - action_in_flight
+      - simulation_failed
+      - stale_nonce
+      - amount_out_of_range
+      - amount_not_allowed
+      - window_closed
+      - token_not_supported
+      - receiver_not_a_client
+      - rail_not_found
+      - rail_not_available
+      - rail_requirements_unmet
+      - phone_required
+      - payin_not_available
+      - payin_expired
+      - payin_not_found
+      - transaction_not_found
+      - account_unavailable
+      - account_not_supported
+      - swap_not_found
+      - swap_route_unavailable
+      - swap_not_confirmable
+      - intent_not_signable
+      title: PlatformErrorCode
+    PlatformErrorBody:
       properties:
-        email:
+        code:
+          $ref: '#/components/schemas/PlatformErrorCode'
+          description: Stable machine-readable error code.
+        message:
           type: string
-          title: Email
-        signingUrl:
-          type: string
-          title: Signingurl
+          title: Message
+          description: Human-readable explanation safe to show to an end user.
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Details
+          description: Structured context for this error, when available.
       type: object
       required:
-      - email
-      - signingUrl
-      title: FirmaSigningUrlInfo
-      description: Signing URL for embedding in iframe.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DocumentDraftInfo:
+      - code
+      - message
+      title: PlatformErrorBody
+    DocumentResponse:
       properties:
         id:
           type: string
+          pattern: ^(?:doc_)?[A-Za-z0-9._:\-]{1,216}$
           title: Id
-        type:
-          $ref: '#/components/schemas/SlxDocumentType'
+          description: Stable public identifier for this document.
+          examples:
+          - doc_9f2c1ab84d7e4f1fa3c65b0e7d9a2c41
+        slot:
+          $ref: '#/components/schemas/DocumentType'
+          description: Verification requirement this document satisfies.
         name:
           anyOf:
           - type: string
           - type: 'null'
           title: Name
-        originName:
+          description: Human-readable document name.
+        fileName:
           anyOf:
           - type: string
           - type: 'null'
-          title: Originname
-        link:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Link
+          title: Filename
+          description: Original file name including its extension.
         createdAt:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
           title: Createdat
-        content:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Content
+          description: UTC timestamp when the document was created.
       type: object
       required:
       - id
-      - type
-      title: DocumentDraftInfo
-      description: Document info in response.
+      - slot
+      title: DocumentResponse
+    PlatformErrorResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/PlatformErrorBody'
+          description: Public error body.
+      type: object
+      required:
+      - error
+      title: PlatformErrorResponse
+    DocumentUploadRequest:
+      properties:
+        slot:
+          $ref: '#/components/schemas/DocumentType'
+          description: Verification requirement this file satisfies.
+        content:
+          type: string
+          minLength: 1
+          title: Content
+          description: Base64-encoded document bytes.
+        fileName:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Filename
+          description: Original file name including its extension.
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Name
+          description: Human-readable document name.
+      additionalProperties: false
+      type: object
+      required:
+      - slot
+      - content
+      title: DocumentUploadRequest
   securitySchemes:
     HTTPBearer:
       type: http
       scheme: bearer
-      x-default: Bearer <token>
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: x-api-key
-      description: Alternative HEVN API key header. The CLI defaults to Authorization Bearer unless configured with HEVN_API_KEY_HEADER=X-Api-Key.
